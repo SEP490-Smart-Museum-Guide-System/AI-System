@@ -1,0 +1,4 @@
+fastapi==0.119.1
+pydantic==2.12.3
+sherpa-onnx==1.13.8
+uvicorn[standard]==0.38.0

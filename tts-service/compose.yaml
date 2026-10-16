@@ -1,0 +1,18 @@
+services:
+  tts-service:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      TTS_MODEL_DIR: /models
+      TTS_CACHE_DIR: /data/audio-cache
+      TTS_NUM_THREADS: 2
+      TTS_MAX_TEXT_CHARS: 12000
+    volumes:
+      - tts-models:/models
+      - tts-audio-cache:/data/audio-cache
+    restart: unless-stopped
+
+volumes:
+  tts-models:
+  tts-audio-cache:
