@@ -43,7 +43,7 @@ Flutter → TTS Service: POST văn bản đã duyệt
 TTS Service → Flutter: audio/wav (Piper tổng hợp hoặc cache trả lại)
 ```
 
-Xem endpoint, cấu hình Docker và cách gọi trong [`tts-service/README.md`](tts-service/README.md). Thay đổi và việc còn lại được ghi trong [`IMPLEMENTATION_LOG.md`](IMPLEMENTATION_LOG.md).
+Theo schema DBML, Content/Catalog Service tra `artifacts.qr_code`, rồi lấy `narration_versions.script` qua `narrations`; chỉ chọn version `published` và `is_current = true`, theo language/length/detail mà app yêu cầu. TTS Service không truy cập database BE. Xem mapping/query và endpoint trong [`tts-service/README.md`](tts-service/README.md). Thay đổi và việc còn lại được ghi trong [`IMPLEMENTATION_LOG.md`](IMPLEMENTATION_LOG.md).
 
 ## Phân chia trách nhiệm
 

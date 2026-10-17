@@ -10,7 +10,40 @@ Flutter quét QR → Content/Catalog Service trả bản thuyết minh đã xu�
                  → Piper trả audio/wav → Flutter phát audio
 ```
 
-Content/Catalog Service vẫn là nguồn dữ liệu chuẩn và kiểm soát trạng thái duyệt. TTS Service chỉ nhận văn bản đã xuất bản; nó không truy cập database của các service khác. Kết quả WAV được cache theo nội dung, voice và tốc độ đọc để tái sử dụng.
+Content/Catalog Service vẫn là nguồn dữ liệu chuẩn và kiểm soát trạng thái duyệt. Theo DBML hiện tại, nội dung để đọc nằm trong `narration_versions.script`, gắn với `narrations` theo hiện vật/ngôn ngữ/độ dài/mức chi tiết. TTS Service chỉ nhận văn bản đã xuất bản; nó không truy cập database của các service khác. Kết quả WAV được cache theo nội dung, voice và tốc độ đọc để tái sử dụng.
+
+### Tra nội dung theo DBML
+
+Khi QR chứa `artifacts.qr_code`, backend tra bản thuyết minh tiếng Việt hiện hành tương đương truy vấn sau (tên enum/alias cần đối chiếu với migration và entity BE thực tế):
+
+```sql
+SELECT
+  a.id AS artifact_id,
+  a.name AS artifact_name,
+  n.id AS narration_id,
+  nv.id AS narration_version_id,
+  nv.version_no,
+  nv.script,
+  nv.audio_url
+FROM artifacts AS a
+JOIN narrations AS n
+  ON n.artifact_id = a.id
+JOIN languages AS l
+  ON l.id = n.language_id
+JOIN narration_versions AS nv
+  ON nv.narration_id = n.id
+WHERE a.qr_code = :qr_code
+  AND a.is_active = TRUE
+  AND l.code = :language_code
+  AND n.length_level = :length_level
+  AND n.detail_level = :detail_level
+  AND nv.status = 'published'
+  AND nv.is_current = TRUE;
+```
+
+`narrations` có unique key `(artifact_id, language_id, length_level, detail_level)`. Vì app hiện chưa có quy tắc chọn mặc định, backend nên nhận `language_code`, `length_level`, `detail_level` rõ ràng (ví dụ `vi`, `medium`, `basic`) hoặc thống nhất giá trị mặc định với team BE. Nếu không có bản phù hợp, trả not found thay vì gửi nội dung chưa duyệt sang TTS.
+
+DBML ghi chú đây là **đề xuất thiết kế, chưa phải ERD đã chốt**. Enum PostgreSQL/EF mapping và tên bảng/cột cuối cùng phải được xác nhận với migration/backend trước khi dùng query này trực tiếp.
 
 ## Chạy bằng Docker Compose
 
@@ -68,10 +101,12 @@ Invoke-WebRequest `
 
 ## Nối từ Flutter
 
-1. Flutter đọc `artifactId` từ kết quả quét QR.
-2. Flutter lấy văn bản thuyết minh trạng thái `published` từ Content/Catalog API.
-3. Flutter gửi `{text, language, speed}` đến `POST /api/v1/speech`.
+1. Flutter đọc mã QR; Content/Catalog API tìm `artifacts.qr_code` và trả hồ sơ hiện vật.
+2. Flutter yêu cầu narration theo `language_code`, `length_level`, `detail_level`; backend chỉ trả `narration_versions.script` với `status = published` và `is_current = true`.
+3. Flutter gửi `narration_versions.script` (không gửi summary hay nội dung draft) cùng `{language, speed}` đến `POST /api/v1/speech`.
 4. Phát response bytes bằng audio player trên Flutter.
+
+Nếu `narration_versions.audio_url` đã có audio được duyệt/thu sẵn, Content/Catalog API có thể trả URL để Flutter phát trực tiếp và bỏ qua TTS. Nếu `audio_url` rỗng, Flutter gửi script sang TTS Service. Trong schema hiện tại chưa có cột quản lý WAV cache được TTS tạo; cache MVP lưu file ở volume nội bộ và trả bytes trực tiếp. Muốn lưu audio tổng hợp lâu dài và dùng `audio_url`, cần backend/object storage quản lý URL và trạng thái duyệt tương ứng.
 
 Ở production, đặt service sau API gateway hoặc private network, bật HTTPS và xác thực service-to-service. Không mở endpoint công khai không giới hạn vì việc tạo audio dùng CPU. Bản MVP hiện không thêm nguồn phát sinh nội dung hay công cụ nhận diện.
 
