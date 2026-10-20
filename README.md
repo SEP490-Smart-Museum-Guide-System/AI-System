@@ -2,6 +2,28 @@
 
 Repo chứa các microservice AI cho Smart Museum Guide System. TTS và nhận diện ảnh hiện vật có MVP độc lập trong [`TTS AI/`](TTS%20AI/README.md) và [`AI Vision/`](AI%20Vision/README.md). Dựng 3D là luồng riêng chưa triển khai.
 
+## Cấu trúc thư mục
+
+```text
+AI-System/
+├── AI Vision/                 # Microservice nhận diện hiện vật từ ảnh
+│   ├── app/                   # API, embedding ảnh và lưu ảnh tham chiếu
+│   ├── Dockerfile
+│   ├── compose.yaml
+│   ├── requirements.txt
+│   └── README.md
+├── TTS AI/                    # Microservice chuyển văn bản thành giọng nói
+│   ├── app/                   # API, tổng hợp Piper/sherpa-onnx và cache audio
+│   ├── Dockerfile
+│   ├── compose.yaml
+│   ├── requirements.txt
+│   └── README.md
+├── state/                     # Thư mục dành cho dữ liệu trạng thái cục bộ
+├── BE_FE_REVIEW.md            # Ghi chú rà soát backend và frontend
+├── IMPLEMENTATION_LOG.md      # Nhật ký triển khai
+└── README.md                  # Tổng quan kiến trúc và luồng AI
+```
+
 ## Mục tiêu và nguyên tắc
 
 | Microservice | Trách nhiệm | Trạng thái |
