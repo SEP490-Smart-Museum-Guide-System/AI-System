@@ -34,3 +34,14 @@
 - Xác nhận React curation cũng dùng state/mock data; mapping FE đến `narration_versions` chưa có endpoint/backend persistence thực tế.
 - Ghi hợp đồng nối phù hợp và thứ tự công việc trong `BE_FE_REVIEW.md`.
 - Nêu các điểm môi trường cần giải quyết: base URL Flutter lệch launch profile BE và các endpoint ghi artifact đang allow anonymous. Giá trị secrets không được sao chép vào log.
+
+## 2026-10-20 — Sắp xếp TTS và tạo AI Vision MVP
+
+- Chuyển nội dung service TTS vào folder `TTS AI/` theo cấu trúc người dùng đưa.
+- Tạo microservice `AI Vision/` dùng OpenCLIP embeddings để so khớp ảnh query với ảnh tham chiếu được index theo `artifactId`.
+- Thêm API có xác thực service key để index/xóa ảnh tham chiếu và nhận diện ảnh; kết quả có similarity, top candidates và ngưỡng yêu cầu xác nhận.
+- Embedding lưu trong SQLite volume; ảnh query không được lưu. Service không truy cập database BE.
+- Cập nhật README cấp repo và README từng service để mô tả luồng hai service, cách chạy, nạp ảnh và giới hạn.
+- `compileall` và `docker compose config` cho cả hai service đều thành công.
+- Docker build AI Vision đã thử nhưng Docker Desktop Linux engine hiện không chạy (`dockerDesktopLinuxEngine` pipe không tồn tại), nên chưa xác minh được dependency install/model download/inference.
+- Cần xác nhận tải model, dependencies, RAM, ngưỡng similarity và độ chính xác trên bộ ảnh thật khi Docker engine sẵn sàng.

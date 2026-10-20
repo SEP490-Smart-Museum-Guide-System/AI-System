@@ -4,7 +4,7 @@ Ngày rà soát: 2026-10-20. Phạm vi: source BE .NET, Flutter visitor, React c
 
 ## Tóm tắt kiến trúc hiện có
 
-- BE hiện là **một ASP.NET Core Web API theo các project layer** (`API`, `Application`, `Domain`, `Infrastructure`) dùng EF Core/Npgsql/PostgreSQL. Chưa thấy nhiều backend service độc lập trong solution hiện tại. `AI-System/tts-service` là service tách riêng được khởi tạo cho TTS.
+- BE hiện là **một ASP.NET Core Web API theo các project layer** (`API`, `Application`, `Domain`, `Infrastructure`) dùng EF Core/Npgsql/PostgreSQL. Chưa thấy nhiều backend service độc lập trong solution hiện tại. AI TTS và AI Vision hiện là các service tách riêng trong repo `AI-System`.
 - FE có hai ứng dụng chính: Flutter Visitor (`FrontEnd/smgs_mobile`) và React/Vite cho nghiệp vụ nhân viên/curator (`FrontEnd/smgs_web`). Cổng React hiện chứa visitor Flutter build trong `public/visitor`.
 - DBML `BackEnd/project-docs/smgs_schema.dbml` mô tả thiết kế rộng hơn nhiều so với EF entities/migrations đang có.
 
@@ -62,3 +62,9 @@ Ngày rà soát: 2026-10-20. Phạm vi: source BE .NET, Flutter visitor, React c
 ## Kết luận riêng cho TTS
 
 TTS service đã có API riêng nhận `{text, language, speed}` và trả WAV. Service có thể chạy độc lập, nhưng **chưa kết nối end-to-end** vì BE chưa phục vụ `narration_versions.script`, Flutter đang dùng QR/narration/player giả lập, và React curation đang giữ state mock. Nút thắt đầu tiên là API/domain narration trong BE; không nên tích hợp dựa trên bảng DBML như thể migration đã có.
+
+## Cập nhật sau khi tạo AI Vision MVP
+
+- `AI-System/AI Vision/` nay có service so khớp embeddings ảnh OpenCLIP với reference images đã index theo `artifactId`; đây là MVP mới trong repo, chưa có dữ liệu tham chiếu thật hoặc kiểm định accuracy.
+- Endpoint nhận diện cần BE/API Gateway proxy vì dùng service key nội bộ; không đưa key vào Flutter.
+- Kết nối BE/Flutter vẫn chưa có: BE chưa đồng bộ `artifact_reference_images` vào service, còn Flutter recognition vẫn mock.
