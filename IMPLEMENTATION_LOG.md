@@ -1,5 +1,15 @@
 # Implementation log
 
+## 2026-10-21 — 3D Scan PoC và Flutter model URL
+
+- Thêm `3D Scan/` như microservice riêng trong `AI-System`, nhận nhiều ảnh JPG/PNG, giới hạn dung lượng, lưu job SQLite và đưa tái tạo COLMAP vào background.
+- Dùng pipeline COLMAP tự động, tìm mesh Poisson/Delaunay, thử tạo texture atlas rồi xuất GLB; job dừng ở `REVIEW_REQUIRED` để không tự xuất bản model chưa duyệt.
+- Bảo vệ API bằng `X-Service-Key`; endpoint chỉ dành cho gọi server-to-server. Chưa nối service key vào web/mobile.
+- Flutter `Artifact` nhận thêm `modelUrl` tùy chọn; màn hình 3D dùng URL của artifact và vẫn fallback sang GLB mẫu khi chưa có URL.
+- Rà `smgs_schema.dbml`: bảng `artifacts` chưa có `model_url`, và Backend hiện chưa có scan-job/model-review API. Vì vậy chưa nối upload iPhone Safari, BE gateway, database, storage hay curator role.
+- COLMAP CLI chưa được cài/xác minh trong môi trường hiện tại; PoC mới kiểm tra tĩnh. Cần cài COLMAP và thử bộ ảnh thật để xác nhận pipeline, texture, chất lượng GLB, thời gian và tài nguyên.
+- `python -m compileall` và `git diff --check` thành công. FastAPI chưa cài trong môi trường nên chưa chạy endpoint; COLMAP executable và .NET SDK cũng chưa có, do đó chưa kiểm thử runtime/BE build. Web build hiện có thành công; Flutter analyze không trả kết quả trong phiên kiểm tra và đã dừng.
+
 ## 2026-10-16 — TTS microservice MVP
 
 - Tạo service mới tại `tts-service/` theo cấu trúc microservice của repo `AI-System`.
