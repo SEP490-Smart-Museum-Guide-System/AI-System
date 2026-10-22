@@ -8,6 +8,9 @@ services:
       AI_DATA_DIR: /data
       MODEL_CACHE_DIR: /models
       MODEL_NUM_THREADS: 2
+      CLIP_ONNX_REPO_ID: ${CLIP_ONNX_REPO_ID:-infinilabs/pizza-clip-base-v1}
+      CLIP_ONNX_REVISION: ${CLIP_ONNX_REVISION:-main}
+      CLIP_ONNX_FILENAME: clip-vit-base-patch32-vision.onnx
       MIN_SIMILARITY: 0.72
       MIN_MARGIN: 0.04
       MAX_IMAGE_BYTES: 10485760

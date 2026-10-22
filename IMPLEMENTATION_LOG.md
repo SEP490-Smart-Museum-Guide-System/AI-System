@@ -1,5 +1,15 @@
 # Implementation log
 
+## 2026-10-22 — Chuyển AI Vision sang CLIP ONNX
+
+- Thay OpenCLIP/PyTorch image encoder bằng ONNX Runtime CPU trong `AI Vision/`; dùng pretrained CLIP ViT-B/32 ONNX image encoder từ `infinilabs/pizza-clip-base-v1`.
+- Bổ sung tải model vào cache `/models` khi khởi động, preprocessing CLIP RGB 224×224, vector 512 chiều chuẩn hóa L2; giữ nguyên API index references và recognition.
+- Bổ sung `model_id` cho từng embedding. Vector OpenCLIP đã có trong SQLite được giữ lại nhưng không đem so với ONNX vì cùng 512 chiều không đồng nghĩa cùng không gian vector. Ảnh tham chiếu cần index lại.
+- Bỏ cài PyTorch/torchvision khỏi Docker image AI Vision; thêm `onnxruntime` và `huggingface_hub`.
+- Chưa train/fine-tune model: pretrained CLIP là baseline tổng quát; chưa có benchmark trên bộ ảnh hiện vật SMGS.
+- Chưa chạy inference do dependencies ONNX/FastAPI chưa cài trong môi trường. Docker image build bị sandbox chặn quyền truy cập Buildx lock; `docker compose config` vẫn đạt. Chưa xác minh tải artifact, output graph, preprocessing parity, dung lượng/RAM, tốc độ hoặc độ chính xác. Cần pin revision và kiểm tra license/hash trước production.
+- `python -m unittest discover -s tests -v` (migration SQLite/cách ly embedding theo model commit), `python -m compileall` và `docker compose config` đạt.
+
 ## 2026-10-21 — 3D Scan PoC và Flutter model URL
 
 - Thêm `3D Scan/` như microservice riêng trong `AI-System`, nhận nhiều ảnh JPG/PNG, giới hạn dung lượng, lưu job SQLite và đưa tái tạo COLMAP vào background.

@@ -47,11 +47,12 @@ async def read_image(upload: UploadFile) -> bytes:
 
 @app.get("/health")
 def health() -> dict[str, object]:
+    encoder = get_encoder()
     return {
         "status": "ok",
         "service": "artifact-vision",
-        "model": f"{settings.MODEL_NAME}:{settings.PRETRAINED}",
-        "reference_images": store.count(),
+        "model": encoder.model_id,
+        "reference_images": store.count(encoder.model_id),
     }
 
 
@@ -60,11 +61,12 @@ async def add_reference(
     artifact_id: int = Query(gt=0),
     image: UploadFile = File(...),
 ) -> dict[str, object]:
-    if store.count_for_artifact(artifact_id) >= settings.MAX_REFERENCE_IMAGES_PER_ARTIFACT:
+    encoder = get_encoder()
+    if store.count_for_artifact(artifact_id, encoder.model_id) >= settings.MAX_REFERENCE_IMAGES_PER_ARTIFACT:
         raise HTTPException(status_code=409, detail="Reference image limit reached for artifact")
     content = await read_image(image)
     try:
-        embedding = get_encoder().encode(content)
+        embedding = encoder.encode(content)
     except InvalidImage as exc:
         raise HTTPException(status_code=415, detail=str(exc)) from exc
     reference_id = store.add(
@@ -72,6 +74,7 @@ async def add_reference(
         image_name=image.filename or "reference-image",
         embedding=embedding.tobytes(),
         dimensions=int(embedding.size),
+        model_id=encoder.model_id,
     )
     return {"id": reference_id, "artifactId": artifact_id, "status": "indexed"}
 
@@ -88,11 +91,12 @@ async def recognize(
 ) -> dict[str, object]:
     content = await read_image(image)
     try:
-        query_embedding = get_encoder().encode(content)
+        encoder = get_encoder()
+        query_embedding = encoder.encode(content)
     except InvalidImage as exc:
         raise HTTPException(status_code=415, detail=str(exc)) from exc
 
-    references = store.list_embeddings()
+    references = store.list_embeddings(encoder.model_id)
     if not references:
         raise HTTPException(status_code=503, detail="No artifact reference images are indexed")
 
@@ -122,5 +126,5 @@ async def recognize(
             {"artifactId": artifact_id, "similarity": round(score, 4)}
             for artifact_id, score in candidates
         ],
-        "model": f"{settings.MODEL_NAME}:{settings.PRETRAINED}",
+        "model": encoder.model_id,
     }

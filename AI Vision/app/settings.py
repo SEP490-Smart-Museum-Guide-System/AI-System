@@ -2,10 +2,12 @@ import os
 from pathlib import Path
 
 
-MODEL_NAME = os.getenv("CLIP_MODEL_NAME", "ViT-B-32")
-PRETRAINED = os.getenv("CLIP_PRETRAINED", "laion2b_s34b_b79k")
+MODEL_REPO_ID = os.getenv("CLIP_ONNX_REPO_ID", "infinilabs/pizza-clip-base-v1")
+MODEL_REVISION = os.getenv("CLIP_ONNX_REVISION", "main")
+MODEL_FILENAME = os.getenv("CLIP_ONNX_FILENAME", "clip-vit-base-patch32-vision.onnx")
 DATA_DIR = Path(os.getenv("AI_DATA_DIR", "/data"))
 MODEL_CACHE_DIR = Path(os.getenv("MODEL_CACHE_DIR", "/models"))
+MODEL_INPUT_SIZE = 224
 MAX_IMAGE_BYTES = int(os.getenv("MAX_IMAGE_BYTES", str(10 * 1024 * 1024)))
 MAX_REFERENCE_IMAGES_PER_ARTIFACT = int(
     os.getenv("MAX_REFERENCE_IMAGES_PER_ARTIFACT", "20")

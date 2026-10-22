@@ -65,6 +65,8 @@ TTS service đã có API riêng nhận `{text, language, speed}` và trả WAV. 
 
 ## Cập nhật sau khi tạo AI Vision MVP
 
-- `AI-System/AI Vision/` nay có service so khớp embeddings ảnh OpenCLIP với reference images đã index theo `artifactId`; đây là MVP mới trong repo, chưa có dữ liệu tham chiếu thật hoặc kiểm định accuracy.
+- `AI-System/AI Vision/` dùng CLIP ViT-B/32 ONNX qua ONNX Runtime CPU để so embedding ảnh với reference images đã index theo `artifactId`; model pretrained tổng quát, không train riêng cho hiện vật.
+- SQLite lưu `model_id` theo commit model để tránh so embedding từ hai phiên bản khác không gian vector. Reference embeddings tạo từ OpenCLIP đời trước vẫn được giữ nhưng cần re-index bằng model ONNX.
+- Chưa tải/chạy model hoặc kiểm định accuracy trên ảnh thật; chưa đo kích thước, RAM, tốc độ. API và web/mobile chưa được nối; service key chỉ dành cho Backend proxy.
 - Endpoint nhận diện cần BE/API Gateway proxy vì dùng service key nội bộ; không đưa key vào Flutter.
 - Kết nối BE/Flutter vẫn chưa có: BE chưa đồng bộ `artifact_reference_images` vào service, còn Flutter recognition vẫn mock.

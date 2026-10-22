@@ -7,7 +7,7 @@ Repo chứa các microservice AI cho Smart Museum Guide System. TTS, nhận di�
 ```text
 AI-System/
 ├── AI Vision/                 # Microservice nhận diện hiện vật từ ảnh
-│   ├── app/                   # API, embedding ảnh và lưu ảnh tham chiếu
+│   ├── app/                   # API, CLIP ONNX embeddings và kho ảnh tham chiếu
 │   ├── Dockerfile
 │   ├── compose.yaml
 │   ├── requirements.txt
@@ -33,7 +33,7 @@ AI-System/
 | Microservice | Trách nhiệm | Trạng thái |
 | --- | --- | --- |
 | TTS | Nhận văn bản đã duyệt, tổng hợp giọng tiếng Việt bằng Piper/sherpa-onnx và trả audio | MVP trong [`TTS AI/README.md`](TTS%20AI/README.md) |
-| Nhận diện hiện vật | So khớp ảnh với ảnh tham chiếu, trả `artifactId`, similarity và ứng viên | MVP trong [`AI Vision/README.md`](AI%20Vision/README.md) |
+| Nhận diện hiện vật | So khớp CLIP ONNX embeddings với ảnh tham chiếu, trả `artifactId`, similarity và ứng viên | MVP ONNX trong [`AI Vision/README.md`](AI%20Vision/README.md) |
 | Dựng 3D | Nhận bộ ảnh, chạy COLMAP, xuất GLB và chờ curator review | PoC; chưa nối Backend/web/Flutter end-to-end |
 
 **AI không tự viết nội dung thuyết minh cho khách tham quan.** Nội dung, tên gọi và thông tin lịch sử do người phụ trách biên soạn, kiểm duyệt và xuất bản. TTS microservice chỉ biến văn bản được ứng dụng gửi vào thành audio; service không nhận diện hiện vật và không truy cập database nội dung.
