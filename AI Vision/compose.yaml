@@ -5,7 +5,12 @@ services:
       - "8001:8001"
     environment:
       AI_SERVICE_API_KEY: ${AI_SERVICE_API_KEY:-dev-only-change-me}
-      AI_DATA_DIR: /data
+      AI_SYSTEM_DB_HOST: ${AI_SYSTEM_DB_HOST:-host.docker.internal}
+      AI_SYSTEM_DB_PORT: ${AI_SYSTEM_DB_PORT:-5432}
+      AI_SYSTEM_DB_NAME: ${AI_SYSTEM_DB_NAME:-smgs_db}
+      AI_SYSTEM_DB_USER: ${AI_SYSTEM_DB_USER:-postgres}
+      AI_SYSTEM_DB_PASSWORD: ${AI_SYSTEM_DB_PASSWORD:?Set AI_SYSTEM_DB_PASSWORD for the existing SMGS PostgreSQL database}
+      AI_VISION_DB_SCHEMA: ${AI_VISION_DB_SCHEMA:-ai_vision}
       MODEL_CACHE_DIR: /models
       MODEL_NUM_THREADS: 2
       CLIP_ONNX_REPO_ID: ${CLIP_ONNX_REPO_ID:-infinilabs/pizza-clip-base-v1}
@@ -16,9 +21,7 @@ services:
       MAX_IMAGE_BYTES: 10485760
     volumes:
       - vision-models:/models
-      - vision-data:/data
     restart: unless-stopped
 
 volumes:
   vision-models:
-  vision-data:

@@ -3,4 +3,5 @@ uvicorn[standard]==0.34.0
 python-multipart==0.0.20
 Pillow==11.1.0
 trimesh==4.6.6
+psycopg[binary]==3.2.9
 

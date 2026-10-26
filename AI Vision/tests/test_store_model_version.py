@@ -1,41 +1,43 @@
-import sqlite3
-import tempfile
+import os
 import unittest
-from pathlib import Path
+from uuid import uuid4
 
-from app.store import ReferenceStore
+try:
+    from app import settings
+    from app.store import ReferenceStore, _connect
+    from psycopg import sql
+except ModuleNotFoundError:
+    settings = ReferenceStore = _connect = sql = None
 
 
+@unittest.skipUnless(
+    ReferenceStore is not None and os.getenv("AI_SYSTEM_DB_PASSWORD"),
+    "requires psycopg and the shared PostgreSQL test database",
+)
 class ReferenceStoreModelVersionTests(unittest.TestCase):
-    def test_legacy_rows_are_not_mixed_with_new_model_embeddings(self):
-        with tempfile.TemporaryDirectory(dir=Path(__file__).resolve().parent) as directory:
-            database = Path(directory) / "references.sqlite3"
-            connection = sqlite3.connect(database)
-            try:
-                connection.execute("""CREATE TABLE artifact_references (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    artifact_id INTEGER NOT NULL,
-                    image_name TEXT NOT NULL,
-                    embedding BLOB NOT NULL,
-                    dimensions INTEGER NOT NULL,
-                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-                )""")
-                connection.execute("""INSERT INTO artifact_references
-                    (artifact_id, image_name, embedding, dimensions)
-                    VALUES (7, 'legacy.jpg', X'00', 1)""")
-                connection.commit()
-            finally:
-                connection.close()
+    def setUp(self):
+        self.original_schema = settings.DB_SCHEMA
+        settings.DB_SCHEMA = f"test_vision_{uuid4().hex[:12]}"
+        self.store = ReferenceStore()
+        self.store.initialize()
 
-            store = ReferenceStore(database)
-            self.assertEqual(store.count("clip-onnx-commit-a"), 0)
-            store.add(7, "onnx.jpg", b"\x00", 1, "clip-onnx-commit-a")
-            store.add(7, "other.jpg", b"\x00", 1, "clip-onnx-commit-b")
+    def tearDown(self):
+        with _connect() as connection:
+            connection.execute(
+                sql.SQL("DROP SCHEMA IF EXISTS {} CASCADE").format(sql.Identifier(settings.DB_SCHEMA))
+            )
+        settings.DB_SCHEMA = self.original_schema
 
-            self.assertEqual(store.count_for_artifact(7, "clip-onnx-commit-a"), 1)
-            self.assertEqual(len(store.list_embeddings("clip-onnx-commit-a")), 1)
-            self.assertEqual(store.list_embeddings("clip-onnx-commit-a")[0]["image_name"], "onnx.jpg")
-            self.assertEqual(store.delete_artifact(7), 3)
+    def test_embeddings_are_isolated_by_model_version(self):
+        self.store.add(7, "onnx.jpg", b"\x00", 1, "clip-onnx-commit-a")
+        self.store.add(7, "other.jpg", b"\x00", 1, "clip-onnx-commit-b")
+
+        self.assertEqual(self.store.count("clip-onnx-commit-a"), 1)
+        self.assertEqual(self.store.count_for_artifact(7, "clip-onnx-commit-a"), 1)
+        rows = self.store.list_embeddings("clip-onnx-commit-a")
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["image_name"], "onnx.jpg")
+        self.assertEqual(self.store.delete_artifact(7), 2)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,14 @@
 # Implementation log
 
+## 2026-10-26 — Dùng PostgreSQL chung với Backend
+
+- AI Vision thay SQLite bằng PostgreSQL client `psycopg`; embeddings nằm trong schema `ai_vision` của cùng DB/instance đã cấu hình cho BE. Compose không còn volume/database riêng cho dữ liệu Vision; chỉ giữ volume cache model.
+- 3D Scan thay SQLite job store bằng PostgreSQL, lưu job metadata trong schema `ai_3d_scan` của cùng DB. Ảnh scan và GLB vẫn nằm trên disk local trong PoC.
+- Thêm cấu hình `AI_SYSTEM_DB_*`, `.env.example` (không chứa secret thật), yêu cầu Compose password và hướng dẫn khớp cấu hình BE. TTS không cần DB.
+- Chưa nối metadata upload ảnh tham chiếu của portal vào BE API; AI Vision hiện giữ embeddings, còn BE cần sở hữu `artifact_reference_images`/media và gọi service.
+- Runtime chưa xác minh kết nối DB vì PostgreSQL ở `127.0.0.1:5432` không lắng nghe trong môi trường hiện tại. Cần cấu hình `AI-System/.env` theo BE và chạy migration/khởi động PostgreSQL BE trước khi start AI Vision/3D Scan.
+- `python -m compileall` cho AI Vision/3D Scan và `docker compose config --quiet` đạt. `python -m unittest discover -s tests -v` bỏ qua integration test vì máy chưa cài psycopg và chưa có DB test. Chưa build lại container: Docker Desktop Engine pipe hiện không khả dụng; host PostgreSQL cũng không lắng nghe ở `127.0.0.1:5432`, nên chưa kiểm tra kết nối/runtime.
+
 ## 2026-10-22 — Chuyển AI Vision sang CLIP ONNX
 
 - Thay OpenCLIP/PyTorch image encoder bằng ONNX Runtime CPU trong `AI Vision/`; dùng pretrained CLIP ViT-B/32 ONNX image encoder từ `infinilabs/pizza-clip-base-v1`.

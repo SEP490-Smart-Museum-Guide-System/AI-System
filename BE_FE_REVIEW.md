@@ -1,5 +1,13 @@
 # Rà soát BE/FE để tích hợp TTS
 
+## Cập nhật 2026-10-26 — PostgreSQL dùng chung cho AI-System
+
+- AI Vision và 3D Scan kết nối cùng PostgreSQL database với BE qua biến `AI_SYSTEM_DB_*`; không tạo database/container database riêng.
+- Mỗi service sở hữu bảng dẫn xuất/job trong schema riêng (`ai_vision`, `ai_3d_scan`). Metadata artifact và nội dung vẫn do BE quản lý. TTS không cần database.
+- Ảnh scan đầu vào và GLB vẫn lưu trên disk trong PoC; muốn deploy nhiều replica hoặc giữ file qua redeploy cần shared/object storage riêng.
+- Runtime cần cấu hình cùng DB host/port/name/user/password như BE; không commit password. Production nên cấp quyền tối thiểu và provision schema/grants rõ ràng.
+- API BE/portal quản lý `artifact_reference_images` chưa được triển khai; việc dùng chung PostgreSQL không tự nối upload UI.
+
 Ngày rà soát: 2026-10-20. Phạm vi: source BE .NET, Flutter visitor, React curator portal, DBML và tài liệu mapping FE. Đây là ghi nhận trạng thái trong repository, không phải xác nhận hệ thống đã triển khai trên môi trường chạy thật.
 
 ## Tóm tắt kiến trúc hiện có

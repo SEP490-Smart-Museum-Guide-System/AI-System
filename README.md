@@ -2,6 +2,8 @@
 
 Repo chứa các microservice AI cho Smart Museum Guide System. TTS, nhận diện ảnh hiện vật và 3D Scan có các PoC độc lập; xem README từng service để biết giới hạn và cách chạy.
 
+AI Vision và 3D Scan dùng **cùng PostgreSQL database của BE**, mỗi service có schema riêng để lưu embedding dẫn xuất hoặc scan-job metadata; không cần deploy thêm database. Cấu hình cùng `AI_SYSTEM_DB_HOST`, `AI_SYSTEM_DB_PORT`, `AI_SYSTEM_DB_NAME`, `AI_SYSTEM_DB_USER`, `AI_SYSTEM_DB_PASSWORD` như BE. TTS không cần DB. Media 3D hiện còn ở local disk và cần shared/object storage nếu chạy nhiều replica.
+
 ## Cấu trúc thư mục
 
 ```text
@@ -77,8 +79,8 @@ Theo schema DBML, Content/Catalog Service tra `artifacts.qr_code`, rồi lấy `
 | --- | --- |
 | Ứng dụng Flutter | Quét QR, lấy nội dung đã xuất bản, gửi văn bản đến TTS Service và phát audio |
 | TTS Service | Chạy Piper/sherpa-onnx, cache kết quả audio, trả WAV |
-| AI Vision Service | So khớp ảnh và trả `artifactId`/ứng viên; không truy cập DB nghiệp vụ |
-| 3D Scan Service | Nhận bộ ảnh, chạy COLMAP ở nền, tạo GLB và chờ duyệt; chưa truy cập BE DB |
+| AI Vision Service | So khớp ảnh và trả `artifactId`/ứng viên; lưu embedding dẫn xuất trong schema `ai_vision` của PostgreSQL dùng chung với BE |
+| 3D Scan Service | Nhận bộ ảnh, chạy COLMAP ở nền, tạo GLB và chờ duyệt; lưu scan-job metadata trong schema `ai_3d_scan` của PostgreSQL dùng chung với BE; ảnh/GLB vẫn ở storage local trong PoC |
 | Hệ thống quản lý hiện vật | Lưu hồ sơ, nội dung đã duyệt, `qrCode`, `audioUrl`, `modelUrl` và trạng thái xuất bản |
 | Người phụ trách bảo tàng | Duyệt bản thuyết minh, audio và mô hình 3D |
 

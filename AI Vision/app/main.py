@@ -18,7 +18,8 @@ async def lifespan(_: FastAPI):
     global store
     if not settings.SERVICE_API_KEY:
         raise RuntimeError("AI_SERVICE_API_KEY must be configured")
-    store = ReferenceStore(settings.DATA_DIR / "references.sqlite3")
+    store = ReferenceStore()
+    store.initialize()
     get_encoder()  # Load model before accepting traffic; first boot downloads weights.
     yield
 
@@ -26,7 +27,7 @@ async def lifespan(_: FastAPI):
 app = FastAPI(
     title="SMGS Artifact Vision Service",
     description="Matches artifact photos against reference images indexed by artifact ID.",
-    version="0.1.0",
+    version="0.2.0",
     lifespan=lifespan,
 )
 
