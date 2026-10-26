@@ -8,19 +8,19 @@ Cho phép nhân viên quản lý số hoá hiện vật thành mô hình 3D ngay
 
 ## 2. Kiến trúc đề xuất
 
+AI-System là service độc lập, chạy và triển khai tách khỏi Backend nghiệp vụ. Hai service không nằm trong cùng một process và không gọi code nội bộ của nhau. Giao tiếp giữa chúng chỉ qua API khi cần liên kết model với hồ sơ hiện vật. UI có thể làm việc với API của từng service theo đúng chức năng.
+
 ```mermaid
 flowchart LR
-    A[Nhân viên / Curator<br/>Web hoặc Flutter] -->|Tải bộ ảnh| B[SMGS Backend<br/>Xác thực + phân quyền]
-    B -->|Tạo scan job| C[3D Scan Service<br/>API + worker]
+    A[Nhân viên / Curator<br/>Web hoặc Flutter] -->|Nghiệp vụ hiện vật| B[SMGS Backend Service<br/>độc lập]
+    A -->|Ảnh scan / trạng thái / preview| C[AI-System<br/>3D Scan API + worker<br/>service độc lập]
     C -->|Chạy CLI ở nền| D[COLMAP<br/>SfM / MVS]
-    D -->|Point cloud / mesh| E[Chuyển đổi + đóng gói GLB]
+    D -->|Point cloud / mesh| E[Đóng gói và kiểm tra GLB]
     E --> F[(Lưu trữ ảnh và GLB)]
-    C --> G[(PostgreSQL chung<br/>scan job metadata)]
-    B -->|Trạng thái job| A
-    A -->|Duyệt / từ chối| B
-    B -->|Gắn modelUrl sau duyệt| H[(Artifact catalog)]
-    I[Khách tham quan] -->|Mở hiện vật| B
-    B -->|modelUrl đã xuất bản| I
+    C --> G[(PostgreSQL<br/>schema ai_3d_scan)]
+    C <-->|API liên kết modelUrl sau duyệt<br/>khi tích hợp được bật| B
+    I[Khách tham quan] -->|Lấy nội dung hiện vật| B
+    B -->|artifact + modelUrl| I
     I --> J[GLB Viewer trong app]
     J --> F
 ```
@@ -29,12 +29,12 @@ flowchart LR
 
 | Thành phần | Trách nhiệm |
 |---|---|
-| Web/Flutter UI | Chọn hiện vật, tải bộ ảnh, theo dõi job, xem trước và duyệt model theo vai trò. |
-| SMGS Backend | Xác thực người dùng, kiểm tra quyền, làm gateway tới scan service, lưu `modelUrl` sau khi duyệt. |
-| 3D Scan Service | Nhận job, xếp hàng, gọi COLMAP, theo dõi kết quả và quản lý trạng thái xử lý. |
+| Web/Flutter UI | Gọi Backend Service cho nghiệp vụ catalog; gọi AI-System API cho tác vụ scan, theo dõi job và xem preview theo quyền đã cấu hình. |
+| SMGS Backend Service | Quản lý nghiệp vụ/catalog hiện vật độc lập. Có thể trao đổi `artifactId` và `modelUrl` với AI-System qua API; đây là tích hợp liên service, không phải AI-System nằm trong Backend. |
+| AI-System / 3D Scan Service | Microservice độc lập nhận job, xếp hàng, gọi COLMAP, lưu kết quả và quản lý trạng thái scan. |
 | COLMAP | Tìm vị trí camera từ ảnh, tái tạo point cloud và hình học 3D. Chạy CPU được nhưng chậm; GPU CUDA chỉ là tăng tốc tuỳ cấu hình. |
 | GLB packaging | Chuyển mesh/texture sang GLB, tối ưu dung lượng và kiểm tra file trước khi lưu. |
-| PostgreSQL | Lưu metadata/trạng thái job trong schema `ai_3d_scan`; dùng database hiện có của Backend. |
+| PostgreSQL | Lưu metadata/trạng thái job trong schema `ai_3d_scan`. Theo cấu hình PoC hiện tại, schema này nằm trong cùng PostgreSQL database với Backend, nhưng được AI-System quản lý riêng. Tách service không đồng nghĩa bắt buộc phải có database server riêng. |
 | File/object storage | Lưu ảnh gốc và GLB. PoC hiện dùng ổ đĩa local; triển khai nhiều instance cần storage dùng chung. |
 | GLB Viewer | Tải model đã xuất bản và cho khách xoay/phóng to trong app. |
 
@@ -42,12 +42,12 @@ flowchart LR
 
 1. Nhân viên mở hồ sơ hiện vật và chọn **Tạo mô hình 3D**.
 2. UI hướng dẫn chụp/tải nhiều ảnh quanh hiện vật. Cần chụp đủ góc, ảnh rõ, vật thể không di chuyển và ánh sáng tương đối ổn định.
-3. UI gửi ảnh tới Backend. Backend xác thực người dùng và chuyển yêu cầu tới 3D Scan Service; secret nội bộ không được đặt trong mã frontend/Flutter.
-4. Scan Service tạo job và trả `scanJobId` cùng trạng thái `QUEUED`. UI hiển thị trạng thái; có thể polling endpoint trạng thái hoặc dùng cơ chế thông báo sau này.
+3. UI gửi ảnh tới API của AI-System, kèm thông tin hiện vật cần liên kết. Backend Service vẫn hoạt động độc lập cho catalog. Không nhúng `X-Service-Key`/secret nội bộ vào mã frontend/Flutter; cần cấu hình xác thực người dùng hoặc một cơ chế server-side an toàn cho endpoint AI-System.
+4. AI-System tạo job và trả `scanJobId` cùng trạng thái `QUEUED`. UI hiển thị trạng thái; có thể polling endpoint trạng thái hoặc dùng cơ chế thông báo sau này.
 5. Worker lấy job và chạy COLMAP ở nền. Trong lúc chạy, UI có thể hiển thị `PROCESSING`; người dùng không phải giữ cửa sổ COLMAP mở.
 6. Khi tái tạo và đóng gói thành công, service lưu GLB và chuyển job sang `REVIEW_REQUIRED`. Nếu lỗi, chuyển `FAILED` kèm thông báo phù hợp.
-7. Curator xem trước kết quả, duyệt hoặc yêu cầu chụp lại. Chỉ sau khi duyệt, Backend mới cập nhật `modelUrl` cho hiện vật.
-8. Khách mở trang hiện vật; app tải `modelUrl` đã xuất bản và hiển thị bằng GLB Viewer.
+7. Curator xem trước kết quả, duyệt hoặc yêu cầu chụp lại qua luồng AI-System. Sau khi duyệt, AI-System và Backend liên kết `modelUrl` qua API giữa hai service; nếu API tích hợp chưa hoàn thành, bước cập nhật catalog được thực hiện riêng và cần ghi rõ là thao tác thủ công trong demo.
+8. Khách mở trang hiện vật; app lấy `modelUrl` đã xuất bản từ Backend Service rồi hiển thị bằng GLB Viewer.
 
 ## 4. Trạng thái job
 
@@ -60,7 +60,7 @@ REVIEW_REQUIRED → REJECTED / cần chụp lại
 - `QUEUED`: đã nhận yêu cầu, chờ worker.
 - `PROCESSING`: COLMAP và bước tạo GLB đang chạy.
 - `REVIEW_REQUIRED`: GLB đã tạo, chờ curator kiểm duyệt.
-- `COMPLETED`: đã duyệt và Backend đã gắn model vào hiện vật.
+- `COMPLETED`: curator đã duyệt model trong luồng AI-System. Việc đồng bộ `modelUrl` sang catalog Backend là một bước tích hợp riêng; trạng thái đồng bộ cần được theo dõi khi chức năng này được triển khai.
 - `FAILED`: xử lý lỗi; lưu thông tin lỗi an toàn để nhân viên có thể thử lại.
 - `REJECTED`: curator không chấp nhận model; có thể tạo job mới với bộ ảnh tốt hơn.
 
@@ -84,7 +84,7 @@ Trả `202 Accepted` với `scanJobId`, `artifactId`, `status=QUEUED`.
 GET /api/v1/scans/{scanJobId}
 ```
 
-Trả trạng thái `QUEUED`, `PROCESSING`, `REVIEW_REQUIRED` hoặc `FAILED`. PoC có endpoint approve nội bộ, nhưng bản tích hợp cần để Backend kiểm tra quyền curator và ghi audit log trước khi cập nhật catalog.
+Trả trạng thái `QUEUED`, `PROCESSING`, `REVIEW_REQUIRED` hoặc `FAILED`. PoC có endpoint approve nội bộ, chưa xác thực role curator. Bản hoàn chỉnh cần AI-System xác thực người duyệt/nhận quyền phù hợp và ghi audit log; khi duyệt xong, liên kết `modelUrl` với catalog Backend qua API service-to-service hoặc quy trình đồng bộ đã thống nhất.
 
 ## 6. Tạo GLB và chất lượng
 
@@ -102,7 +102,7 @@ Tiêu chí kiểm tra curator có thể gồm:
 
 ### Giai đoạn A — Demo đồ án
 
-- Chạy Backend, Scan Service và COLMAP trên máy nhóm/máy trường.
+- Chạy SMGS Backend Service và AI-System/Scan Service như hai tiến trình/service riêng trên máy nhóm hoặc máy trường; COLMAP được gọi bởi worker của AI-System.
 - Một worker, một job tại một thời điểm; CPU được hỗ trợ nhưng thời gian chờ có thể dài.
 - Dùng một hiện vật mẫu và bộ ảnh nhỏ đã kiểm tra.
 - UI hiển thị trạng thái job và cho curator xem trước/duyệt.
@@ -110,8 +110,8 @@ Tiêu chí kiểm tra curator có thể gồm:
 
 ### Giai đoạn B — Tích hợp hoàn chỉnh
 
-- Nối UI scan với Backend gateway và phân quyền curator.
-- Backend cập nhật `modelUrl` sau khi duyệt; thêm audit log.
+- Nối UI với API riêng của Backend Service và AI-System; cấu hình xác thực phù hợp mà không để service secret trong client.
+- Tạo API service-to-service để AI-System cung cấp model đã duyệt và Backend cập nhật `modelUrl`; ghi audit log curator.
 - Đưa ảnh/GLB vào object storage thay vì ổ đĩa của một instance.
 - Thêm queue bền vững, retry có giới hạn, timeout, dọn file tạm và giới hạn tải lên.
 - Đo thời gian CPU/RAM/disk bằng bộ ảnh bảo tàng thật trước khi quyết định số worker hoặc có cần GPU.
@@ -126,7 +126,7 @@ Tiêu chí kiểm tra curator có thể gồm:
 
 ## 9. Tóm tắt để thuyết trình
 
-> Nhân viên chụp nhiều ảnh của hiện vật ngay trong hệ thống. Backend xác thực yêu cầu và tạo scan job. Worker chạy COLMAP ở nền để tái tạo hình học, sau đó đóng gói kết quả thành GLB. Curator kiểm tra và duyệt trước khi Backend gắn `modelUrl` vào hồ sơ hiện vật. Khách tham quan xem GLB trong app. Với bản demo, xử lý chạy CPU tuần tự trên máy nhóm hoặc máy trường; khi triển khai thật, cần đo tải và bố trí worker/storage phù hợp.
+> SMGS Backend và AI-System là hai service độc lập. Nhân viên gửi bộ ảnh tới API của AI-System; worker trong AI-System chạy COLMAP nền, đóng gói GLB và chờ curator duyệt. Sau khi được duyệt, AI-System trao đổi `modelUrl` với Backend qua API để liên kết vào hồ sơ hiện vật. App lấy nội dung/model đã xuất bản từ Backend và hiển thị GLB. Trong demo, hai service có thể chạy riêng trên cùng máy; worker xử lý CPU tuần tự. Tách service là tách trách nhiệm triển khai, không bắt buộc phải thuê hai máy chủ riêng.
 
 ## Tài liệu liên quan
 
