@@ -74,3 +74,14 @@
 - `compileall` và `docker compose config` cho cả hai service đều thành công.
 - Docker build AI Vision đã thử nhưng Docker Desktop Linux engine hiện không chạy (`dockerDesktopLinuxEngine` pipe không tồn tại), nên chưa xác minh được dependency install/model download/inference.
 - Cần xác nhận tải model, dependencies, RAM, ngưỡng similarity và độ chính xác trên bộ ảnh thật khi Docker engine sẵn sàng.
+
+## 2026-10-27 — Bộ ảnh thử AI Vision gần khu Quận 9
+
+- Chọn ảnh CC0 trống đồng Đông Sơn chụp tại Bảo tàng Lịch sử TP.HCM từ Wikimedia Commons; Bảo tàng Áo Dài ở Long Phước gần Quận 9 hơn nhưng chưa tìm được bộ sưu tập ảnh mở có giấy phép tái sử dụng rõ ràng.
+- Đã có 3 ảnh CC0 trong AI-System/test-data/hcm-history/bronze-drum-500ad/, kèm README và manifest: hai ảnh tham chiếu, một ảnh holdout.
+- Đây là test ảnh suy luận với CLIP ONNX, không phải train/fine-tune model.
+- PostgreSQL BE đã chạy; AI Vision container build/run lại bằng DB config development. Chưa hoàn tất index/recognition và seed artifact vào bảng BE ở thời điểm ghi log.
+- Embedding và tên file nằm trong schema i_vision; file ảnh vẫn nằm trong thư mục test, chưa lưu BLOB trong DB. Production nên để ảnh ở object storage và lưu URL/metadata trong bảng ảnh hiện vật.
+
+- Test hoàn tất 2026-10-27: thêm museum test ID 2 và artifact test ID 1 vào museums/rtifacts; index 2 ảnh vào i_vision.artifact_reference_embeddings; ảnh holdout trả matched=true, rtifactId=1, similarity  .9133 bằng CLIP ONNX.
+- Vì mới có một artifact class nên margin=1.0 chỉ là hệ quả còn đúng một ứng viên; kết quả chưa chứng minh khả năng phân biệt giữa nhiều hiện vật và không phải đánh giá accuracy production.
