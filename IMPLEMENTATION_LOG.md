@@ -75,13 +75,12 @@
 - Docker build AI Vision đã thử nhưng Docker Desktop Linux engine hiện không chạy (`dockerDesktopLinuxEngine` pipe không tồn tại), nên chưa xác minh được dependency install/model download/inference.
 - Cần xác nhận tải model, dependencies, RAM, ngưỡng similarity và độ chính xác trên bộ ảnh thật khi Docker engine sẵn sàng.
 
-## 2026-10-27 — Bộ ảnh thử AI Vision gần khu Quận 9
+## 2026-10-27 — AI Vision đa hiện vật
 
-- Chọn ảnh CC0 trống đồng Đông Sơn chụp tại Bảo tàng Lịch sử TP.HCM từ Wikimedia Commons; Bảo tàng Áo Dài ở Long Phước gần Quận 9 hơn nhưng chưa tìm được bộ sưu tập ảnh mở có giấy phép tái sử dụng rõ ràng.
-- Đã có 3 ảnh CC0 trong AI-System/test-data/hcm-history/bronze-drum-500ad/, kèm README và manifest: hai ảnh tham chiếu, một ảnh holdout.
-- Đây là test ảnh suy luận với CLIP ONNX, không phải train/fine-tune model.
-- PostgreSQL BE đã chạy; AI Vision container build/run lại bằng DB config development. Chưa hoàn tất index/recognition và seed artifact vào bảng BE ở thời điểm ghi log.
-- Embedding và tên file nằm trong schema i_vision; file ảnh vẫn nằm trong thư mục test, chưa lưu BLOB trong DB. Production nên để ảnh ở object storage và lưu URL/metadata trong bảng ảnh hiện vật.
-
-- Test hoàn tất 2026-10-27: thêm museum test ID 2 và artifact test ID 1 vào museums/rtifacts; index 2 ảnh vào i_vision.artifact_reference_embeddings; ảnh holdout trả matched=true, rtifactId=1, similarity  .9133 bằng CLIP ONNX.
-- Vì mới có một artifact class nên margin=1.0 chỉ là hệ quả còn đúng một ứng viên; kết quả chưa chứng minh khả năng phân biệt giữa nhiều hiện vật và không phải đánh giá accuracy production.
+- Chọn ảnh hiện vật tại Bảo tàng Lịch sử TP.HCM từ Wikimedia Commons: trống đồng Đông Sơn, ấm đồng triều Lê thế kỷ 18 (CC0), chuông đồng văn hóa Đông Sơn (CC BY-SA 3.0). Giữ creator, license và nguồn từng ảnh trong `AI-System/test-data/hcm-history/manifest.csv`.
+- Thêm hai ảnh tham chiếu và một ảnh holdout cho mỗi loại; ảnh holdout không đưa vào embeddings. Bộ ảnh gồm 9 ảnh tổng cộng.
+- Seed 3 artifact test vào bảng Backend `artifacts` trong PostgreSQL chung: IDs 1, 2, 3; codes có tiền tố `AI-TEST-`. Database có 2 embeddings mỗi artifact (6 tổng cộng) trong schema `ai_vision`.
+- CLIP ONNX holdout: trống đồng → ID 1, similarity 0.9133, margin 0.1040; ấm đồng → ID 2, 0.9358, margin 0.2032; chuông → ID 3, 0.9227, margin 0.1370. Cả ba được xếp đúng trong lần thử này khi cạnh tranh với hai lớp còn lại.
+- Đây là inference bằng pretrained CLIP, không train/fine-tune. Chưa phải benchmark production: cần nhiều hiện vật, ảnh điện thoại trong ánh sáng/tủ kính thật, hard negatives và đo false positives trước khi chỉnh ngưỡng.
+- Ảnh gốc đang là file trong `AI-System/test-data`; DB chỉ lưu tên file và embedding, chưa lưu bytes ảnh. Nếu cần hiển thị/quản lý ảnh trong sản phẩm, lưu file ở object storage và metadata/URL trong DB.
+- `AI-System/.env` chứa cấu hình local và được gitignore. AI Vision health trả 6 reference embeddings.
