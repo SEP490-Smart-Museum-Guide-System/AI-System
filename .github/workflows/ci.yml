@@ -1,0 +1,74 @@
+name: AI-System CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ai-system-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  vision-test:
+    name: AI Vision tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: smgs_ai_test
+          POSTGRES_USER: smgs_test
+          POSTGRES_PASSWORD: smgs_test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U smgs_test -d smgs_ai_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    defaults:
+      run:
+        working-directory: AI Vision
+    env:
+      AI_SYSTEM_DB_HOST: 127.0.0.1
+      AI_SYSTEM_DB_PORT: 5432
+      AI_SYSTEM_DB_NAME: smgs_ai_test
+      AI_SYSTEM_DB_USER: smgs_test
+      AI_SYSTEM_DB_PASSWORD: smgs_test_password
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: AI Vision/requirements.txt
+
+      - name: Install AI Vision dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Run AI Vision tests
+        run: python -m unittest discover -s tests -v
+
+  other-python-syntax:
+    name: TTS and 3D Scan syntax check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile TTS and 3D Scan source
+        run: python -m compileall -q "TTS AI/app" "3D Scan/app"
