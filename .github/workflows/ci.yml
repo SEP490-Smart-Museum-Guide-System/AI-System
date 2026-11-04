@@ -40,6 +40,7 @@ jobs:
       AI_SYSTEM_DB_NAME: smgs_ai_test
       AI_SYSTEM_DB_USER: smgs_test
       AI_SYSTEM_DB_PASSWORD: smgs_test_password
+      AI_RUN_DB_TESTS: '1'
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -52,15 +53,22 @@ jobs:
           cache-dependency-path: AI Vision/requirements.txt
 
       - name: Install AI Vision dependencies
-        run: python -m pip install -r requirements.txt
+        run: python -m pip install -r requirements.txt -r ../requirements-dev.txt
 
       - name: Run AI Vision tests
         run: python -m unittest discover -s tests -v
 
-  other-python-syntax:
-    name: TTS and 3D Scan syntax check
+  service-tests:
+    name: ${{ matrix.service }} tests
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        service: ['TTS AI', '3D Scan']
+    defaults:
+      run:
+        working-directory: ${{ matrix.service }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -69,6 +77,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: pip
+          cache-dependency-path: '${{ matrix.service }}/requirements.txt'
 
-      - name: Compile TTS and 3D Scan source
-        run: python -m compileall -q "TTS AI/app" "3D Scan/app"
+      - name: Install service and test dependencies
+        run: python -m pip install -r requirements.txt -r ../requirements-dev.txt
+
+      - name: Run service tests without downloading model weights
+        run: python -m unittest discover -s tests -v

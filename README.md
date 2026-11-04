@@ -2,6 +2,8 @@
 
 Repo chứa các microservice AI cho Smart Museum Guide System. TTS, nhận diện ảnh hiện vật và 3D Scan có các PoC độc lập; xem README từng service để biết giới hạn và cách chạy.
 
+**Cập nhật 04/11/2026:** đã sửa lỗi độ tin cậy Vision khi `top_k=1`, giới hạn ảnh/cache, readiness, cleanup/claim job 3D và adapter FE. Có 26 test AI pass, 2 test PostgreSQL chủ động skip khi chạy local. Xem [thay đổi code và các phần còn thiếu](AI_CODE_UPGRADE_2026_11_04.md). Đây chưa phải xác nhận pipeline AI production end-to-end.
+
 AI Vision và 3D Scan dùng **cùng PostgreSQL database của BE**, mỗi service có schema riêng để lưu embedding dẫn xuất hoặc scan-job metadata; không cần deploy thêm database. Cấu hình cùng `AI_SYSTEM_DB_HOST`, `AI_SYSTEM_DB_PORT`, `AI_SYSTEM_DB_NAME`, `AI_SYSTEM_DB_USER`, `AI_SYSTEM_DB_PASSWORD` như BE. TTS không cần DB. Media 3D hiện còn ở local disk và cần shared/object storage nếu chạy nhiều replica.
 
 ## Cấu trúc thư mục
@@ -71,7 +73,7 @@ Flutter → TTS Service: POST văn bản đã duyệt
 TTS Service → Flutter: audio/wav (Piper tổng hợp hoặc cache trả lại)
 ```
 
-Theo schema DBML, Content/Catalog Service tra `artifacts.qr_code`, rồi lấy `narration_versions.script` qua `narrations`; chỉ chọn version `published` và `is_current = true`, theo language/length/detail mà app yêu cầu. TTS Service không truy cập database BE. Xem mapping/query và endpoint trong [`TTS AI/README.md`](TTS%20AI/README.md). Thay đổi và việc còn lại được ghi trong [`IMPLEMENTATION_LOG.md`](IMPLEMENTATION_LOG.md).
+BE hiện có `GET /api/artifacts/{id}/contents/published?languageCode=vi`, trả bản `ArtifactContent` đã xuất bản, gồm `narrationText`/`audioUrl`. Flutter đã lấy nội dung này và phát audio thật. TTS không truy cập DB hoặc tự xác nhận trạng thái xuất bản: gateway BE vẫn phải kiểm soát quyền/nội dung. Mapping `narration_versions` trong tài liệu thiết kế cũ không phải hợp đồng API hiện hành.
 
 ## Phân chia trách nhiệm
 
@@ -84,17 +86,28 @@ Theo schema DBML, Content/Catalog Service tra `artifacts.qr_code`, rồi lấy `
 | Hệ thống quản lý hiện vật | Lưu hồ sơ, nội dung đã duyệt, `qrCode`, `audioUrl`, `modelUrl` và trạng thái xuất bản |
 | Người phụ trách bảo tàng | Duyệt bản thuyết minh, audio và mô hình 3D |
 
-Frontend hiện có dữ liệu mẫu với `qrCode`, `modelUrl` và `audioUrl` trong `FrontEnd/smgs_web/src/data/mockData.js`; đây là điểm nối dự kiến, chưa chứng minh đã có API hoặc pipeline AI hoạt động.
+Frontend hiện lấy dữ liệu nghiệp vụ từ BE; dữ liệu demo AI/3D vẫn được giữ riêng theo phạm vi sản phẩm. Playback TTS thật đã có. Hỏi đáp và sinh nội dung/quiz vẫn chưa có model service thật trong AI-System; không nên đánh đồng giao diện demo với tích hợp AI đã hoàn tất.
 
 ## Lộ trình tiếp theo
 
-1. Nối Flutter với Content/Catalog API để lấy văn bản đã duyệt theo `artifactId`, rồi gọi TTS Service.
+1. Hoàn thiện gateway AI phía BE: JWT, role/phạm vi bảo tàng, quyền nội dung published và địa chỉ HTTPS. Không đưa service key vào browser/Flutter.
 2. Chọn voice Piper sau khi nghe thử với tên riêng, niên đại và thuật ngữ trong bộ sưu tập thật.
 3. Nối Backend làm job gateway có xác thực, trạng thái bền vững, lưu trữ model và bước curator duyệt; sau đó làm trang scan Safari.
 4. Dùng iPhone chụp, dựng và duyệt một mô hình 3D; tối ưu GLB và gắn vào hồ sơ hiện vật.
 5. Index ảnh tham chiếu tại bảo tàng, đánh giá độ chính xác AI Vision trên ảnh chưa dùng làm tham chiếu.
 
-Audio TTS được cache theo văn bản, voice và tốc độ đọc. Khi nội dung được sửa, hash thay đổi và audio mới được tạo ở lượt gọi kế tiếp.
+Audio TTS được cache theo văn bản tiếng Việt đã chuẩn hóa Unicode, voice/model và tốc độ chính xác. Cache mặc định giới hạn 512 MiB/1.000 tệp; thay model sẽ không dùng nhầm audio cũ. `/live` dành cho liveness; `/ready` và `/health` phản ánh trạng thái sẵn sàng thực tế và có thể trả 503.
+
+## Kiểm thử code
+
+Python 3.12; cài dependency từng service cùng `requirements-dev.txt`, sau đó chạy:
+
+```powershell
+cd D:\SEP409\AI-System
+.\tools\test-ai.ps1
+```
+
+Script ưu tiên `.venv\Scripts\python.exe`, có thể truyền `-Python` để chọn interpreter khác. Mặc định không chạy test DB thật, không tải model hoặc chạy COLMAP. CI kiểm thử TTS/Vision/3D; riêng Vision có PostgreSQL test container và bật `AI_RUN_DB_TESTS=1`. Chỉ dùng `-IncludeDatabaseTests` khi đã cấu hình DB kiểm thử riêng.
 
 ## Việc cần chốt trước khi nối production
 

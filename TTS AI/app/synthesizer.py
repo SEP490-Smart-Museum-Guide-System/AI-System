@@ -2,16 +2,22 @@ from functools import lru_cache
 import hashlib
 import io
 import logging
-from pathlib import Path
+import math
 import struct
 from threading import Lock
+import unicodedata
 import wave
 
 import sherpa_onnx
 
 from app.config import get_settings
+from app.audio_cache import AudioCache
 
 LOGGER = logging.getLogger(__name__)
+
+
+class SpeechBusy(RuntimeError):
+    pass
 
 
 class PiperSynthesizer:
@@ -31,19 +37,32 @@ class PiperSynthesizer:
             sherpa_onnx.OfflineTtsConfig(model=model)
         )
         self._voice = settings.voice
-        self._cache_dir = settings.cache_dir
-        self._cache_dir.mkdir(parents=True, exist_ok=True)
+        # A replaced model must not reuse audio from the previous voice weights/tokens.
+        identity = hashlib.sha256()
+        for path in (settings.model_path, settings.tokens_path):
+            with path.open('rb') as file:
+                while chunk := file.read(1024 * 1024):
+                    identity.update(chunk)
+        identity.update(str(getattr(sherpa_onnx, '__version__', 'unknown')).encode())
+        self._model_identity = identity.hexdigest()
+        self._cache = AudioCache(settings.cache_dir, settings.cache_max_bytes, settings.cache_max_files)
+        self._queue_timeout = settings.queue_timeout
         self._generation_lock = Lock()
 
     def generate(self, text: str, speed: float) -> tuple[bytes, bool]:
-        normalized_text = " ".join(text.split())
+        normalized_text = unicodedata.normalize("NFC", " ".join(text.split()))
         cache_key = hashlib.sha256(
-            f"{self._voice}\0{speed:.3f}\0{normalized_text}".encode("utf-8")
+            f"{self._voice}\0{self._model_identity}\0{float(speed).hex()}\0{normalized_text}".encode("utf-8")
         ).hexdigest()
-        cached_path = self._cache_dir / f"{cache_key}.wav"
-        with self._generation_lock:
-            if cached_path.is_file():
-                return cached_path.read_bytes(), True
+        cached = self._cache.get(cache_key)
+        if cached is not None:
+            return cached, True
+        if not self._generation_lock.acquire(timeout=self._queue_timeout):
+            raise SpeechBusy("Bộ đọc đang bận. Vui lòng thử lại.")
+        try:
+            cached = self._cache.get(cache_key)
+            if cached is not None:
+                return cached, True
 
             result = self._tts.generate(
                 text=normalized_text,
@@ -54,10 +73,13 @@ class PiperSynthesizer:
                 raise RuntimeError("Piper generated an empty audio result")
 
             wav_bytes = _to_pcm_wav(result.samples, result.sample_rate)
-            temporary_path = cached_path.with_suffix(".wav.part")
-            temporary_path.write_bytes(wav_bytes)
-            temporary_path.replace(cached_path)
+            try:
+                self._cache.put(cache_key, wav_bytes)
+            except OSError:
+                LOGGER.warning("Không ghi được cache; vẫn trả audio vừa tạo", exc_info=True)
             return wav_bytes, False
+        finally:
+            self._generation_lock.release()
 
 
 def _to_pcm_wav(samples: object, sample_rate: int) -> bytes:
@@ -68,6 +90,8 @@ def _to_pcm_wav(samples: object, sample_rate: int) -> bytes:
         wav_file.setframerate(sample_rate)
         pcm = bytearray()
         for sample in samples:  # type: ignore[union-attr]
+            if not math.isfinite(float(sample)):
+                raise ValueError("Bộ đọc trả mẫu âm thanh không hợp lệ.")
             value = max(-1.0, min(1.0, float(sample)))
             pcm.extend(struct.pack("<h", round(value * 32767)))
         wav_file.writeframes(pcm)

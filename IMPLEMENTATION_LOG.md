@@ -1,5 +1,21 @@
 # Implementation log
 
+## 2026-11-04 — Điều chỉnh bộ ảnh 3D theo yêu cầu thực tế
+
+- Web/API nhận từ 5 ảnh cho một hiện vật; bỏ khuyến nghị bắt buộc 15–40 ảnh trên UI. Giữ 80 là giới hạn trên để bảo vệ tài nguyên.
+- Test API dùng đúng 5 ảnh để kiểm tra nhận job; test web xác nhận gửi đủ 5 ảnh và chặn dưới 5 ảnh.
+- Kiểm thử: 9 test 3D pass; Node FE 26 pass/1 skip; React production build thành công.
+- Đây là thay đổi điều kiện tiếp nhận ảnh, không phải xác nhận COLMAP đã dựng thành công từ 5 ảnh thật. UI và README ghi rõ có thể thất bại/thiếu chi tiết.
+
+## 2026-11-04 — Sửa độ tin cậy, vận hành và hợp đồng AI/FE
+
+- Vision: sửa ambiguity khi top_k=1, bỏ vector hỏng, ảnh giới hạn pixel, constant-time key, quota dưới advisory lock và route inference không khóa event loop.
+- TTS: cache có ngân sách, atomic file, fingerprint model/tốc độ chính xác, Unicode tiếng Việt NFC, xử lý busy, WAV hỏng và model archive/download an toàn hơn.
+- 3D: readiness COLMAP/DB/worker, UUID, ảnh decode, metadata limit, cleanup khi persist lỗi, claim job atomic và không reset PROCESSING của worker khác.
+- FE: đọc candidates/reference_images/error đúng contract; chọn 10–80 JPG/PNG, hiển thị lỗi polling và không nhầm approve với publish. Build lại Visitor Flutter web.
+- AI tests: 26 pass, 2 DB skip local; FE Node 25 pass/1 skip, Flutter 73 pass/1 skip, Edge 14 pass. Không inference model, DB/R2 hoặc COLMAP thật.
+- CI có test TTS/Vision/3D; bỏ tracking pyc. Xem [chi tiết và phần còn thiếu](AI_CODE_UPGRADE_2026_11_04.md).
+
 ## 2026-10-26 — Dùng PostgreSQL chung với Backend
 
 - AI Vision thay SQLite bằng PostgreSQL client `psycopg`; embeddings nằm trong schema `ai_vision` của cùng DB/instance đã cấu hình cho BE. Compose không còn volume/database riêng cho dữ liệu Vision; chỉ giữ volume cache model.

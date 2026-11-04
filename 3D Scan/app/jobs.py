@@ -47,9 +47,22 @@ def initialize() -> None:
             "CREATE INDEX IF NOT EXISTS ix_scan_jobs_status_created "
             "ON {} (status, created_at)"
         ).format(_table()))
-        db.execute(sql.SQL(
-            "UPDATE {} SET status='QUEUED', progress=0, updated_at=%s WHERE status='PROCESSING'"
-        ).format(_table()), (_now(),))
+        # Never reset another live worker's PROCESSING jobs when an API instance starts.
+
+
+def ping() -> None:
+    with _connect() as db:
+        db.execute("SELECT 1")
+
+
+def claim(job_id: str) -> bool:
+    """Only one worker may move a queued job into processing."""
+    with _connect() as db:
+        row = db.execute(sql.SQL(
+            "UPDATE {} SET status='PROCESSING', progress=5, error=NULL, updated_at=%s "
+            "WHERE id=%s AND status='QUEUED' RETURNING id"
+        ).format(_table()), (_now(), UUID(job_id))).fetchone()
+        return row is not None
 
 
 def _now() -> datetime:

@@ -1,5 +1,7 @@
 # Rà soát AI-System và kết nối FE/BE — 04/11/2026
 
+> Đã có đợt sửa code sau bản audit này. Xem [AI_CODE_UPGRADE_2026_11_04.md](AI_CODE_UPGRADE_2026_11_04.md) để biết lỗi nào đã xử lý và các điểm vẫn còn thiếu; phần dưới là ảnh chụp trạng thái trước khi sửa.
+
 > Cập nhật sau rà soát: FE đã bổ sung playback audio thật cho Flutter, lấy bản thuyết minh published và ưu tiên audioUrl. Flutter analyze sạch, 68 test pass và 2 test Edge xác nhận phát WAV thực tế. Xem `FrontEnd/docs/TTS_REAL_AUDIO_2026_11_04.md`. Các nhận xét về player chỉ chạy timer bên dưới mô tả trạng thái trước bản sửa; gateway/deploy TTS và kiểm thử Piper thật vẫn còn cần hoàn thiện.
 
 ## Kết luận

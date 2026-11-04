@@ -22,7 +22,9 @@ $env:AI_SYSTEM_DB_PASSWORD = '<same secret configured for BE PostgreSQL>'
 docker compose --env-file ../.env up --build
 ```
 
-Service nghe tại `http://localhost:8001`, OpenAPI tại `/docs`, health tại `/health`. Health trả số lượng ảnh tham chiếu hiện được index; service chưa có dữ liệu thì detect sẽ trả `503`.
+Service nghe tại `http://localhost:8001`, OpenAPI tại `/docs`. `/live` chỉ kiểm tra process; `/health` và `/ready` kiểm tra model/DB, trả `model_ready`, `model`, `reference_images` và có thể trả 503. Chưa có ảnh tham chiếu thì nhận diện trả 503.
+
+Bản sửa 04/11/2026: `top_k` chỉ giới hạn số ứng viên trả ra; kiểm tra ambiguity luôn xét cả đối thủ thứ hai, kể cả `top_k=1`. Vector hỏng/NaN/zero bị bỏ qua. API inference/DB chạy qua thread pool để không khóa event loop. Ảnh chỉ nhận JPG/PNG/WebP tĩnh, tối đa `MAX_IMAGE_PIXELS` (mặc định 20 triệu pixel), ngoài giới hạn byte hiện có. Quota ảnh được kiểm tra trong transaction với advisory lock để chống upload đồng thời vượt quota. Service key bắt buộc, so sánh hằng thời gian; lỗi DB/encoder trả thông báo an toàn 503.
 
 ## Index ảnh tham chiếu
 

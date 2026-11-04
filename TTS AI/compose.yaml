@@ -8,6 +8,10 @@ services:
       TTS_CACHE_DIR: /data/audio-cache
       TTS_NUM_THREADS: 2
       TTS_MAX_TEXT_CHARS: 12000
+      TTS_CACHE_MAX_BYTES: ${TTS_CACHE_MAX_BYTES:-536870912}
+      TTS_CACHE_MAX_FILES: ${TTS_CACHE_MAX_FILES:-1000}
+      TTS_QUEUE_TIMEOUT_SECONDS: ${TTS_QUEUE_TIMEOUT_SECONDS:-2}
+      TTS_SERVICE_API_KEY: ${TTS_SERVICE_API_KEY:-}
     volumes:
       - tts-models:/models
       - tts-audio-cache:/data/audio-cache

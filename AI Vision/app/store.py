@@ -24,6 +24,10 @@ def _connect() -> psycopg.Connection:
     )
 
 
+class ReferenceLimitReached(ValueError):
+    pass
+
+
 class ReferenceStore:
     """Derived CLIP embeddings in the same PostgreSQL database used by SMGS BE."""
 
@@ -76,8 +80,17 @@ class ReferenceStore:
             return int(row["count"])
 
     def add(self, artifact_id: int, image_name: str, embedding: bytes, dimensions: int,
-            model_id: str) -> int:
+            model_id: str, limit: int | None = None) -> int:
         with self._connection() as connection:
+            if limit is not None:
+                # Serialize quota checks across processes, not just within one API worker.
+                lock_key = f"{settings.DB_SCHEMA}:{model_id}:{artifact_id}"
+                connection.execute("SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))", (lock_key,))
+                count = connection.execute(sql.SQL(
+                    "SELECT COUNT(*) AS count FROM {} WHERE artifact_id = %s AND model_id = %s"
+                ).format(_table("artifact_reference_embeddings")), (artifact_id, model_id)).fetchone()
+                if int(count["count"]) >= limit:
+                    raise ReferenceLimitReached("Hiện vật đã đạt giới hạn ảnh tham chiếu.")
             row = connection.execute(
                 sql.SQL("""
                     INSERT INTO {} (artifact_id, image_name, embedding, dimensions, model_id)

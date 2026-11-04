@@ -2,6 +2,8 @@
 
 Microservice tạo audio tiếng Việt từ **văn bản thuyết minh đã được nhân viên bảo tàng duyệt**. Service dùng Piper qua `sherpa-onnx`, tổng hợp trên CPU và trả WAV cho ứng dụng Flutter. Service không nhận diện hiện vật và không tự viết nội dung.
 
+**Code hiện tại 04/11/2026:** BE trả nội dung qua `/api/artifacts/{id}/contents/published?languageCode=vi` (`narrationText`, `audioUrl`); Flutter đã phát WAV/audio thật. Phần DBML/query dưới đây là thiết kế tham khảo trước đây, không thay thế entity/DTO BE hiện hành. Xem [nhật ký nâng cấp](../AI_CODE_UPGRADE_2026_11_04.md).
+
 ## Luồng tích hợp
 
 ```text
@@ -50,11 +52,15 @@ DBML ghi chú đây là **đề xuất thiết kế, chưa phải ERD đã chố
 Cần Docker Desktop với Docker Compose. Lần khởi động đầu tải voice `vi_VN-vais1000-medium` và dữ liệu eSpeak vào volume; các lần sau tái sử dụng model đã tải.
 
 ```powershell
-cd D:\SEP409\AI-System\tts-service
+cd 'D:\SEP409\AI-System\TTS AI'
 docker compose up --build
 ```
 
-Service mặc định lắng nghe ở `http://localhost:8000`. Tài liệu API tại `http://localhost:8000/docs`; kiểm tra trạng thái tại `http://localhost:8000/health`.
+Service mặc định lắng nghe ở `http://localhost:8000`. Tài liệu API tại `/docs`; `/live` kiểm tra process, `/health` và `/ready` chỉ trả 200 sau khi model đã nạp. Lỗi/bận trả 503 với `Retry-After`.
+
+Cache mặc định 512 MiB/1.000 WAV, ghi atomic, tự loại WAV hỏng và không dùng chung audio giữa các tốc độ/model khác nhau. Cấu hình `TTS_CACHE_MAX_BYTES`, `TTS_CACHE_MAX_FILES`, `TTS_QUEUE_TIMEOUT_SECONDS` (mặc định 2 giây chờ slot tổng hợp). Cache hit vẫn có thể được trả khi slot đang bận.
+
+Nếu đặt `TTS_SERVICE_API_KEY`, POST speech yêu cầu `X-Service-Key`. Để trống chỉ nhằm tương thích proxy local hiện có; khi triển khai cần gateway BE giữ key và kiểm tra quyền/nội dung. Không đặt key trong `VITE_*` hoặc Flutter. Voice vẫn là tiếng Việt `vi_VN-vais1000-medium`.
 
 ## API
 

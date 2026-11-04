@@ -12,7 +12,10 @@ DB_PASSWORD = os.getenv("AI_SYSTEM_DB_PASSWORD", "")
 DB_SCHEMA = os.getenv("SCAN_DB_SCHEMA", "ai_3d_scan")
 COLMAP_COMMAND = os.getenv("COLMAP_COMMAND", "colmap")
 SERVICE_API_KEY = os.getenv("SCAN_SERVICE_API_KEY", "")
+MIN_IMAGES = 5
 MAX_IMAGES = int(os.getenv("SCAN_MAX_IMAGES", "80"))
 MAX_IMAGE_BYTES = int(os.getenv("SCAN_MAX_IMAGE_BYTES", str(20 * 1024 * 1024)))
 MAX_TOTAL_BYTES = int(os.getenv("SCAN_MAX_TOTAL_BYTES", str(500 * 1024 * 1024)))
+MAX_IMAGE_PIXELS = int(os.getenv("SCAN_MAX_IMAGE_PIXELS", "20000000"))
+MAX_METADATA_BYTES = int(os.getenv("SCAN_MAX_METADATA_BYTES", "16384"))
 

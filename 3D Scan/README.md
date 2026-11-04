@@ -28,10 +28,16 @@ $env:AI_SYSTEM_DB_HOST = "localhost"
 $env:AI_SYSTEM_DB_NAME = "smgs_db"
 $env:AI_SYSTEM_DB_USER = "postgres"
 $env:AI_SYSTEM_DB_PASSWORD = "<same secret configured for BE PostgreSQL>"
-uvicorn app.main:app --host 127.0.0.1 --port 8012
+uvicorn app.main:app --host 127.0.0.1 --port 8002
 ```
 
-Job records được lưu trong PostgreSQL chung; khi service khởi động lần đầu, nó tạo schema/table `ai_3d_scan.scan_jobs` nếu role DB có quyền. File job vẫn nằm ở `state/scan-jobs/<scanJobId>/`; đặt `SCAN_DATA_DIR` để chuyển nơi lưu. Muốn chạy nhiều instance hoặc giữ file qua redeploy, cần shared/object storage cho ảnh và GLB. Giới hạn mặc định: 10–80 ảnh, tối đa 20 MiB/ảnh và 500 MiB/job; có thể cấu hình qua `SCAN_MAX_IMAGES`, `SCAN_MAX_IMAGE_BYTES`, `SCAN_MAX_TOTAL_BYTES`.
+Job records được lưu trong PostgreSQL chung; khi service khởi động lần đầu, nó tạo schema/table `ai_3d_scan.scan_jobs` nếu role DB có quyền. File job vẫn nằm ở `state/scan-jobs/<scanJobId>/`; đặt `SCAN_DATA_DIR` để chuyển nơi lưu. Muốn chạy nhiều instance hoặc giữ file qua redeploy, cần shared/object storage cho ảnh và GLB. Hệ thống nhận từ **5 ảnh của cùng một hiện vật**; 80 ảnh chỉ là giới hạn trên, không phải số lượng phải chụp. Mỗi ảnh tối đa 20 MiB, tổng job tối đa 500 MiB; cấu hình qua `SCAN_MAX_IMAGES`, `SCAN_MAX_IMAGE_BYTES`, `SCAN_MAX_TOTAL_BYTES`.
+
+Chụp 5 ảnh rõ nét ở các góc khác nhau nhưng có nhiều chi tiết chung giữa ảnh liền kề. Đây là điều kiện nhận bộ ảnh, không bảo đảm dựng được mesh đầy đủ: COLMAP vẫn có thể thất bại hoặc thiếu mặt/chi tiết. Giám tuyển phải kiểm tra bản dựng; không sinh mô hình mẫu thay thế khi dựng thất bại. Tham khảo [hướng dẫn chụp của COLMAP](https://colmap.github.io/tutorial.html).
+
+Bản sửa 04/11/2026 giới hạn thêm `SCAN_MAX_IMAGE_PIXELS` (20 triệu pixel) và `SCAN_MAX_METADATA_BYTES` (16 KiB); giải mã thật ảnh, kiểm tra đuôi/định dạng và dọn thư mục upload khi persist job lỗi. Job ID không đúng UUID trả 422. `/live` dành cho process; `/ready` và `/health` kiểm tra COLMAP trong PATH, trạng thái worker và DB, trả 503 nếu thiếu. Không nhận job mới nếu chưa có COLMAP.
+
+Worker claim `QUEUED → PROCESSING` bằng một UPDATE có điều kiện để tránh nhận trùng. Startup không còn reset hàng loạt `PROCESSING` thành `QUEUED`, tránh cướp job đang chạy ở worker khác. Sau crash, job `PROCESSING` cần operator xác minh toàn bộ worker đã dừng trước khi phục hồi; chưa có lease/heartbeat hoặc tự phục hồi an toàn. Với storage local, vẫn chỉ triển khai một instance. Thay đổi này không biến BackgroundTasks thành hàng đợi phân tán production.
 
 ## API
 
@@ -44,7 +50,7 @@ X-Service-Key: <server-side-key>
 
 artifact_id: 123
 capture_metadata: {"device":"iPhone Safari"}
-images: <10..80 JPG/PNG files>
+images: <5..80 JPG/PNG files; 5 photos are accepted>
 ```
 
 Trả `202 Accepted` với `scanJobId`, `artifactId`, `status=QUEUED`. Dùng `GET /api/v1/scans/{scanJobId}` để xem `QUEUED`, `PROCESSING`, `REVIEW_REQUIRED` hoặc `FAILED`. Model chỉ được phục vụ sau khi tạo thành công. `POST /api/v1/scans/{scanJobId}/approve` chuyển job từ `REVIEW_REQUIRED` sang `COMPLETED`; đây hiện là endpoint nội bộ PoC, chưa kiểm tra role curator. Backend cần thay thế bước duyệt nội bộ này bằng quyền đăng nhập và audit log của SMGS.

@@ -16,6 +16,10 @@ class InvalidImage(ValueError):
     pass
 
 
+class EncoderUnavailable(RuntimeError):
+    pass
+
+
 class ImageEncoder:
     def __init__(self) -> None:
         settings.MODEL_CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -59,6 +63,10 @@ class ImageEncoder:
     def encode(self, image_bytes: bytes) -> np.ndarray:
         try:
             with Image.open(io.BytesIO(image_bytes)) as opened:
+                if opened.format not in {"JPEG", "PNG", "WEBP"} or getattr(opened, "n_frames", 1) != 1:
+                    raise InvalidImage("Chỉ hỗ trợ ảnh JPG, PNG hoặc WebP tĩnh.")
+                if opened.width * opened.height > settings.MAX_IMAGE_PIXELS:
+                    raise InvalidImage("Ảnh vượt giới hạn số pixel cho phép.")
                 image = ImageOps.exif_transpose(opened).convert("RGB")
                 image = ImageOps.fit(
                     image,
@@ -66,22 +74,27 @@ class ImageEncoder:
                     method=Image.Resampling.BICUBIC,
                 )
                 pixels = np.asarray(image, dtype=np.float32) / 255.0
-        except (UnidentifiedImageError, OSError, ValueError) as exc:
-            raise InvalidImage("Uploaded file is not a supported image") from exc
+        except InvalidImage:
+            raise
+        except (UnidentifiedImageError, OSError, ValueError, Image.DecompressionBombError) as exc:
+            raise InvalidImage("Tệp tải lên không phải ảnh được hỗ trợ hoặc ảnh đã hỏng.") from exc
 
         mean = np.array([0.48145466, 0.4578275, 0.40821073], dtype=np.float32)
         std = np.array([0.26862954, 0.26130258, 0.27577711], dtype=np.float32)
         pixels = (pixels - mean) / std
         tensor = np.transpose(pixels, (2, 0, 1))[None, ...].astype(np.float32)
-        with self._lock:
-            result = self._session.run([self._output_name], {self._input_name: tensor})[0]
+        try:
+            with self._lock:
+                result = self._session.run([self._output_name], {self._input_name: tensor})[0]
+        except Exception as exc:
+            raise EncoderUnavailable("Bộ nhận diện hiện chưa sẵn sàng.") from exc
 
         vector = np.asarray(result, dtype=np.float32).reshape(-1)
         if vector.size != 512:
-            raise RuntimeError(f"Expected a 512-dimensional CLIP embedding, got {vector.size}")
+            raise EncoderUnavailable("Bộ nhận diện trả dữ liệu không hợp lệ.")
         norm = np.linalg.norm(vector)
         if not np.isfinite(norm) or norm <= 1e-12:
-            raise RuntimeError("ONNX image encoder returned an invalid embedding")
+            raise EncoderUnavailable("Bộ nhận diện trả dữ liệu không hợp lệ.")
         return vector / norm
 
 
@@ -91,8 +104,10 @@ def get_encoder() -> ImageEncoder:
 
 
 def cosine_similarity(left: np.ndarray, right: np.ndarray) -> float:
+    if left.shape != right.shape or not np.isfinite(left).all() or not np.isfinite(right).all():
+        raise ValueError("Embedding không hợp lệ.")
     left_norm = np.linalg.norm(left)
     right_norm = np.linalg.norm(right)
-    if left_norm == 0 or right_norm == 0:
-        return 0.0
-    return float(np.dot(left, right) / (left_norm * right_norm))
+    if not np.isfinite(left_norm) or not np.isfinite(right_norm) or left_norm <= 1e-12 or right_norm <= 1e-12:
+        raise ValueError("Embedding không hợp lệ.")
+    return float(np.clip(np.dot(left, right) / (left_norm * right_norm), -1.0, 1.0))

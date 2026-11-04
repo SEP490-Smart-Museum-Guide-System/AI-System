@@ -1,5 +1,7 @@
 # Rà soát BE/FE để tích hợp TTS
 
+> Tài liệu này ghi lại các giai đoạn trước. Trạng thái code hiện tại và những điểm đã sửa nằm trong [AI_CODE_UPGRADE_2026_11_04.md](AI_CODE_UPGRADE_2026_11_04.md); không dùng các nhận xét FE/mock/API cũ bên dưới làm kết luận hiện hành.
+
 ## Cập nhật 2026-10-26 — PostgreSQL dùng chung cho AI-System
 
 - AI Vision và 3D Scan kết nối cùng PostgreSQL database với BE qua biến `AI_SYSTEM_DB_*`; không tạo database/container database riêng.

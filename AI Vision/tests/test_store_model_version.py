@@ -11,7 +11,7 @@ except ModuleNotFoundError:
 
 
 @unittest.skipUnless(
-    ReferenceStore is not None and os.getenv("AI_SYSTEM_DB_PASSWORD"),
+    ReferenceStore is not None and os.getenv("AI_SYSTEM_DB_PASSWORD") and os.getenv("AI_RUN_DB_TESTS") == "1",
     "requires psycopg and the shared PostgreSQL test database",
 )
 class ReferenceStoreModelVersionTests(unittest.TestCase):
@@ -38,6 +38,19 @@ class ReferenceStoreModelVersionTests(unittest.TestCase):
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["image_name"], "onnx.jpg")
         self.assertEqual(self.store.delete_artifact(7), 2)
+
+    def test_quota_is_atomic_across_concurrent_uploads(self):
+        from concurrent.futures import ThreadPoolExecutor
+        from app.store import ReferenceLimitReached
+        def upload(_):
+            try:
+                return self.store.add(7, 'race.png', b'\x00', 1, 'model-a', limit=2)
+            except ReferenceLimitReached:
+                return None
+        with ThreadPoolExecutor(max_workers=6) as pool:
+            results = list(pool.map(upload, range(8)))
+        self.assertEqual(sum(result is not None for result in results), 2)
+        self.assertEqual(self.store.count_for_artifact(7, 'model-a'), 2)
 
 
 if __name__ == "__main__":
