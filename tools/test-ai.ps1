@@ -9,7 +9,7 @@ if ([string]::IsNullOrWhiteSpace($Python)) {
 $previousDatabaseFlag = $env:AI_RUN_DB_TESTS
 try {
     $env:AI_RUN_DB_TESTS = if ($IncludeDatabaseTests) { '1' } else { '0' }
-    foreach ($aiService in @('TTS AI', 'AI Vision', '3D Scan')) {
+    foreach ($aiService in @('TTS AI', 'AI Vision', '3D Scan', 'AI Chat')) {
         Write-Host "Kiểm thử: $aiService"
         Push-Location -LiteralPath (Join-Path $aiRepoRoot $aiService)
         try {

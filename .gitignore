@@ -12,3 +12,4 @@ htmlcov/
 test-data/user-museum-*.zip
 state/models/
 state/vision-evaluation-inputs/
+state/chat-service-key.txt

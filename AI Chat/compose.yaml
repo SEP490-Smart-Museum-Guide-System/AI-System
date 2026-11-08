@@ -1,0 +1,10 @@
+services:
+  ai-chat:
+    build: .
+    ports:
+      - "127.0.0.1:8003:8003"
+    environment:
+      AI_CHAT_SERVICE_KEY: ${AI_CHAT_SERVICE_KEY:?Configure the internal service key}
+      AI_CHAT_MODEL_DIR: /model-cache/models--onnx-community--Qwen2.5-1.5B-Instruct/snapshots/d54957e3af1be04546436e874a60fe386041b244
+    volumes:
+      - ../state/models/chat:/model-cache:ro

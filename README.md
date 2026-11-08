@@ -6,6 +6,8 @@ Repo chứa các microservice AI cho Smart Museum Guide System. TTS, nhận di�
 
 **Kiểm thử model thật 08/11/2026:** CLIP ONNX và API nhận diện thật với 14 hồ sơ tham chiếu trong kho RAM cô lập. Trong 4 ảnh cùng nhóm được giữ riêng, cả 4 có đúng hồ sơ đứng đầu, 3 được tự chấp nhận; trong 5 ảnh tương tự lấy từ nguồn ngoài, 4 bị từ chối và 1 bị nhận nhầm. Mẫu nhỏ, chưa xác nhận độ chính xác production hoặc kết nối DB/deploy. Xem [báo cáo và lệnh tái hiện](evaluations/vision-2026-11-08/README.md), hoặc mở [bảng ảnh so sánh từng ca](evaluations/vision-2026-11-08/index.html) trên máy đã tải bộ ảnh/cache kiểm thử.
 
+**Chatbot 08/11/2026:** đã thêm [AI Chat ONNX local](AI%20Chat/README.md), API hỏi đáp ở .NET BE và nối màn Flutter. Qwen2.5-1.5B INT4 chạy CPU thật; guard yêu cầu câu trả lời trích từ nguồn đã xuất bản. Đã thử model thật trên 10 ca smoke, còn cần đánh giá nhiều hiện vật và kiểm thử DB/deploy. CLIP chỉ nhận diện ảnh; không dùng Gemini. Xem [kết quả model thật](evaluations/chat-2026-11-08/README.md) và [lệnh chạy BE/Flutter](../BackEnd/Smart_Museum_Guide_System/ARTIFACT_CHATBOT_2026_11_08.md).
+
 AI Vision và 3D Scan dùng **cùng PostgreSQL database của BE**, mỗi service có schema riêng để lưu embedding dẫn xuất hoặc scan-job metadata; không cần deploy thêm database. Cấu hình cùng `AI_SYSTEM_DB_HOST`, `AI_SYSTEM_DB_PORT`, `AI_SYSTEM_DB_NAME`, `AI_SYSTEM_DB_USER`, `AI_SYSTEM_DB_PASSWORD` như BE. TTS không cần DB. Media 3D hiện còn ở local disk và cần shared/object storage nếu chạy nhiều replica.
 
 ## Cấu trúc thư mục
@@ -88,7 +90,7 @@ BE hiện có `GET /api/artifacts/{id}/contents/published?languageCode=vi`, tr�
 | Hệ thống quản lý hiện vật | Lưu hồ sơ, nội dung đã duyệt, `qrCode`, `audioUrl`, `modelUrl` và trạng thái xuất bản |
 | Người phụ trách bảo tàng | Duyệt bản thuyết minh, audio và mô hình 3D |
 
-Frontend hiện lấy dữ liệu nghiệp vụ từ BE; dữ liệu demo AI/3D vẫn được giữ riêng theo phạm vi sản phẩm. Playback TTS thật đã có. Hỏi đáp và sinh nội dung/quiz vẫn chưa có model service thật trong AI-System; không nên đánh đồng giao diện demo với tích hợp AI đã hoàn tất.
+Frontend hiện lấy dữ liệu nghiệp vụ từ BE; dữ liệu demo AI/3D vẫn được giữ riêng theo phạm vi sản phẩm. Playback TTS thật đã có. Hỏi đáp theo hiện vật có service ONNX local và source guard từ 08/11; sinh nội dung/quiz vẫn chưa có model service thật. Không đánh đồng kiểm thử model cô lập với toàn bộ sản phẩm đã end-to-end.
 
 ## Lộ trình tiếp theo
 
