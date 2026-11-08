@@ -9,3 +9,6 @@ __pycache__/
 .pytest_cache/
 .coverage
 htmlcov/
+test-data/user-museum-*.zip
+state/models/
+state/vision-evaluation-inputs/

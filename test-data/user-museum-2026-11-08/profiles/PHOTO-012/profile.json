@@ -1,0 +1,47 @@
+{
+  "id": "PHOTO-012",
+  "title": "Hiện vật dạng lòng chảo màu sẫm — vị trí nhãn 3",
+  "name_basis": "Mô tả trực quan; chưa xác định loại/tên hiện vật",
+  "category_hint": "Chưa xác định",
+  "display_marker": "3",
+  "grouping_status": "grouping_requires_confirmation",
+  "features": [
+    "Dáng tròn, lòng sâu, thành cao và bề mặt tối màu",
+    "Vành tròn nổi quanh mép",
+    "Trưng bày trong tủ kính, có nhãn vị trí 3 ở gần"
+  ],
+  "confusable_with": [
+    "PHOTO-013"
+  ],
+  "notes": [
+    "B04/B05 được ghép tạm theo hình dáng và vị trí nhãn; cần xác nhận là cùng một vật.",
+    "Ảnh có phản chiếu kính mạnh; cần chọn vùng hiện vật trước khi duyệt indexing. Chưa gán là nồi, chậu, cồng hay loại khác."
+  ],
+  "catalog_binding": {
+    "museum_id": null,
+    "artifact_id": null,
+    "gallery_id": null,
+    "official_name": null,
+    "catalog_number": null
+  },
+  "historical_facts": {
+    "date": null,
+    "provenance": null,
+    "verified_description": null
+  },
+  "label_evidence": [],
+  "source_image_ids": [
+    "B04",
+    "B05"
+  ],
+  "reference_candidate_ids": [
+    "B04",
+    "B05"
+  ],
+  "cover_image_id": "B04",
+  "review_status": "awaiting_human_review_and_catalog_mapping",
+  "indexing_enabled": false,
+  "embeddings_created": false,
+  "holdout_image_ids": [],
+  "model_id": null
+}

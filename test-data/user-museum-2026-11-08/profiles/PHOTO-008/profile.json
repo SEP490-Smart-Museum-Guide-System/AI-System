@@ -1,0 +1,47 @@
+{
+  "id": "PHOTO-008",
+  "title": "Van mở dầu cung cấp cho lò hạ áp",
+  "name_basis": "Chép tên từ bảng A14, chưa đối chiếu hồ sơ bảo tàng",
+  "category_hint": "Thiết bị cơ khí/van",
+  "grouping_status": "provisional_visual_match",
+  "features": [
+    "Tay quay lớn dạng vòng tròn ở trên",
+    "Trục ren thẳng đứng, khung cong bao quanh phần giữa",
+    "Thân bên dưới có hai mặt bích và số 50 nổi"
+  ],
+  "notes": [
+    "A14 là ảnh bảng tên, không phải ảnh tham chiếu độc lập. Số 50 không được gán thành mã hiện vật hay thông số kỹ thuật khi chưa xác nhận."
+  ],
+  "catalog_binding": {
+    "museum_id": null,
+    "artifact_id": null,
+    "gallery_id": null,
+    "official_name": null,
+    "catalog_number": null
+  },
+  "historical_facts": {
+    "date": null,
+    "provenance": null,
+    "verified_description": null
+  },
+  "label_evidence": [
+    {
+      "image_id": "A14",
+      "text": "Van mở dầu cung cấp cho lò hạ áp",
+      "status": "transcribed_from_photo_unverified"
+    }
+  ],
+  "source_image_ids": [
+    "A13",
+    "A14"
+  ],
+  "reference_candidate_ids": [
+    "A13"
+  ],
+  "cover_image_id": "A13",
+  "review_status": "awaiting_human_review_and_catalog_mapping",
+  "indexing_enabled": false,
+  "embeddings_created": false,
+  "holdout_image_ids": [],
+  "model_id": null
+}

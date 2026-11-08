@@ -1,0 +1,44 @@
+{
+  "id": "PHOTO-005",
+  "title": "Đèn có chữ PORT",
+  "name_basis": "Chữ PORT nhìn thấy trong ảnh; tên mô tả",
+  "category_hint": "Đèn",
+  "grouping_status": "provisional_visual_match",
+  "features": [
+    "Vai đèn màu nâu ánh kim với chữ PORT nổi",
+    "Phần kính cong sẫm màu, có các gờ ngang",
+    "Hai tấm bên hông và khóa/xích ở phía trước lệch trái"
+  ],
+  "confusable_with": [
+    "PHOTO-003",
+    "PHOTO-004"
+  ],
+  "notes": [
+    "Không suy ra chức năng hàng hải, niên đại hoặc quốc gia chỉ từ chữ PORT."
+  ],
+  "catalog_binding": {
+    "museum_id": null,
+    "artifact_id": null,
+    "gallery_id": null,
+    "official_name": null,
+    "catalog_number": null
+  },
+  "historical_facts": {
+    "date": null,
+    "provenance": null,
+    "verified_description": null
+  },
+  "label_evidence": [],
+  "source_image_ids": [
+    "A07"
+  ],
+  "reference_candidate_ids": [
+    "A07"
+  ],
+  "cover_image_id": "A07",
+  "review_status": "awaiting_human_review_and_catalog_mapping",
+  "indexing_enabled": false,
+  "embeddings_created": false,
+  "holdout_image_ids": [],
+  "model_id": null
+}

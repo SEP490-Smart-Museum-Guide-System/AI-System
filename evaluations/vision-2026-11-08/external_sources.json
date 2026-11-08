@@ -1,0 +1,62 @@
+[
+  {
+    "id": "WEB-01",
+    "title": "Đèn Tung Woo NOT UNDER COMMAND ở một bộ sưu tập khác",
+    "page_url": "https://lannangallery.com/products/solid-copper-ship-s-lantern-by-tung-woo-of-hong-kong",
+    "image_url": "https://lannangallery.com/cdn/shop/products/6237_1.jpg?v=1673519988&width=1946",
+    "creator": "Lannan Gallery — ảnh sản phẩm do bên đăng cung cấp",
+    "license": "Chưa xác nhận giấy phép tái phân phối; chỉ lưu cache kiểm thử local, không đưa vào bộ ảnh tham chiếu hoặc bản ZIP chia sẻ.",
+    "expected_family_ids": ["PHOTO-003"],
+    "same_catalog_instance": false,
+    "expected_matched": false,
+    "reason": "Một đèn cùng kiểu chữ/kiểu dáng được bên bán chụp ở bối cảnh khác; không có bằng chứng là hiện vật C564 trong ảnh người dùng."
+  },
+  {
+    "id": "WEB-02",
+    "title": "Đèn Tung Woo PORT ở nguồn ngoài",
+    "page_url": "https://lannangallery.com/products/polished-copper-ships-port-lantern-by-tung-woo",
+    "image_url": "https://lannangallery.com/cdn/shop/products/IMG_4928.jpg?v=1585241059&width=1946",
+    "creator": "Lannan Gallery — ảnh sản phẩm do bên đăng cung cấp",
+    "license": "Chưa xác nhận giấy phép tái phân phối; chỉ lưu cache kiểm thử local, không đưa vào bộ ảnh tham chiếu hoặc bản ZIP chia sẻ.",
+    "expected_family_ids": ["PHOTO-005"],
+    "same_catalog_instance": false,
+    "expected_matched": false,
+    "reason": "Ảnh đèn PORT ở bên bán, không phải ảnh đã xác minh thuộc cùng hiện vật trong bộ hồ sơ người dùng."
+  },
+  {
+    "id": "WEB-03",
+    "title": "Cân ở Bucharest Municipal Museum",
+    "page_url": "https://commons.wikimedia.org/wiki/File:Bucharest_Municipal_Museum_-_balance_scale_and_other_objects.jpg",
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Bucharest_Municipal_Museum_-_balance_scale_and_other_objects.jpg/960px-Bucharest_Municipal_Museum_-_balance_scale_and_other_objects.jpg",
+    "creator": "Joe Mabel",
+    "license": "CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/",
+    "expected_family_ids": ["PHOTO-011"],
+    "same_catalog_instance": false,
+    "expected_matched": false,
+    "reason": "Cân tại một bảo tàng khác; là ảnh tương tự về loại đồ vật, không phải hiện vật người dùng chụp."
+  },
+  {
+    "id": "WEB-04",
+    "title": "Van có tay quay ở nguồn ngoài",
+    "page_url": "https://commons.wikimedia.org/wiki/File:A-globe-valve-handwheel.JPG",
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/72/A-globe-valve-handwheel.JPG/960px-A-globe-valve-handwheel.JPG",
+    "creator": "Heather Smith / The Alloy Valve Stockist; phiên bản Commons đã bỏ watermark",
+    "license": "CC BY 3.0 — https://creativecommons.org/licenses/by/3.0/",
+    "expected_family_ids": ["PHOTO-008"],
+    "same_catalog_instance": false,
+    "expected_matched": false,
+    "reason": "Van ở bộ ảnh kỹ thuật bên ngoài, không phải van số 50 trong hồ sơ."
+  },
+  {
+    "id": "WEB-05",
+    "title": "Máy nén piston ở nguồn ngoài",
+    "page_url": "https://commons.wikimedia.org/wiki/File:Piston_compressor.jpg",
+    "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/80/Piston_compressor.jpg/960px-Piston_compressor.jpg",
+    "creator": "Yanior",
+    "license": "Public domain theo công bố của tác giả trên trang Commons",
+    "expected_family_ids": ["PHOTO-009"],
+    "same_catalog_instance": false,
+    "expected_matched": false,
+    "reason": "Ảnh một máy nén khác; không tự nhận là máy 7,5 hp trong hồ sơ người dùng."
+  }
+]

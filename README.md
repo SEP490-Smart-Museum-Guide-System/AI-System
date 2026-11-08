@@ -4,6 +4,8 @@ Repo chứa các microservice AI cho Smart Museum Guide System. TTS, nhận di�
 
 **Cập nhật 04/11/2026:** đã sửa lỗi độ tin cậy Vision khi `top_k=1`, giới hạn ảnh/cache, readiness, cleanup/claim job 3D và adapter FE. Có 26 test AI pass, 2 test PostgreSQL chủ động skip khi chạy local. Xem [thay đổi code và các phần còn thiếu](AI_CODE_UPGRADE_2026_11_04.md). Đây chưa phải xác nhận pipeline AI production end-to-end.
 
+**Kiểm thử model thật 08/11/2026:** CLIP ONNX và API nhận diện thật với 14 hồ sơ tham chiếu trong kho RAM cô lập. Trong 4 ảnh cùng nhóm được giữ riêng, cả 4 có đúng hồ sơ đứng đầu, 3 được tự chấp nhận; trong 5 ảnh tương tự lấy từ nguồn ngoài, 4 bị từ chối và 1 bị nhận nhầm. Mẫu nhỏ, chưa xác nhận độ chính xác production hoặc kết nối DB/deploy. Xem [báo cáo và lệnh tái hiện](evaluations/vision-2026-11-08/README.md), hoặc mở [bảng ảnh so sánh từng ca](evaluations/vision-2026-11-08/index.html) trên máy đã tải bộ ảnh/cache kiểm thử.
+
 AI Vision và 3D Scan dùng **cùng PostgreSQL database của BE**, mỗi service có schema riêng để lưu embedding dẫn xuất hoặc scan-job metadata; không cần deploy thêm database. Cấu hình cùng `AI_SYSTEM_DB_HOST`, `AI_SYSTEM_DB_PORT`, `AI_SYSTEM_DB_NAME`, `AI_SYSTEM_DB_USER`, `AI_SYSTEM_DB_PASSWORD` như BE. TTS không cần DB. Media 3D hiện còn ở local disk và cần shared/object storage nếu chạy nhiều replica.
 
 ## Cấu trúc thư mục
@@ -97,6 +99,10 @@ Frontend hiện lấy dữ liệu nghiệp vụ từ BE; dữ liệu demo AI/3D 
 5. Index ảnh tham chiếu tại bảo tàng, đánh giá độ chính xác AI Vision trên ảnh chưa dùng làm tham chiếu.
 
 Audio TTS được cache theo văn bản tiếng Việt đã chuẩn hóa Unicode, voice/model và tốc độ chính xác. Cache mặc định giới hạn 512 MiB/1.000 tệp; thay model sẽ không dùng nhầm audio cũ. `/live` dành cho liveness; `/ready` và `/health` phản ánh trạng thái sẵn sàng thực tế và có thể trả 503.
+
+## Hồ sơ ảnh người dùng — tiếp nhận 08/11/2026
+
+Bộ [user-museum-2026-11-08](test-data/user-museum-2026-11-08/README.md) gồm 27 ảnh gốc, 14 hồ sơ nhận diện nháp, 19 ảnh ứng viên tham chiếu, 2 ảnh bảng tên, 1 ảnh trùng và 5 ảnh bối cảnh/nhiều đối tượng chờ phân loại. Mở `index.html` trong thư mục bộ ảnh để duyệt offline. `catalog_mapping.csv` để điền mã bảo tàng/hiện vật thật; chưa index, tạo embedding hoặc ghi DB. Tên tạm và nội dung chép từ nhãn được phân biệt với thông tin chính thức.
 
 ## Kiểm thử code
 

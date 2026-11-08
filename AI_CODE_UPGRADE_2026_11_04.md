@@ -1,5 +1,7 @@
 # Nâng cấp code AI-System — 04/11/2026
 
+> Cập nhật 08/11/2026: đã bổ sung [kiểm thử CLIP thật trên ảnh người dùng và ảnh nguồn ngoài](evaluations/vision-2026-11-08/README.md). Encoder và API chạy thật, chỉ kho tham chiếu dùng RAM cô lập; có một ca nhận nhầm ảnh ngoài kho. Các mô tả bên dưới ghi lại phạm vi công việc ngày 04/11; kiểm thử mới chưa xác nhận PostgreSQL/gateway/deploy, tổng hợp TTS hoặc dựng COLMAP thật.
+
 ## Kết quả
 
 Đã rà soát và sửa source TTS, Vision, 3D Scan cùng các adapter FE đang đọc response AI. Không thêm dữ liệu mẫu vào nghiệp vụ, không tự tải model/training, không gọi nhà cung cấp LLM, không ghi PostgreSQL/R2 thật, không commit/push/deploy.

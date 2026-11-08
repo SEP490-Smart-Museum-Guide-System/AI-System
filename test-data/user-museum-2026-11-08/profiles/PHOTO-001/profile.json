@@ -1,0 +1,44 @@
+{
+  "id": "PHOTO-001",
+  "title": "Hiện vật gốm loe rộng — vị trí nhãn 12",
+  "name_basis": "Mô tả trực quan; chưa có bảng tên đọc được",
+  "category_hint": "Hiện vật gốm/đất nung, cần xác nhận",
+  "display_marker": "12",
+  "grouping_status": "provisional_visual_match",
+  "features": [
+    "Miệng mở lớn và vành dày loe ra ngoài",
+    "Thân thắt ở giữa, phần dưới loe rộng",
+    "Bề mặt nâu, nhiều mảng sáng và đường trang trí uốn cong"
+  ],
+  "confusable_with": [
+    "PHOTO-002"
+  ],
+  "notes": [
+    "Số 12 là nhãn vị trí nhìn thấy trong ảnh, không phải số đăng ký hay artifactId."
+  ],
+  "catalog_binding": {
+    "museum_id": null,
+    "artifact_id": null,
+    "gallery_id": null,
+    "official_name": null,
+    "catalog_number": null
+  },
+  "historical_facts": {
+    "date": null,
+    "provenance": null,
+    "verified_description": null
+  },
+  "label_evidence": [],
+  "source_image_ids": [
+    "A01"
+  ],
+  "reference_candidate_ids": [
+    "A01"
+  ],
+  "cover_image_id": "A01",
+  "review_status": "awaiting_human_review_and_catalog_mapping",
+  "indexing_enabled": false,
+  "embeddings_created": false,
+  "holdout_image_ids": [],
+  "model_id": null
+}

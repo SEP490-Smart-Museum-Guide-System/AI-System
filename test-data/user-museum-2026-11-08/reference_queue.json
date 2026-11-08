@@ -1,0 +1,137 @@
+{
+  "enabled": false,
+  "reason": "Chưa có museum_id/artifact_id thật và chưa duyệt ảnh.",
+  "items": [
+    {
+      "local_profile_id": "PHOTO-001",
+      "museum_id": null,
+      "artifact_id": null,
+      "enabled": false,
+      "images": [
+        "images/A01.png"
+      ]
+    },
+    {
+      "local_profile_id": "PHOTO-002",
+      "museum_id": null,
+      "artifact_id": null,
+      "enabled": false,
+      "images": [
+        "images/A03.png"
+      ]
+    },
+    {
+      "local_profile_id": "PHOTO-003",
+      "museum_id": null,
+      "artifact_id": null,
+      "enabled": false,
+      "images": [
+        "images/A04.png",
+        "images/A05.png"
+      ]
+    },
+    {
+      "local_profile_id": "PHOTO-004",
+      "museum_id": null,
+      "artifact_id": null,
+      "enabled": false,
+      "images": [
+        "images/A06.png"
+      ]
+    },
+    {
+      "local_profile_id": "PHOTO-005",
+      "museum_id": null,
+      "artifact_id": null,
+      "enabled": false,
+      "images": [
+        "images/A07.png"
+      ]
+    },
+    {
+      "local_profile_id": "PHOTO-006",
+      "museum_id": null,
+      "artifact_id": null,
+      "enabled": false,
+      "images": [
+        "images/A08.png",
+        "images/A09.png"
+      ]
+    },
+    {
+      "local_profile_id": "PHOTO-007",
+      "museum_id": null,
+      "artifact_id": null,
+      "enabled": false,
+      "images": [
+        "images/A10.png",
+        "images/A11.png"
+      ]
+    },
+    {
+      "local_profile_id": "PHOTO-008",
+      "museum_id": null,
+      "artifact_id": null,
+      "enabled": false,
+      "images": [
+        "images/A13.png"
+      ]
+    },
+    {
+      "local_profile_id": "PHOTO-009",
+      "museum_id": null,
+      "artifact_id": null,
+      "enabled": false,
+      "images": [
+        "images/A15.png",
+        "images/A16.png"
+      ]
+    },
+    {
+      "local_profile_id": "PHOTO-010",
+      "museum_id": null,
+      "artifact_id": null,
+      "enabled": false,
+      "images": [
+        "images/B02.png"
+      ]
+    },
+    {
+      "local_profile_id": "PHOTO-011",
+      "museum_id": null,
+      "artifact_id": null,
+      "enabled": false,
+      "images": [
+        "images/B03.png"
+      ]
+    },
+    {
+      "local_profile_id": "PHOTO-012",
+      "museum_id": null,
+      "artifact_id": null,
+      "enabled": false,
+      "images": [
+        "images/B04.png",
+        "images/B05.png"
+      ]
+    },
+    {
+      "local_profile_id": "PHOTO-013",
+      "museum_id": null,
+      "artifact_id": null,
+      "enabled": false,
+      "images": [
+        "images/B06.png"
+      ]
+    },
+    {
+      "local_profile_id": "PHOTO-014",
+      "museum_id": null,
+      "artifact_id": null,
+      "enabled": false,
+      "images": [
+        "images/B10.png"
+      ]
+    }
+  ]
+}

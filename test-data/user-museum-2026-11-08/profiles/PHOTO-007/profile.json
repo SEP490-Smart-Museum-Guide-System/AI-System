@@ -1,0 +1,48 @@
+{
+  "id": "PHOTO-007",
+  "title": "Đồng hồ kiểm tra vận tốc máy turbin khi khởi động",
+  "name_basis": "Chép tên từ bảng trong A10/A11, chưa đối chiếu hồ sơ bảo tàng",
+  "category_hint": "Thiết bị cơ khí/đo lường",
+  "grouping_status": "provisional_visual_match",
+  "label_evidence": [
+    {
+      "image_id": "A10",
+      "text": "Đồng hồ kiểm tra vận tốc máy turbin khi khởi động",
+      "status": "transcribed_from_photo_unverified"
+    }
+  ],
+  "features": [
+    "Mặt số tròn nền sáng, các số và kim tối màu",
+    "Có chữ ALSTHOM và BELFORT đọc được trên mặt số",
+    "Phần thân nối dài sang phải với đầu bánh răng"
+  ],
+  "notes": [
+    "Hai ảnh gần cùng mặt trước; chưa đủ bộ kiểm thử độc lập. Không tự gán dải đo/đơn vị đo từ các số trên mặt đồng hồ."
+  ],
+  "catalog_binding": {
+    "museum_id": null,
+    "artifact_id": null,
+    "gallery_id": null,
+    "official_name": null,
+    "catalog_number": null
+  },
+  "historical_facts": {
+    "date": null,
+    "provenance": null,
+    "verified_description": null
+  },
+  "source_image_ids": [
+    "A10",
+    "A11"
+  ],
+  "reference_candidate_ids": [
+    "A10",
+    "A11"
+  ],
+  "cover_image_id": "A10",
+  "review_status": "awaiting_human_review_and_catalog_mapping",
+  "indexing_enabled": false,
+  "embeddings_created": false,
+  "holdout_image_ids": [],
+  "model_id": null
+}

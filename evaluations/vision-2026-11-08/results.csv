@@ -1,0 +1,11 @@
+﻿id,kind,expected_profile_id,top_profile_id,matched,selected_profile_id,similarity,margin,requires_confirmation,passed,latency_ms
+A04,same_group_holdout,PHOTO-003,PHOTO-003,False,,0.929,0.0102,True,False,94.6
+A09,same_group_holdout,PHOTO-006,PHOTO-006,True,PHOTO-006,0.8986,0.0841,False,True,111.06
+A11,same_group_holdout,PHOTO-007,PHOTO-007,True,PHOTO-007,0.9266,0.0998,False,True,106.05
+A15,same_group_holdout,PHOTO-009,PHOTO-009,True,PHOTO-009,0.9286,0.0587,False,True,135.46
+B05,exploratory_grouping,PHOTO-012,PHOTO-012,False,,0.8328,0.0304,True,False,130.28
+WEB-01,external_similar_object,,PHOTO-003,False,,0.7672,0.0095,True,True,135.92
+WEB-02,external_similar_object,,PHOTO-003,False,,0.8239,0.0264,True,True,148.77
+WEB-03,external_similar_object,,PHOTO-011,False,,0.765,0.0089,True,True,83.48
+WEB-04,external_similar_object,,PHOTO-007,True,PHOTO-007,0.7718,0.0515,False,False,75.31
+WEB-05,external_similar_object,,PHOTO-007,False,,0.7226,0.0323,True,True,85.32

@@ -1,0 +1,552 @@
+{
+  "schema_version": 1,
+  "evaluation_date": "2026-11-08",
+  "mode": "real_onnx_encoder_and_production_asgi_routes_isolated_memory_store",
+  "model_id": "infinilabs/pizza-clip-base-v1@f71041903f3a04f7a883b90f0126eeb4ab44fa7c/clip-vit-base-patch32-vision.onnx",
+  "providers": [
+    "CPUExecutionProvider"
+  ],
+  "python": "3.12.10",
+  "onnxruntime": "1.23.2",
+  "numpy": "2.2.6",
+  "model_load_ms": 391.55,
+  "thresholds": {
+    "min_similarity": 0.72,
+    "min_margin": 0.04
+  },
+  "production_db_written": false,
+  "production_r2_written": false,
+  "user_photos_uploaded": false,
+  "source_sha256": {
+    "main.py": "5ae798220035bd1abc562f2d5d203dcec99334ca8e2391fa90a3844cb0a52c6e",
+    "vision.py": "c80a667bd57e54bdda6bb65d6022d60fa5566c5ca4da4b4364b5c45f2974071a",
+    "settings.py": "5b88a2869d7990d23701b84aeed50e0b6fb0ea40262ebe92eae8a829f7996df4"
+  },
+  "references": [
+    {
+      "profile_id": "PHOTO-001",
+      "image_id": "A01",
+      "path": "test-data/user-museum-2026-11-08/images/A01.png",
+      "sha256": "90eebd353be08e560212e4eb82455c37ddada6d25e304427ff96edf70611ba25"
+    },
+    {
+      "profile_id": "PHOTO-002",
+      "image_id": "A03",
+      "path": "test-data/user-museum-2026-11-08/images/A03.png",
+      "sha256": "5823f276d4c3e55d7b1b2685e369d2871e6e01f02bd48c79b886e8f0621f46a2"
+    },
+    {
+      "profile_id": "PHOTO-003",
+      "image_id": "A05",
+      "path": "test-data/user-museum-2026-11-08/images/A05.png",
+      "sha256": "eb555475e03cc098bb2bc5ee7e6d9a03e70a280c81214632545fd4ac1c6003ef"
+    },
+    {
+      "profile_id": "PHOTO-004",
+      "image_id": "A06",
+      "path": "test-data/user-museum-2026-11-08/images/A06.png",
+      "sha256": "a6a75c77c939832eba03944e0429800333321c5ecdd7fe431d22e6ce3413d12d"
+    },
+    {
+      "profile_id": "PHOTO-005",
+      "image_id": "A07",
+      "path": "test-data/user-museum-2026-11-08/images/A07.png",
+      "sha256": "5e686d753a412a141f4df81113a8b578221b3397129589feb4997e1e8cc56082"
+    },
+    {
+      "profile_id": "PHOTO-006",
+      "image_id": "A08",
+      "path": "test-data/user-museum-2026-11-08/images/A08.png",
+      "sha256": "cb316ce61af8376ad5538a3fbb83e97829b1fae88392ecf6cf511ff3d1cc643d"
+    },
+    {
+      "profile_id": "PHOTO-007",
+      "image_id": "A10",
+      "path": "test-data/user-museum-2026-11-08/images/A10.png",
+      "sha256": "9ed1873d4b1e3a02e44866cb587700bba4531871bf001ea75959ac492762ceb3"
+    },
+    {
+      "profile_id": "PHOTO-008",
+      "image_id": "A13",
+      "path": "test-data/user-museum-2026-11-08/images/A13.png",
+      "sha256": "0610f53a6d554130d09a7fbc9d0021ad562661cc0ad3a5f6f29057b743fb0b4b"
+    },
+    {
+      "profile_id": "PHOTO-009",
+      "image_id": "A16",
+      "path": "test-data/user-museum-2026-11-08/images/A16.png",
+      "sha256": "34bc5ce735ba3035489f07107d018be863956d068e7a61e85989232e1cb0f19a"
+    },
+    {
+      "profile_id": "PHOTO-010",
+      "image_id": "B02",
+      "path": "test-data/user-museum-2026-11-08/images/B02.png",
+      "sha256": "af4617bd588e99c1362ae8ed07005f46a8057be3edca54c39ffb44245df6d710"
+    },
+    {
+      "profile_id": "PHOTO-011",
+      "image_id": "B03",
+      "path": "test-data/user-museum-2026-11-08/images/B03.png",
+      "sha256": "c4103a42b04eadcda364d5328fb832b4458cf8cf117767bb4a52ecde7716c574"
+    },
+    {
+      "profile_id": "PHOTO-012",
+      "image_id": "B04",
+      "path": "test-data/user-museum-2026-11-08/images/B04.png",
+      "sha256": "18238359263842a6dff2bbd69c3b160c8d08aed3b9713d63b912d4c8032a3067"
+    },
+    {
+      "profile_id": "PHOTO-013",
+      "image_id": "B06",
+      "path": "test-data/user-museum-2026-11-08/images/B06.png",
+      "sha256": "b7aa648c926daa90fda27ce99dde16bd0ef4128cada320945fa3bb3003265726"
+    },
+    {
+      "profile_id": "PHOTO-014",
+      "image_id": "B10",
+      "path": "test-data/user-museum-2026-11-08/images/B10.png",
+      "sha256": "e7730e09ee0d8c41bf39cf2eb57b97a42d8fb0f5be92b46d90bb790e4bd0213a"
+    }
+  ],
+  "summary": {
+    "reference_profiles": 14,
+    "reference_images": 14,
+    "same_group_holdouts": 4,
+    "holdout_top1_hits": 4,
+    "holdout_auto_accept_correct": 3,
+    "external_similar_objects": 5,
+    "external_rejected": 4,
+    "external_false_accepts": 1,
+    "exploratory_unconfirmed_groups": 1,
+    "http_errors": 0
+  },
+  "results": [
+    {
+      "id": "A04",
+      "title": "Đèn có chữ C564",
+      "path": "test-data/user-museum-2026-11-08/images/A04.png",
+      "sha256": "3d7d2720d0fd16e30570d872282e1f9df02a5f90721ca5a5fb3193dbb6a78a98",
+      "kind": "same_group_holdout",
+      "expected_profile_id": "PHOTO-003",
+      "expected_family_ids": [
+        "PHOTO-003"
+      ],
+      "expected_matched": true,
+      "source": "Ảnh người dùng; nhóm trực quan tạm, chưa có mã DB chính thức.",
+      "http_status": 200,
+      "latency_ms": 94.6,
+      "matched": false,
+      "selected_profile_id": null,
+      "top_profile_id": "PHOTO-003",
+      "similarity": 0.929,
+      "margin": 0.0102,
+      "requires_confirmation": true,
+      "candidates": [
+        {
+          "profile_id": "PHOTO-003",
+          "similarity": 0.929
+        },
+        {
+          "profile_id": "PHOTO-005",
+          "similarity": 0.9188
+        },
+        {
+          "profile_id": "PHOTO-006",
+          "similarity": 0.8492
+        }
+      ],
+      "family_top1_hit": true,
+      "passed": false,
+      "top_k_decision_consistent": true
+    },
+    {
+      "id": "A09",
+      "title": "Đèn cầm tay có quai lớn và khung bảo vệ",
+      "path": "test-data/user-museum-2026-11-08/images/A09.png",
+      "sha256": "3dd5a0f1220dd2bbd9f1325c1ee70c3ff7158616742b6f081837e05f8973b8ac",
+      "kind": "same_group_holdout",
+      "expected_profile_id": "PHOTO-006",
+      "expected_family_ids": [
+        "PHOTO-006"
+      ],
+      "expected_matched": true,
+      "source": "Ảnh người dùng; nhóm trực quan tạm, chưa có mã DB chính thức.",
+      "http_status": 200,
+      "latency_ms": 111.06,
+      "matched": true,
+      "selected_profile_id": "PHOTO-006",
+      "top_profile_id": "PHOTO-006",
+      "similarity": 0.8986,
+      "margin": 0.0841,
+      "requires_confirmation": false,
+      "candidates": [
+        {
+          "profile_id": "PHOTO-006",
+          "similarity": 0.8986
+        },
+        {
+          "profile_id": "PHOTO-008",
+          "similarity": 0.8144
+        },
+        {
+          "profile_id": "PHOTO-005",
+          "similarity": 0.8055
+        }
+      ],
+      "family_top1_hit": true,
+      "passed": true,
+      "top_k_decision_consistent": true
+    },
+    {
+      "id": "A11",
+      "title": "Đồng hồ kiểm tra vận tốc máy turbin khi khởi động",
+      "path": "test-data/user-museum-2026-11-08/images/A11.png",
+      "sha256": "847fc3def69c3b4aa24f5a06647100867619a6b874d93aed0bcc38fc8a3e402c",
+      "kind": "same_group_holdout",
+      "expected_profile_id": "PHOTO-007",
+      "expected_family_ids": [
+        "PHOTO-007"
+      ],
+      "expected_matched": true,
+      "source": "Ảnh người dùng; nhóm trực quan tạm, chưa có mã DB chính thức.",
+      "http_status": 200,
+      "latency_ms": 106.05,
+      "matched": true,
+      "selected_profile_id": "PHOTO-007",
+      "top_profile_id": "PHOTO-007",
+      "similarity": 0.9266,
+      "margin": 0.0998,
+      "requires_confirmation": false,
+      "candidates": [
+        {
+          "profile_id": "PHOTO-007",
+          "similarity": 0.9266
+        },
+        {
+          "profile_id": "PHOTO-009",
+          "similarity": 0.8268
+        },
+        {
+          "profile_id": "PHOTO-008",
+          "similarity": 0.7847
+        }
+      ],
+      "family_top1_hit": true,
+      "passed": true,
+      "top_k_decision_consistent": true
+    },
+    {
+      "id": "A15",
+      "title": "Máy nén khí 7,5 hp",
+      "path": "test-data/user-museum-2026-11-08/images/A15.png",
+      "sha256": "6ce9e6e83f56ad07ccab1fc6cf22e67252be50a14ecf2bf1af8eef9c9159aed9",
+      "kind": "same_group_holdout",
+      "expected_profile_id": "PHOTO-009",
+      "expected_family_ids": [
+        "PHOTO-009"
+      ],
+      "expected_matched": true,
+      "source": "Ảnh người dùng; nhóm trực quan tạm, chưa có mã DB chính thức.",
+      "http_status": 200,
+      "latency_ms": 135.46,
+      "matched": true,
+      "selected_profile_id": "PHOTO-009",
+      "top_profile_id": "PHOTO-009",
+      "similarity": 0.9286,
+      "margin": 0.0587,
+      "requires_confirmation": false,
+      "candidates": [
+        {
+          "profile_id": "PHOTO-009",
+          "similarity": 0.9286
+        },
+        {
+          "profile_id": "PHOTO-008",
+          "similarity": 0.8699
+        },
+        {
+          "profile_id": "PHOTO-007",
+          "similarity": 0.8329
+        }
+      ],
+      "family_top1_hit": true,
+      "passed": true,
+      "top_k_decision_consistent": true
+    },
+    {
+      "id": "B05",
+      "title": "Hiện vật dạng lòng chảo màu sẫm — vị trí nhãn 3",
+      "path": "test-data/user-museum-2026-11-08/images/B05.png",
+      "sha256": "1958ebd20152962f356c54658685f88cd020951e676861f2a2506aeeef199552",
+      "kind": "exploratory_grouping",
+      "expected_profile_id": "PHOTO-012",
+      "expected_family_ids": [
+        "PHOTO-012"
+      ],
+      "expected_matched": true,
+      "source": "Ảnh người dùng; nhóm trực quan tạm, chưa có mã DB chính thức.",
+      "http_status": 200,
+      "latency_ms": 130.28,
+      "matched": false,
+      "selected_profile_id": null,
+      "top_profile_id": "PHOTO-012",
+      "similarity": 0.8328,
+      "margin": 0.0304,
+      "requires_confirmation": true,
+      "candidates": [
+        {
+          "profile_id": "PHOTO-012",
+          "similarity": 0.8328
+        },
+        {
+          "profile_id": "PHOTO-006",
+          "similarity": 0.8024
+        },
+        {
+          "profile_id": "PHOTO-011",
+          "similarity": 0.7837
+        }
+      ],
+      "family_top1_hit": true,
+      "passed": false,
+      "top_k_decision_consistent": true
+    },
+    {
+      "id": "WEB-01",
+      "title": "Đèn Tung Woo NOT UNDER COMMAND ở một bộ sưu tập khác",
+      "page_url": "https://lannangallery.com/products/solid-copper-ship-s-lantern-by-tung-woo-of-hong-kong",
+      "image_url": "https://lannangallery.com/cdn/shop/products/6237_1.jpg?v=1673519988&width=1946",
+      "creator": "Lannan Gallery — ảnh sản phẩm do bên đăng cung cấp",
+      "license": "Chưa xác nhận giấy phép tái phân phối; chỉ lưu cache kiểm thử local, không đưa vào bộ ảnh tham chiếu hoặc bản ZIP chia sẻ.",
+      "expected_family_ids": [
+        "PHOTO-003"
+      ],
+      "same_catalog_instance": false,
+      "expected_matched": false,
+      "reason": "Một đèn cùng kiểu chữ/kiểu dáng được bên bán chụp ở bối cảnh khác; không có bằng chứng là hiện vật C564 trong ảnh người dùng.",
+      "path": "state/vision-evaluation-inputs/WEB-01.jpg",
+      "sha256": "5ca672933103357b25b8505d6925709a1e87488f8f7f16fad1c45859d81bd5b0",
+      "width": 1700,
+      "height": 1500,
+      "download_error": null,
+      "kind": "external_similar_object",
+      "expected_profile_id": null,
+      "http_status": 200,
+      "latency_ms": 135.92,
+      "matched": false,
+      "selected_profile_id": null,
+      "top_profile_id": "PHOTO-003",
+      "similarity": 0.7672,
+      "margin": 0.0095,
+      "requires_confirmation": true,
+      "candidates": [
+        {
+          "profile_id": "PHOTO-003",
+          "similarity": 0.7672
+        },
+        {
+          "profile_id": "PHOTO-006",
+          "similarity": 0.7577
+        },
+        {
+          "profile_id": "PHOTO-005",
+          "similarity": 0.7107
+        }
+      ],
+      "family_top1_hit": true,
+      "passed": true,
+      "top_k_decision_consistent": true
+    },
+    {
+      "id": "WEB-02",
+      "title": "Đèn Tung Woo PORT ở nguồn ngoài",
+      "page_url": "https://lannangallery.com/products/polished-copper-ships-port-lantern-by-tung-woo",
+      "image_url": "https://lannangallery.com/cdn/shop/products/IMG_4928.jpg?v=1585241059&width=1946",
+      "creator": "Lannan Gallery — ảnh sản phẩm do bên đăng cung cấp",
+      "license": "Chưa xác nhận giấy phép tái phân phối; chỉ lưu cache kiểm thử local, không đưa vào bộ ảnh tham chiếu hoặc bản ZIP chia sẻ.",
+      "expected_family_ids": [
+        "PHOTO-005"
+      ],
+      "same_catalog_instance": false,
+      "expected_matched": false,
+      "reason": "Ảnh đèn PORT ở bên bán, không phải ảnh đã xác minh thuộc cùng hiện vật trong bộ hồ sơ người dùng.",
+      "path": "state/vision-evaluation-inputs/WEB-02.jpg",
+      "sha256": "785b44d097d0f513b3616c28d71e34d0e706ba7f41c9abe485ca42157e166ec8",
+      "width": 1600,
+      "height": 2400,
+      "download_error": null,
+      "kind": "external_similar_object",
+      "expected_profile_id": null,
+      "http_status": 200,
+      "latency_ms": 148.77,
+      "matched": false,
+      "selected_profile_id": null,
+      "top_profile_id": "PHOTO-003",
+      "similarity": 0.8239,
+      "margin": 0.0264,
+      "requires_confirmation": true,
+      "candidates": [
+        {
+          "profile_id": "PHOTO-003",
+          "similarity": 0.8239
+        },
+        {
+          "profile_id": "PHOTO-005",
+          "similarity": 0.7975
+        },
+        {
+          "profile_id": "PHOTO-004",
+          "similarity": 0.7653
+        }
+      ],
+      "family_top1_hit": false,
+      "passed": true,
+      "top_k_decision_consistent": true
+    },
+    {
+      "id": "WEB-03",
+      "title": "Cân ở Bucharest Municipal Museum",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Bucharest_Municipal_Museum_-_balance_scale_and_other_objects.jpg",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Bucharest_Municipal_Museum_-_balance_scale_and_other_objects.jpg/960px-Bucharest_Municipal_Museum_-_balance_scale_and_other_objects.jpg",
+      "creator": "Joe Mabel",
+      "license": "CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/",
+      "expected_family_ids": [
+        "PHOTO-011"
+      ],
+      "same_catalog_instance": false,
+      "expected_matched": false,
+      "reason": "Cân tại một bảo tàng khác; là ảnh tương tự về loại đồ vật, không phải hiện vật người dùng chụp.",
+      "path": "state/vision-evaluation-inputs/WEB-03.jpg",
+      "sha256": "a79284ebb2cb3e24dbe6f32c0f203cf18df1c63f5eaa647e47934e45dd4bda84",
+      "width": 960,
+      "height": 640,
+      "download_error": null,
+      "kind": "external_similar_object",
+      "expected_profile_id": null,
+      "http_status": 200,
+      "latency_ms": 83.48,
+      "matched": false,
+      "selected_profile_id": null,
+      "top_profile_id": "PHOTO-011",
+      "similarity": 0.765,
+      "margin": 0.0089,
+      "requires_confirmation": true,
+      "candidates": [
+        {
+          "profile_id": "PHOTO-011",
+          "similarity": 0.765
+        },
+        {
+          "profile_id": "PHOTO-005",
+          "similarity": 0.7561
+        },
+        {
+          "profile_id": "PHOTO-003",
+          "similarity": 0.735
+        }
+      ],
+      "family_top1_hit": true,
+      "passed": true,
+      "top_k_decision_consistent": true
+    },
+    {
+      "id": "WEB-04",
+      "title": "Van có tay quay ở nguồn ngoài",
+      "page_url": "https://commons.wikimedia.org/wiki/File:A-globe-valve-handwheel.JPG",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/72/A-globe-valve-handwheel.JPG/960px-A-globe-valve-handwheel.JPG",
+      "creator": "Heather Smith / The Alloy Valve Stockist; phiên bản Commons đã bỏ watermark",
+      "license": "CC BY 3.0 — https://creativecommons.org/licenses/by/3.0/",
+      "expected_family_ids": [
+        "PHOTO-008"
+      ],
+      "same_catalog_instance": false,
+      "expected_matched": false,
+      "reason": "Van ở bộ ảnh kỹ thuật bên ngoài, không phải van số 50 trong hồ sơ.",
+      "path": "state/vision-evaluation-inputs/WEB-04.jpg",
+      "sha256": "16f50221c72bcb7a9b5d2637f509393347d9f11d933287de499166c322a81092",
+      "width": 960,
+      "height": 720,
+      "download_error": null,
+      "kind": "external_similar_object",
+      "expected_profile_id": null,
+      "http_status": 200,
+      "latency_ms": 75.31,
+      "matched": true,
+      "selected_profile_id": "PHOTO-007",
+      "top_profile_id": "PHOTO-007",
+      "similarity": 0.7718,
+      "margin": 0.0515,
+      "requires_confirmation": false,
+      "candidates": [
+        {
+          "profile_id": "PHOTO-007",
+          "similarity": 0.7718
+        },
+        {
+          "profile_id": "PHOTO-008",
+          "similarity": 0.7203
+        },
+        {
+          "profile_id": "PHOTO-006",
+          "similarity": 0.6839
+        }
+      ],
+      "family_top1_hit": false,
+      "passed": false,
+      "top_k_decision_consistent": true
+    },
+    {
+      "id": "WEB-05",
+      "title": "Máy nén piston ở nguồn ngoài",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Piston_compressor.jpg",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/80/Piston_compressor.jpg/960px-Piston_compressor.jpg",
+      "creator": "Yanior",
+      "license": "Public domain theo công bố của tác giả trên trang Commons",
+      "expected_family_ids": [
+        "PHOTO-009"
+      ],
+      "same_catalog_instance": false,
+      "expected_matched": false,
+      "reason": "Ảnh một máy nén khác; không tự nhận là máy 7,5 hp trong hồ sơ người dùng.",
+      "path": "state/vision-evaluation-inputs/WEB-05.jpg",
+      "sha256": "5284299b86e6ecae9ad936b3dff31b097e87a33e218c839f4532f86b7dc98fca",
+      "width": 960,
+      "height": 945,
+      "download_error": null,
+      "kind": "external_similar_object",
+      "expected_profile_id": null,
+      "http_status": 200,
+      "latency_ms": 85.32,
+      "matched": false,
+      "selected_profile_id": null,
+      "top_profile_id": "PHOTO-007",
+      "similarity": 0.7226,
+      "margin": 0.0323,
+      "requires_confirmation": true,
+      "candidates": [
+        {
+          "profile_id": "PHOTO-007",
+          "similarity": 0.7226
+        },
+        {
+          "profile_id": "PHOTO-010",
+          "similarity": 0.6902
+        },
+        {
+          "profile_id": "PHOTO-006",
+          "similarity": 0.6429
+        }
+      ],
+      "family_top1_hit": false,
+      "passed": true,
+      "top_k_decision_consistent": true
+    }
+  ],
+  "limitations": [
+    "Chỉ 4 holdout cùng nhóm quan sát; chưa có ground truth định danh bảo tàng chính thức.",
+    "B05/PHOTO-012 là nhóm ghép tạm, loại khỏi metric holdout chính.",
+    "Ảnh ngoài được coi là ngoài catalog, không dùng làm reference hay đếm thành positive.",
+    "Không dùng A12 trùng A05; không augment ảnh để tạo holdout giả.",
+    "Model và inference thật; persistence tạm trong RAM, không kiểm thử PostgreSQL/gateway/deploy."
+  ]
+}

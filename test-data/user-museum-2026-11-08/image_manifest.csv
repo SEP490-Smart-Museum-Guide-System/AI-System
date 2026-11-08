@@ -1,0 +1,28 @@
+﻿image_id,local_profile_id,role,path,source_filename,sha256,width,height,duplicate_of,indexing_enabled,note
+A01,PHOTO-001,reference_candidate,images/A01.png,codex-clipboard-27ae6973-52fc-44c9-bb0f-c7d38024138c.png,90eebd353be08e560212e4eb82455c37ddada6d25e304427ff96edf70611ba25,1276,956,,False,
+A02,,context_review,images/A02.png,codex-clipboard-40430327-9000-4be5-a7dc-875682f5c8b5.png,85637eae86bba2308d2cb6f5a6f32bd7f0246cdc6c48e5d85751db057385c066,1276,956,,False,Không gán cả ba vật thành một hiện vật. Cần xác định từng vật trước khi chuẩn bị ảnh tham chiếu riêng.
+A03,PHOTO-002,reference_candidate,images/A03.png,codex-clipboard-27bda3d1-a566-41ed-821d-27a6cff6d94a.png,5823f276d4c3e55d7b1b2685e369d2871e6e01f02bd48c79b886e8f0621f46a2,1276,956,,False,
+A04,PHOTO-003,reference_candidate,images/A04.png,codex-clipboard-5946f3b0-ba5d-4c08-99aa-b7e74ec5f12d.png,3d7d2720d0fd16e30570d872282e1f9df02a5f90721ca5a5fb3193dbb6a78a98,960,1280,,False,
+A05,PHOTO-003,reference_candidate,images/A05.png,codex-clipboard-7b37af0e-dc33-4b81-bf89-2a06967a8baf.png,eb555475e03cc098bb2bc5ee7e6d9a03e70a280c81214632545fd4ac1c6003ef,960,1280,,False,
+A06,PHOTO-004,reference_candidate,images/A06.png,codex-clipboard-a4857a79-eb61-48c3-bd0d-234a15ea806c.png,a6a75c77c939832eba03944e0429800333321c5ecdd7fe431d22e6ce3413d12d,960,1280,,False,
+A07,PHOTO-005,reference_candidate,images/A07.png,codex-clipboard-7f37eab6-6f57-4eb6-bd36-0ca729786493.png,5e686d753a412a141f4df81113a8b578221b3397129589feb4997e1e8cc56082,960,1280,,False,
+A08,PHOTO-006,reference_candidate,images/A08.png,codex-clipboard-47d96918-8796-45d0-89c9-e7363553929b.png,cb316ce61af8376ad5538a3fbb83e97829b1fae88392ecf6cf511ff3d1cc643d,960,1280,,False,
+A09,PHOTO-006,reference_candidate,images/A09.png,codex-clipboard-abc364aa-448f-4e7b-9d5d-62d472e5df76.png,3dd5a0f1220dd2bbd9f1325c1ee70c3ff7158616742b6f081837e05f8973b8ac,960,1280,,False,
+A10,PHOTO-007,reference_candidate,images/A10.png,codex-clipboard-a1aa4644-c785-4c3b-8601-cbccba079b7b.png,9ed1873d4b1e3a02e44866cb587700bba4531871bf001ea75959ac492762ceb3,960,1280,,False,
+A11,PHOTO-007,reference_candidate,images/A11.png,codex-clipboard-e15f51c7-c779-427a-830d-10618bc95ac8.png,847fc3def69c3b4aa24f5a06647100867619a6b874d93aed0bcc38fc8a3e402c,960,1280,,False,
+A12,PHOTO-003,duplicate,images/A12.png,codex-clipboard-47e47f73-5c65-4b0f-83f6-2ecec9fbb7df.png,eb555475e03cc098bb2bc5ee7e6d9a03e70a280c81214632545fd4ac1c6003ef,960,1280,A05,False,Giữ bản gốc để đối chiếu nguồn; không tính thành ảnh tham chiếu độc lập hoặc ảnh kiểm thử.
+A13,PHOTO-008,reference_candidate,images/A13.png,codex-clipboard-16d98baf-37f9-4ad4-a0f4-1a1e364e6d5e.png,0610f53a6d554130d09a7fbc9d0021ad562661cc0ad3a5f6f29057b743fb0b4b,960,1280,,False,
+A14,PHOTO-008,label_evidence,images/A14.png,codex-clipboard-c4883d91-6114-4ce3-a0f4-5a6a2f4428ba.png,598a7653db417c6b69f8a8cb8eb29dfed061ca13a558357fc6f0c7e147b1538f,960,1280,,False,
+A15,PHOTO-009,reference_candidate,images/A15.png,codex-clipboard-c96a6ac4-aea3-4435-872a-d7806cfcf570.png,6ce9e6e83f56ad07ccab1fc6cf22e67252be50a14ecf2bf1af8eef9c9159aed9,960,1280,,False,
+A16,PHOTO-009,reference_candidate,images/A16.png,codex-clipboard-5dddfb43-a336-4625-97bc-fb8ba647f603.png,34bc5ce735ba3035489f07107d018be863956d068e7a61e85989232e1cb0f19a,960,1280,,False,
+B01,PHOTO-009,label_evidence,images/B01.png,codex-clipboard-65da9eb7-9eb7-43c8-9351-eab16be9eec1.png,0f662feeb06e47a21dc9b4bdda07b5e853677377b9e3534bc31976113883932e,960,1280,,False,
+B02,PHOTO-010,reference_candidate,images/B02.png,codex-clipboard-441a878a-bd6f-44ea-90fe-a4ee9e9b0c5f.png,af4617bd588e99c1362ae8ed07005f46a8057be3edca54c39ffb44245df6d710,960,1280,,False,
+B03,PHOTO-011,reference_candidate,images/B03.png,codex-clipboard-cff4a7ac-9548-418b-b635-19b531b0e096.png,c4103a42b04eadcda364d5328fb832b4458cf8cf117767bb4a52ecde7716c574,960,1280,,False,
+B04,PHOTO-012,reference_candidate,images/B04.png,codex-clipboard-df2712f3-e998-47aa-8744-29c6b95302d1.png,18238359263842a6dff2bbd69c3b160c8d08aed3b9713d63b912d4c8032a3067,960,1280,,False,
+B05,PHOTO-012,reference_candidate,images/B05.png,codex-clipboard-d0f6d3ec-48d5-488a-aef0-b43fbaad80be.png,1958ebd20152962f356c54658685f88cd020951e676861f2a2506aeeef199552,960,1280,,False,
+B06,PHOTO-013,reference_candidate,images/B06.png,codex-clipboard-2bfa270c-5d6b-4247-a644-092ca63eadbe.png,b7aa648c926daa90fda27ce99dde16bd0ef4128cada320945fa3bb3003265726,960,1280,,False,
+B07,,context_review,images/B07.png,codex-clipboard-08a23e1f-48df-4f46-b850-898239b0897d.png,19568b462f77934f6566b97affc3e07eec936519d17947a6dadd0d7735b22709,960,1280,,False,Chưa rõ bảo tàng quản lý như một bộ trưng bày hay hai hiện vật; không tự gán một artifactId cho cả ảnh.
+B08,,context_review,images/B08.png,codex-clipboard-e0a8db46-3f4e-4f04-9a6a-247857af41b3.png,1264021feb9121a054805c7d3a99dae912863d4b5a7d5d66d2c41b6989d2991b,960,1280,,False,Chờ xác định từng hiện vật hoặc mã bộ sưu tập trước khi chuẩn bị ảnh tham chiếu.
+B09,,context_review,images/B09.png,codex-clipboard-336c7e57-eb57-4da5-8947-627555907757.png,9d3099e7aa2db318b954f907a963ac5c419a31fc1b33f97b06829fd5683bf16c,1280,960,,False,"Ảnh bối cảnh trưng bày, chưa phải ảnh tham chiếu của một hiện vật cụ thể."
+B10,PHOTO-014,reference_candidate,images/B10.png,codex-clipboard-7663b125-b4f3-425b-93f3-822a02a8bfa4.png,e7730e09ee0d8c41bf39cf2eb57b97a42d8fb0f5be92b46d90bb790e4bd0213a,960,1280,,False,
+B11,,context_review,images/B11.png,codex-clipboard-16d4d074-cfac-47a9-acb1-d6a0baeafde2.png,cdafce7153b4923e46047da8225d7d801d24bec7e356a7b346b2c1bba2e5ed42,960,1280,,False,"Không gán chung bình, lư, chân đèn và các vật khác thành một hiện vật."

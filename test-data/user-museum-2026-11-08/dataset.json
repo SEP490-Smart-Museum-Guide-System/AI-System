@@ -1,0 +1,1167 @@
+{
+  "schema_version": 1,
+  "dataset_id": "user-museum-2026-11-08",
+  "received_on": "2026-11-08",
+  "captured_on": null,
+  "source": "Ảnh do người dùng cung cấp trong hai lượt đính kèm của cuộc trò chuyện SMGS.",
+  "museum_name": null,
+  "museum_id": null,
+  "license": null,
+  "usage_note": "Chuẩn bị hồ sơ nhận diện nội bộ cho dự án theo yêu cầu người gửi. Chưa xác nhận giấy phép tái phân phối công khai.",
+  "summary": {
+    "images_received": 27,
+    "unique_image_files": 26,
+    "draft_profiles": 14,
+    "reference_candidate": 19,
+    "context_review": 5,
+    "duplicate": 1,
+    "label_evidence": 2,
+    "indexed_images": 0,
+    "embeddings_created": 0
+  },
+  "indexing_enabled": false,
+  "profiles": [
+    {
+      "id": "PHOTO-001",
+      "title": "Hiện vật gốm loe rộng — vị trí nhãn 12",
+      "name_basis": "Mô tả trực quan; chưa có bảng tên đọc được",
+      "category_hint": "Hiện vật gốm/đất nung, cần xác nhận",
+      "display_marker": "12",
+      "grouping_status": "provisional_visual_match",
+      "features": [
+        "Miệng mở lớn và vành dày loe ra ngoài",
+        "Thân thắt ở giữa, phần dưới loe rộng",
+        "Bề mặt nâu, nhiều mảng sáng và đường trang trí uốn cong"
+      ],
+      "confusable_with": [
+        "PHOTO-002"
+      ],
+      "notes": [
+        "Số 12 là nhãn vị trí nhìn thấy trong ảnh, không phải số đăng ký hay artifactId."
+      ],
+      "catalog_binding": {
+        "museum_id": null,
+        "artifact_id": null,
+        "gallery_id": null,
+        "official_name": null,
+        "catalog_number": null
+      },
+      "historical_facts": {
+        "date": null,
+        "provenance": null,
+        "verified_description": null
+      },
+      "label_evidence": [],
+      "source_image_ids": [
+        "A01"
+      ],
+      "reference_candidate_ids": [
+        "A01"
+      ],
+      "cover_image_id": "A01",
+      "review_status": "awaiting_human_review_and_catalog_mapping",
+      "indexing_enabled": false,
+      "embeddings_created": false,
+      "holdout_image_ids": [],
+      "model_id": null
+    },
+    {
+      "id": "PHOTO-002",
+      "title": "Vật đựng gốm miệng vỡ — vị trí nhãn 7",
+      "name_basis": "Mô tả trực quan; chưa có tên chính thức",
+      "category_hint": "Hiện vật gốm/đất nung, cần xác nhận",
+      "display_marker": "7",
+      "grouping_status": "provisional_visual_match",
+      "features": [
+        "Dáng thân tròn thấp, màu vàng nâu",
+        "Miệng tròn rộng, mép trước có phần vỡ khuyết",
+        "Có các đường gờ ngang quanh thân"
+      ],
+      "confusable_with": [
+        "PHOTO-001"
+      ],
+      "notes": [
+        "Chỉ đối tượng ở giữa ảnh A03; không bao gồm các đồ vật đá ở xung quanh."
+      ],
+      "catalog_binding": {
+        "museum_id": null,
+        "artifact_id": null,
+        "gallery_id": null,
+        "official_name": null,
+        "catalog_number": null
+      },
+      "historical_facts": {
+        "date": null,
+        "provenance": null,
+        "verified_description": null
+      },
+      "label_evidence": [],
+      "source_image_ids": [
+        "A03"
+      ],
+      "reference_candidate_ids": [
+        "A03"
+      ],
+      "cover_image_id": "A03",
+      "review_status": "awaiting_human_review_and_catalog_mapping",
+      "indexing_enabled": false,
+      "embeddings_created": false,
+      "holdout_image_ids": [],
+      "model_id": null
+    },
+    {
+      "id": "PHOTO-003",
+      "title": "Đèn có chữ C564",
+      "name_basis": "Chữ C564 nhìn thấy trên thân; tên mô tả chưa được bảo tàng xác nhận",
+      "category_hint": "Đèn",
+      "grouping_status": "provisional_visual_match",
+      "features": [
+        "Thân tối màu với phần vai hình nón cụt",
+        "Mảng chữ nổi TUNG WOO, C564 và NOT UNDER COMMAND",
+        "Phần kính nhiều gờ ngang, có khung bảo vệ và khóa kèm xích"
+      ],
+      "confusable_with": [
+        "PHOTO-004",
+        "PHOTO-005",
+        "PHOTO-006"
+      ],
+      "notes": [
+        "Ảnh A05 và A12 trùng hoàn toàn theo SHA-256. Không dùng A12 làm ảnh bổ sung hoặc holdout.",
+        "Chưa xác nhận niên đại, công dụng hay đơn vị chế tạo ngoài chữ nhìn thấy trên ảnh."
+      ],
+      "catalog_binding": {
+        "museum_id": null,
+        "artifact_id": null,
+        "gallery_id": null,
+        "official_name": null,
+        "catalog_number": null
+      },
+      "historical_facts": {
+        "date": null,
+        "provenance": null,
+        "verified_description": null
+      },
+      "label_evidence": [],
+      "source_image_ids": [
+        "A04",
+        "A05",
+        "A12"
+      ],
+      "reference_candidate_ids": [
+        "A04",
+        "A05"
+      ],
+      "cover_image_id": "A04",
+      "review_status": "awaiting_human_review_and_catalog_mapping",
+      "indexing_enabled": false,
+      "embeddings_created": false,
+      "holdout_image_ids": [],
+      "model_id": null
+    },
+    {
+      "id": "PHOTO-004",
+      "title": "Đèn có chữ MASTHEAD",
+      "name_basis": "Chữ MASTHEAD nhìn thấy trong ảnh; tên mô tả",
+      "category_hint": "Đèn",
+      "grouping_status": "provisional_visual_match",
+      "features": [
+        "Phần thân trên màu nâu, vai hình nón cụt rộng",
+        "Chữ MASTHEAD nổi ở mặt trước",
+        "Phần kính phía dưới có nhiều gờ ngang và một thanh dọc ở trước"
+      ],
+      "confusable_with": [
+        "PHOTO-003",
+        "PHOTO-005"
+      ],
+      "notes": [
+        "Không gộp với đèn C564 hoặc đèn PORT dù có dáng gần giống."
+      ],
+      "catalog_binding": {
+        "museum_id": null,
+        "artifact_id": null,
+        "gallery_id": null,
+        "official_name": null,
+        "catalog_number": null
+      },
+      "historical_facts": {
+        "date": null,
+        "provenance": null,
+        "verified_description": null
+      },
+      "label_evidence": [],
+      "source_image_ids": [
+        "A06"
+      ],
+      "reference_candidate_ids": [
+        "A06"
+      ],
+      "cover_image_id": "A06",
+      "review_status": "awaiting_human_review_and_catalog_mapping",
+      "indexing_enabled": false,
+      "embeddings_created": false,
+      "holdout_image_ids": [],
+      "model_id": null
+    },
+    {
+      "id": "PHOTO-005",
+      "title": "Đèn có chữ PORT",
+      "name_basis": "Chữ PORT nhìn thấy trong ảnh; tên mô tả",
+      "category_hint": "Đèn",
+      "grouping_status": "provisional_visual_match",
+      "features": [
+        "Vai đèn màu nâu ánh kim với chữ PORT nổi",
+        "Phần kính cong sẫm màu, có các gờ ngang",
+        "Hai tấm bên hông và khóa/xích ở phía trước lệch trái"
+      ],
+      "confusable_with": [
+        "PHOTO-003",
+        "PHOTO-004"
+      ],
+      "notes": [
+        "Không suy ra chức năng hàng hải, niên đại hoặc quốc gia chỉ từ chữ PORT."
+      ],
+      "catalog_binding": {
+        "museum_id": null,
+        "artifact_id": null,
+        "gallery_id": null,
+        "official_name": null,
+        "catalog_number": null
+      },
+      "historical_facts": {
+        "date": null,
+        "provenance": null,
+        "verified_description": null
+      },
+      "label_evidence": [],
+      "source_image_ids": [
+        "A07"
+      ],
+      "reference_candidate_ids": [
+        "A07"
+      ],
+      "cover_image_id": "A07",
+      "review_status": "awaiting_human_review_and_catalog_mapping",
+      "indexing_enabled": false,
+      "embeddings_created": false,
+      "holdout_image_ids": [],
+      "model_id": null
+    },
+    {
+      "id": "PHOTO-006",
+      "title": "Đèn cầm tay có quai lớn và khung bảo vệ",
+      "name_basis": "Mô tả trực quan, cần tên chính thức",
+      "category_hint": "Đèn",
+      "grouping_status": "provisional_visual_match",
+      "features": [
+        "Quai xách lớn dạng vòng, phía trên có dây treo",
+        "Mặt kính tròn ở một đầu thân hình trụ",
+        "Khung kim loại bao quanh mặt kính và phần thân phía sau"
+      ],
+      "confusable_with": [
+        "PHOTO-003",
+        "PHOTO-004",
+        "PHOTO-005"
+      ],
+      "notes": [
+        "A08 và A09 cho hai góc của cùng nhóm đèn; vẫn cần người phụ trách xác nhận cách ghép."
+      ],
+      "catalog_binding": {
+        "museum_id": null,
+        "artifact_id": null,
+        "gallery_id": null,
+        "official_name": null,
+        "catalog_number": null
+      },
+      "historical_facts": {
+        "date": null,
+        "provenance": null,
+        "verified_description": null
+      },
+      "label_evidence": [],
+      "source_image_ids": [
+        "A08",
+        "A09"
+      ],
+      "reference_candidate_ids": [
+        "A08",
+        "A09"
+      ],
+      "cover_image_id": "A08",
+      "review_status": "awaiting_human_review_and_catalog_mapping",
+      "indexing_enabled": false,
+      "embeddings_created": false,
+      "holdout_image_ids": [],
+      "model_id": null
+    },
+    {
+      "id": "PHOTO-007",
+      "title": "Đồng hồ kiểm tra vận tốc máy turbin khi khởi động",
+      "name_basis": "Chép tên từ bảng trong A10/A11, chưa đối chiếu hồ sơ bảo tàng",
+      "category_hint": "Thiết bị cơ khí/đo lường",
+      "grouping_status": "provisional_visual_match",
+      "label_evidence": [
+        {
+          "image_id": "A10",
+          "text": "Đồng hồ kiểm tra vận tốc máy turbin khi khởi động",
+          "status": "transcribed_from_photo_unverified"
+        }
+      ],
+      "features": [
+        "Mặt số tròn nền sáng, các số và kim tối màu",
+        "Có chữ ALSTHOM và BELFORT đọc được trên mặt số",
+        "Phần thân nối dài sang phải với đầu bánh răng"
+      ],
+      "notes": [
+        "Hai ảnh gần cùng mặt trước; chưa đủ bộ kiểm thử độc lập. Không tự gán dải đo/đơn vị đo từ các số trên mặt đồng hồ."
+      ],
+      "catalog_binding": {
+        "museum_id": null,
+        "artifact_id": null,
+        "gallery_id": null,
+        "official_name": null,
+        "catalog_number": null
+      },
+      "historical_facts": {
+        "date": null,
+        "provenance": null,
+        "verified_description": null
+      },
+      "source_image_ids": [
+        "A10",
+        "A11"
+      ],
+      "reference_candidate_ids": [
+        "A10",
+        "A11"
+      ],
+      "cover_image_id": "A10",
+      "review_status": "awaiting_human_review_and_catalog_mapping",
+      "indexing_enabled": false,
+      "embeddings_created": false,
+      "holdout_image_ids": [],
+      "model_id": null
+    },
+    {
+      "id": "PHOTO-008",
+      "title": "Van mở dầu cung cấp cho lò hạ áp",
+      "name_basis": "Chép tên từ bảng A14, chưa đối chiếu hồ sơ bảo tàng",
+      "category_hint": "Thiết bị cơ khí/van",
+      "grouping_status": "provisional_visual_match",
+      "features": [
+        "Tay quay lớn dạng vòng tròn ở trên",
+        "Trục ren thẳng đứng, khung cong bao quanh phần giữa",
+        "Thân bên dưới có hai mặt bích và số 50 nổi"
+      ],
+      "notes": [
+        "A14 là ảnh bảng tên, không phải ảnh tham chiếu độc lập. Số 50 không được gán thành mã hiện vật hay thông số kỹ thuật khi chưa xác nhận."
+      ],
+      "catalog_binding": {
+        "museum_id": null,
+        "artifact_id": null,
+        "gallery_id": null,
+        "official_name": null,
+        "catalog_number": null
+      },
+      "historical_facts": {
+        "date": null,
+        "provenance": null,
+        "verified_description": null
+      },
+      "label_evidence": [
+        {
+          "image_id": "A14",
+          "text": "Van mở dầu cung cấp cho lò hạ áp",
+          "status": "transcribed_from_photo_unverified"
+        }
+      ],
+      "source_image_ids": [
+        "A13",
+        "A14"
+      ],
+      "reference_candidate_ids": [
+        "A13"
+      ],
+      "cover_image_id": "A13",
+      "review_status": "awaiting_human_review_and_catalog_mapping",
+      "indexing_enabled": false,
+      "embeddings_created": false,
+      "holdout_image_ids": [],
+      "model_id": null
+    },
+    {
+      "id": "PHOTO-009",
+      "title": "Máy nén khí 7,5 hp",
+      "name_basis": "Bảng tên B01 được ghép tạm với A15/A16 dựa trên bộ puli và bối cảnh",
+      "category_hint": "Thiết bị cơ khí/máy nén",
+      "grouping_status": "label_association_requires_confirmation",
+      "features": [
+        "Thân màu xanh nhạt, bề mặt có các mảng bong sơn",
+        "Mặt trước có nhiều bu-lông xếp quanh nắp",
+        "Bộ puli nhiều rãnh ở bên phải và hai cụm ống phía trên"
+      ],
+      "confusable_with": [
+        "PHOTO-010"
+      ],
+      "notes": [
+        "Cần người phụ trách xác nhận B01 là bảng tên của đúng máy trong A15/A16.",
+        "Không tự bổ sung năm sản xuất, nước sản xuất hoặc thời kỳ sử dụng."
+      ],
+      "catalog_binding": {
+        "museum_id": null,
+        "artifact_id": null,
+        "gallery_id": null,
+        "official_name": null,
+        "catalog_number": null
+      },
+      "historical_facts": {
+        "date": null,
+        "provenance": null,
+        "verified_description": null
+      },
+      "label_evidence": [
+        {
+          "image_id": "B01",
+          "text": "Máy nén khí 7,5hp - Xí nghiệp thiết bị lạnh sản xuất",
+          "status": "transcribed_from_photo_unverified"
+        }
+      ],
+      "source_image_ids": [
+        "A15",
+        "A16",
+        "B01"
+      ],
+      "reference_candidate_ids": [
+        "A15",
+        "A16"
+      ],
+      "cover_image_id": "A15",
+      "review_status": "awaiting_human_review_and_catalog_mapping",
+      "indexing_enabled": false,
+      "embeddings_created": false,
+      "holdout_image_ids": [],
+      "model_id": null
+    },
+    {
+      "id": "PHOTO-010",
+      "title": "Máy công nghiệp dạng đứng — tên tạm",
+      "name_basis": "Chỉ mô tả ngoại hình; bảng tên trong ảnh chưa đọc rõ",
+      "category_hint": "Thiết bị cơ khí, cần xác nhận loại máy",
+      "grouping_status": "provisional_visual_match",
+      "features": [
+        "Đế đứng cao màu xanh xám, phần trên tối màu",
+        "Có trục ren thẳng đứng và nhiều cụm cơ cấu phía trên",
+        "Bánh đai và dây truyền ở bên phải, mặt bàn nhỏ phía trước"
+      ],
+      "confusable_with": [
+        "PHOTO-009"
+      ],
+      "notes": [
+        "Chưa xác định tên/công dụng chính thức; không suy đoán từ dáng máy hay chữ mờ trên đế."
+      ],
+      "catalog_binding": {
+        "museum_id": null,
+        "artifact_id": null,
+        "gallery_id": null,
+        "official_name": null,
+        "catalog_number": null
+      },
+      "historical_facts": {
+        "date": null,
+        "provenance": null,
+        "verified_description": null
+      },
+      "label_evidence": [],
+      "source_image_ids": [
+        "B02"
+      ],
+      "reference_candidate_ids": [
+        "B02"
+      ],
+      "cover_image_id": "B02",
+      "review_status": "awaiting_human_review_and_catalog_mapping",
+      "indexing_enabled": false,
+      "embeddings_created": false,
+      "holdout_image_ids": [],
+      "model_id": null
+    },
+    {
+      "id": "PHOTO-011",
+      "title": "Cân hai đĩa và ngăn quả cân — tên mô tả",
+      "name_basis": "Mô tả trực quan; chưa có tên chính thức",
+      "category_hint": "Thiết bị đo lường",
+      "grouping_status": "provisional_visual_match",
+      "features": [
+        "Trụ đứng ở giữa, đòn cân ngang với hai đĩa treo",
+        "Hai đĩa màu tối và dây/khung treo mảnh",
+        "Đế dạng hộp gỗ, ngăn kéo mở có các quả cân"
+      ],
+      "notes": [
+        "Hai khối màu đen ở nền sau không được đưa vào nhận dạng của cân. Chưa xác nhận vật liệu hay niên đại."
+      ],
+      "catalog_binding": {
+        "museum_id": null,
+        "artifact_id": null,
+        "gallery_id": null,
+        "official_name": null,
+        "catalog_number": null
+      },
+      "historical_facts": {
+        "date": null,
+        "provenance": null,
+        "verified_description": null
+      },
+      "label_evidence": [],
+      "source_image_ids": [
+        "B03"
+      ],
+      "reference_candidate_ids": [
+        "B03"
+      ],
+      "cover_image_id": "B03",
+      "review_status": "awaiting_human_review_and_catalog_mapping",
+      "indexing_enabled": false,
+      "embeddings_created": false,
+      "holdout_image_ids": [],
+      "model_id": null
+    },
+    {
+      "id": "PHOTO-012",
+      "title": "Hiện vật dạng lòng chảo màu sẫm — vị trí nhãn 3",
+      "name_basis": "Mô tả trực quan; chưa xác định loại/tên hiện vật",
+      "category_hint": "Chưa xác định",
+      "display_marker": "3",
+      "grouping_status": "grouping_requires_confirmation",
+      "features": [
+        "Dáng tròn, lòng sâu, thành cao và bề mặt tối màu",
+        "Vành tròn nổi quanh mép",
+        "Trưng bày trong tủ kính, có nhãn vị trí 3 ở gần"
+      ],
+      "confusable_with": [
+        "PHOTO-013"
+      ],
+      "notes": [
+        "B04/B05 được ghép tạm theo hình dáng và vị trí nhãn; cần xác nhận là cùng một vật.",
+        "Ảnh có phản chiếu kính mạnh; cần chọn vùng hiện vật trước khi duyệt indexing. Chưa gán là nồi, chậu, cồng hay loại khác."
+      ],
+      "catalog_binding": {
+        "museum_id": null,
+        "artifact_id": null,
+        "gallery_id": null,
+        "official_name": null,
+        "catalog_number": null
+      },
+      "historical_facts": {
+        "date": null,
+        "provenance": null,
+        "verified_description": null
+      },
+      "label_evidence": [],
+      "source_image_ids": [
+        "B04",
+        "B05"
+      ],
+      "reference_candidate_ids": [
+        "B04",
+        "B05"
+      ],
+      "cover_image_id": "B04",
+      "review_status": "awaiting_human_review_and_catalog_mapping",
+      "indexing_enabled": false,
+      "embeddings_created": false,
+      "holdout_image_ids": [],
+      "model_id": null
+    },
+    {
+      "id": "PHOTO-013",
+      "title": "Mâm đồng — theo bảng tên trong ảnh",
+      "name_basis": "Bảng tên trong B06; chưa đối chiếu hồ sơ chính thức",
+      "category_hint": "Đồ dùng dạng mâm/khay",
+      "grouping_status": "provisional_visual_match",
+      "label_evidence": [
+        {
+          "image_id": "B06",
+          "text": "Mâm đồng\nSử dụng phục vụ đồng chí Nguyễn Thị Minh Khai và đồng chí Võ Văn Tần năm 1935 - 1936.",
+          "status": "transcribed_from_photo_unverified"
+        }
+      ],
+      "features": [
+        "Dạng tròn rộng và khá nông, màu nâu đỏ",
+        "Vành rộng, có vết hư hại nhìn thấy ở góc trên bên phải",
+        "Bảng tên nằm ngay phía dưới trong cùng ảnh"
+      ],
+      "confusable_with": [
+        "PHOTO-012"
+      ],
+      "notes": [
+        "Thông tin về người/năm sử dụng chỉ được chép lại từ nhãn, không coi là dữ kiện lịch sử đã kiểm chứng để tự sinh thuyết minh."
+      ],
+      "catalog_binding": {
+        "museum_id": null,
+        "artifact_id": null,
+        "gallery_id": null,
+        "official_name": null,
+        "catalog_number": null
+      },
+      "historical_facts": {
+        "date": null,
+        "provenance": null,
+        "verified_description": null
+      },
+      "source_image_ids": [
+        "B06"
+      ],
+      "reference_candidate_ids": [
+        "B06"
+      ],
+      "cover_image_id": "B06",
+      "review_status": "awaiting_human_review_and_catalog_mapping",
+      "indexing_enabled": false,
+      "embeddings_created": false,
+      "holdout_image_ids": [],
+      "model_id": null
+    },
+    {
+      "id": "PHOTO-014",
+      "title": "Tượng nhân vật ngồi mặc trang phục xanh — tên tạm",
+      "name_basis": "Mô tả ngoại hình; chưa có bảng tên đọc được",
+      "category_hint": "Tượng",
+      "grouping_status": "provisional_visual_match",
+      "features": [
+        "Nhân vật ngồi trên ghế, râu dài và mũ cao",
+        "Trang phục màu xanh có nhiều họa tiết tròn màu vàng",
+        "Bệ tượng tối màu, tủ có nền đỏ"
+      ],
+      "notes": [
+        "Không tự xác định danh tính nhân vật, tôn giáo, chất liệu, niên đại hoặc tên gọi chính thức từ ngoại hình."
+      ],
+      "catalog_binding": {
+        "museum_id": null,
+        "artifact_id": null,
+        "gallery_id": null,
+        "official_name": null,
+        "catalog_number": null
+      },
+      "historical_facts": {
+        "date": null,
+        "provenance": null,
+        "verified_description": null
+      },
+      "label_evidence": [],
+      "source_image_ids": [
+        "B10"
+      ],
+      "reference_candidate_ids": [
+        "B10"
+      ],
+      "cover_image_id": "B10",
+      "review_status": "awaiting_human_review_and_catalog_mapping",
+      "indexing_enabled": false,
+      "embeddings_created": false,
+      "holdout_image_ids": [],
+      "model_id": null
+    }
+  ],
+  "images": [
+    {
+      "id": "A01",
+      "source": "codex-clipboard-27ae6973-52fc-44c9-bb0f-c7d38024138c.png",
+      "profile": "PHOTO-001",
+      "role": "reference_candidate",
+      "view": "Góc nhìn từ trên xuống, toàn bộ hiện vật chính",
+      "flags": [
+        "nearby_objects",
+        "display_marker_is_not_catalog_id"
+      ],
+      "path": "images/A01.png",
+      "sha256": "90eebd353be08e560212e4eb82455c37ddada6d25e304427ff96edf70611ba25",
+      "bytes": 1996551,
+      "width": 1276,
+      "height": 956,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "A02",
+      "source": "codex-clipboard-40430327-9000-4be5-a7dc-875682f5c8b5.png",
+      "profile": null,
+      "role": "context_review",
+      "view": "Ba hiện vật gốm trong cùng khung hình",
+      "flags": [
+        "multiple_targets",
+        "requires_target_selection"
+      ],
+      "note": "Không gán cả ba vật thành một hiện vật. Cần xác định từng vật trước khi chuẩn bị ảnh tham chiếu riêng.",
+      "path": "images/A02.png",
+      "sha256": "85637eae86bba2308d2cb6f5a6f32bd7f0246cdc6c48e5d85751db057385c066",
+      "bytes": 2117038,
+      "width": 1276,
+      "height": 956,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "A03",
+      "source": "codex-clipboard-27bda3d1-a566-41ed-821d-27a6cff6d94a.png",
+      "profile": "PHOTO-002",
+      "role": "reference_candidate",
+      "view": "Hiện vật miệng vỡ ở giữa ảnh; góc nhìn từ trên xuống",
+      "flags": [
+        "nearby_objects",
+        "display_marker_is_not_catalog_id"
+      ],
+      "path": "images/A03.png",
+      "sha256": "5823f276d4c3e55d7b1b2685e369d2871e6e01f02bd48c79b886e8f0621f46a2",
+      "bytes": 2329862,
+      "width": 1276,
+      "height": 956,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "A04",
+      "source": "codex-clipboard-5946f3b0-ba5d-4c08-99aa-b7e74ec5f12d.png",
+      "profile": "PHOTO-003",
+      "role": "reference_candidate",
+      "view": "Đèn C564 nhìn chếch; phần đáy bị cắt",
+      "flags": [
+        "partial_frame",
+        "glass_reflection",
+        "similar_artifacts_nearby"
+      ],
+      "path": "images/A04.png",
+      "sha256": "3d7d2720d0fd16e30570d872282e1f9df02a5f90721ca5a5fb3193dbb6a78a98",
+      "bytes": 854138,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "A05",
+      "source": "codex-clipboard-7b37af0e-dc33-4b81-bf89-2a06967a8baf.png",
+      "profile": "PHOTO-003",
+      "role": "reference_candidate",
+      "view": "Đèn C564 nhìn gần chính diện",
+      "flags": [
+        "glass_reflection",
+        "similar_artifacts_nearby"
+      ],
+      "path": "images/A05.png",
+      "sha256": "eb555475e03cc098bb2bc5ee7e6d9a03e70a280c81214632545fd4ac1c6003ef",
+      "bytes": 864833,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "A06",
+      "source": "codex-clipboard-a4857a79-eb61-48c3-bd0d-234a15ea806c.png",
+      "profile": "PHOTO-004",
+      "role": "reference_candidate",
+      "view": "Đèn ghi MASTHEAD nhìn chính diện",
+      "flags": [
+        "glass_reflection",
+        "similar_artifacts_nearby"
+      ],
+      "path": "images/A06.png",
+      "sha256": "a6a75c77c939832eba03944e0429800333321c5ecdd7fe431d22e6ce3413d12d",
+      "bytes": 863320,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "A07",
+      "source": "codex-clipboard-7f37eab6-6f57-4eb6-bd36-0ca729786493.png",
+      "profile": "PHOTO-005",
+      "role": "reference_candidate",
+      "view": "Đèn ghi PORT nhìn chính diện",
+      "flags": [
+        "glass_reflection",
+        "similar_artifacts_nearby"
+      ],
+      "path": "images/A07.png",
+      "sha256": "5e686d753a412a141f4df81113a8b578221b3397129589feb4997e1e8cc56082",
+      "bytes": 807657,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "A08",
+      "source": "codex-clipboard-47d96918-8796-45d0-89c9-e7363553929b.png",
+      "profile": "PHOTO-006",
+      "role": "reference_candidate",
+      "view": "Đèn treo có quai lớn, nhìn chếch một phía",
+      "flags": [
+        "glass_reflection",
+        "nearby_objects"
+      ],
+      "path": "images/A08.png",
+      "sha256": "cb316ce61af8376ad5538a3fbb83e97829b1fae88392ecf6cf511ff3d1cc643d",
+      "bytes": 540952,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "A09",
+      "source": "codex-clipboard-abc364aa-448f-4e7b-9d5d-62d472e5df76.png",
+      "profile": "PHOTO-006",
+      "role": "reference_candidate",
+      "view": "Đèn treo có quai lớn, nhìn chếch phía còn lại",
+      "flags": [
+        "glass_reflection",
+        "nearby_objects"
+      ],
+      "path": "images/A09.png",
+      "sha256": "3dd5a0f1220dd2bbd9f1325c1ee70c3ff7158616742b6f081837e05f8973b8ac",
+      "bytes": 496435,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "A10",
+      "source": "codex-clipboard-a1aa4644-c785-4c3b-8601-cbccba079b7b.png",
+      "profile": "PHOTO-007",
+      "role": "reference_candidate",
+      "view": "Đồng hồ và bảng tên trong cùng ảnh",
+      "flags": [
+        "nearby_label",
+        "deep_shadow"
+      ],
+      "path": "images/A10.png",
+      "sha256": "9ed1873d4b1e3a02e44866cb587700bba4531871bf001ea75959ac492762ceb3",
+      "bytes": 504533,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "A11",
+      "source": "codex-clipboard-e15f51c7-c779-427a-830d-10618bc95ac8.png",
+      "profile": "PHOTO-007",
+      "role": "reference_candidate",
+      "view": "Đồng hồ gần cùng mặt trước với A10; mép phải bị cắt",
+      "flags": [
+        "similar_view",
+        "partial_frame",
+        "nearby_label"
+      ],
+      "path": "images/A11.png",
+      "sha256": "847fc3def69c3b4aa24f5a06647100867619a6b874d93aed0bcc38fc8a3e402c",
+      "bytes": 603893,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "A12",
+      "source": "codex-clipboard-47e47f73-5c65-4b0f-83f6-2ecec9fbb7df.png",
+      "profile": "PHOTO-003",
+      "role": "duplicate",
+      "duplicate_of": "A05",
+      "view": "Trùng byte với A05",
+      "flags": [
+        "exact_duplicate"
+      ],
+      "note": "Giữ bản gốc để đối chiếu nguồn; không tính thành ảnh tham chiếu độc lập hoặc ảnh kiểm thử.",
+      "path": "images/A12.png",
+      "sha256": "eb555475e03cc098bb2bc5ee7e6d9a03e70a280c81214632545fd4ac1c6003ef",
+      "bytes": 864833,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "A13",
+      "source": "codex-clipboard-16d98baf-37f9-4ad4-a0f4-1a1e364e6d5e.png",
+      "profile": "PHOTO-008",
+      "role": "reference_candidate",
+      "view": "Van với tay quay tròn và số 50 ở thân",
+      "flags": [
+        "deep_shadow"
+      ],
+      "path": "images/A13.png",
+      "sha256": "0610f53a6d554130d09a7fbc9d0021ad562661cc0ad3a5f6f29057b743fb0b4b",
+      "bytes": 675957,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "A14",
+      "source": "codex-clipboard-c4883d91-6114-4ce3-a0f4-5a6a2f4428ba.png",
+      "profile": "PHOTO-008",
+      "role": "label_evidence",
+      "view": "Bảng tên dưới van; chỉ thấy một phần chân hiện vật",
+      "flags": [
+        "label_only"
+      ],
+      "transcription": "Van mở dầu cung cấp cho lò hạ áp",
+      "path": "images/A14.png",
+      "sha256": "598a7653db417c6b69f8a8cb8eb29dfed061ca13a558357fc6f0c7e147b1538f",
+      "bytes": 643652,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "A15",
+      "source": "codex-clipboard-c96a6ac4-aea3-4435-872a-d7806cfcf570.png",
+      "profile": "PHOTO-009",
+      "role": "reference_candidate",
+      "view": "Máy màu xanh với bộ puli bên phải, nhìn chếch",
+      "flags": [
+        "partial_frame",
+        "nearby_label"
+      ],
+      "path": "images/A15.png",
+      "sha256": "6ce9e6e83f56ad07ccab1fc6cf22e67252be50a14ecf2bf1af8eef9c9159aed9",
+      "bytes": 768728,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "A16",
+      "source": "codex-clipboard-5dddfb43-a336-4625-97bc-fb8ba647f603.png",
+      "profile": "PHOTO-009",
+      "role": "reference_candidate",
+      "view": "Máy màu xanh nhìn gần chính diện",
+      "flags": [
+        "similar_view",
+        "nearby_label"
+      ],
+      "path": "images/A16.png",
+      "sha256": "34bc5ce735ba3035489f07107d018be863956d068e7a61e85989232e1cb0f19a",
+      "bytes": 867317,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "B01",
+      "source": "codex-clipboard-65da9eb7-9eb7-43c8-9351-eab16be9eec1.png",
+      "profile": "PHOTO-009",
+      "role": "label_evidence",
+      "view": "Bảng tên máy nén; thấy một phần puli ở góc trên",
+      "flags": [
+        "label_only",
+        "label_association_requires_confirmation"
+      ],
+      "transcription": "Máy nén khí 7,5hp - Xí nghiệp thiết bị lạnh sản xuất",
+      "path": "images/B01.png",
+      "sha256": "0f662feeb06e47a21dc9b4bdda07b5e853677377b9e3534bc31976113883932e",
+      "bytes": 470503,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "B02",
+      "source": "codex-clipboard-441a878a-bd6f-44ea-90fe-a4ee9e9b0c5f.png",
+      "profile": "PHOTO-010",
+      "role": "reference_candidate",
+      "view": "Toàn bộ máy công nghiệp dạng đứng",
+      "flags": [
+        "deep_shadow",
+        "label_unreadable",
+        "identity_unconfirmed"
+      ],
+      "path": "images/B02.png",
+      "sha256": "af4617bd588e99c1362ae8ed07005f46a8057be3edca54c39ffb44245df6d710",
+      "bytes": 626620,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "B03",
+      "source": "codex-clipboard-cff4a7ac-9548-418b-b635-19b531b0e096.png",
+      "profile": "PHOTO-011",
+      "role": "reference_candidate",
+      "view": "Cân hai đĩa với ngăn đựng quả cân",
+      "flags": [
+        "nearby_objects",
+        "identity_unconfirmed"
+      ],
+      "path": "images/B03.png",
+      "sha256": "c4103a42b04eadcda364d5328fb832b4458cf8cf117767bb4a52ecde7716c574",
+      "bytes": 975146,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "B04",
+      "source": "codex-clipboard-df2712f3-e998-47aa-8744-29c6b95302d1.png",
+      "profile": "PHOTO-012",
+      "role": "reference_candidate",
+      "view": "Vật dạng lòng chảo màu sẫm ở vị trí nhãn 3",
+      "flags": [
+        "strong_glass_reflection",
+        "nearby_objects",
+        "grouping_requires_confirmation",
+        "display_marker_is_not_catalog_id"
+      ],
+      "path": "images/B04.png",
+      "sha256": "18238359263842a6dff2bbd69c3b160c8d08aed3b9713d63b912d4c8032a3067",
+      "bytes": 797090,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "B05",
+      "source": "codex-clipboard-d0f6d3ec-48d5-488a-aef0-b43fbaad80be.png",
+      "profile": "PHOTO-012",
+      "role": "reference_candidate",
+      "view": "Vật dạng lòng chảo ở phía trước, nhìn chếch; tạm ghép với B04",
+      "flags": [
+        "strong_glass_reflection",
+        "nearby_objects",
+        "grouping_requires_confirmation"
+      ],
+      "path": "images/B05.png",
+      "sha256": "1958ebd20152962f356c54658685f88cd020951e676861f2a2506aeeef199552",
+      "bytes": 884000,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "B06",
+      "source": "codex-clipboard-2bfa270c-5d6b-4247-a644-092ca63eadbe.png",
+      "profile": "PHOTO-013",
+      "role": "reference_candidate",
+      "view": "Mâm tròn và bảng tên trong cùng ảnh",
+      "flags": [
+        "glass_reflection",
+        "nearby_label"
+      ],
+      "transcription": "Mâm đồng\nSử dụng phục vụ đồng chí Nguyễn Thị Minh Khai và đồng chí Võ Văn Tần năm 1935 - 1936.",
+      "path": "images/B06.png",
+      "sha256": "b7aa648c926daa90fda27ce99dde16bd0ef4128cada320945fa3bb3003265726",
+      "bytes": 1126183,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "B07",
+      "source": "codex-clipboard-08a23e1f-48df-4f46-b850-898239b0897d.png",
+      "profile": null,
+      "role": "context_review",
+      "view": "Hai bộ trang phục trên hai ma-nơ-canh, một bộ màu đỏ và một bộ màu sáng",
+      "flags": [
+        "multiple_targets",
+        "requires_target_selection"
+      ],
+      "note": "Chưa rõ bảo tàng quản lý như một bộ trưng bày hay hai hiện vật; không tự gán một artifactId cho cả ảnh.",
+      "path": "images/B07.png",
+      "sha256": "19568b462f77934f6566b97affc3e07eec936519d17947a6dadd0d7735b22709",
+      "bytes": 1147880,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "B08",
+      "source": "codex-clipboard-e0a8db46-3f4e-4f04-9a6a-247857af41b3.png",
+      "profile": null,
+      "role": "context_review",
+      "view": "Hai bộ trang phục màu sẫm và hồng trên hai ma-nơ-canh",
+      "flags": [
+        "multiple_targets",
+        "requires_target_selection"
+      ],
+      "note": "Chờ xác định từng hiện vật hoặc mã bộ sưu tập trước khi chuẩn bị ảnh tham chiếu.",
+      "path": "images/B08.png",
+      "sha256": "1264021feb9121a054805c7d3a99dae912863d4b5a7d5d66d2c41b6989d2991b",
+      "bytes": 770494,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "B09",
+      "source": "codex-clipboard-336c7e57-eb57-4da5-8947-627555907757.png",
+      "profile": null,
+      "role": "context_review",
+      "view": "Toàn cảnh phòng với bàn ghế, khu thờ và trang phục",
+      "flags": [
+        "scene_view",
+        "multiple_targets"
+      ],
+      "note": "Ảnh bối cảnh trưng bày, chưa phải ảnh tham chiếu của một hiện vật cụ thể.",
+      "path": "images/B09.png",
+      "sha256": "9d3099e7aa2db318b954f907a963ac5c419a31fc1b33f97b06829fd5683bf16c",
+      "bytes": 1667644,
+      "width": 1280,
+      "height": 960,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "B10",
+      "source": "codex-clipboard-7663b125-b4f3-425b-93f3-822a02a8bfa4.png",
+      "profile": "PHOTO-014",
+      "role": "reference_candidate",
+      "view": "Tượng nhân vật ngồi, trang phục xanh và râu dài",
+      "flags": [
+        "glass_reflection",
+        "deep_shadow",
+        "identity_unconfirmed"
+      ],
+      "path": "images/B10.png",
+      "sha256": "e7730e09ee0d8c41bf39cf2eb57b97a42d8fb0f5be92b46d90bb790e4bd0213a",
+      "bytes": 1152800,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    },
+    {
+      "id": "B11",
+      "source": "codex-clipboard-16d4d074-cfac-47a9-acb1-d6a0baeafde2.png",
+      "profile": null,
+      "role": "context_review",
+      "view": "Toàn cảnh tủ trưng bày khu thờ và nhiều đồ vật",
+      "flags": [
+        "scene_view",
+        "multiple_targets",
+        "glass_reflection"
+      ],
+      "note": "Không gán chung bình, lư, chân đèn và các vật khác thành một hiện vật.",
+      "path": "images/B11.png",
+      "sha256": "cdafce7153b4923e46047da8225d7d801d24bec7e356a7b346b2c1bba2e5ed42",
+      "bytes": 1208219,
+      "width": 960,
+      "height": 1280,
+      "indexing_enabled": false,
+      "split": "unassigned"
+    }
+  ]
+}

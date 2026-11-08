@@ -1,0 +1,47 @@
+{
+  "id": "PHOTO-006",
+  "title": "Đèn cầm tay có quai lớn và khung bảo vệ",
+  "name_basis": "Mô tả trực quan, cần tên chính thức",
+  "category_hint": "Đèn",
+  "grouping_status": "provisional_visual_match",
+  "features": [
+    "Quai xách lớn dạng vòng, phía trên có dây treo",
+    "Mặt kính tròn ở một đầu thân hình trụ",
+    "Khung kim loại bao quanh mặt kính và phần thân phía sau"
+  ],
+  "confusable_with": [
+    "PHOTO-003",
+    "PHOTO-004",
+    "PHOTO-005"
+  ],
+  "notes": [
+    "A08 và A09 cho hai góc của cùng nhóm đèn; vẫn cần người phụ trách xác nhận cách ghép."
+  ],
+  "catalog_binding": {
+    "museum_id": null,
+    "artifact_id": null,
+    "gallery_id": null,
+    "official_name": null,
+    "catalog_number": null
+  },
+  "historical_facts": {
+    "date": null,
+    "provenance": null,
+    "verified_description": null
+  },
+  "label_evidence": [],
+  "source_image_ids": [
+    "A08",
+    "A09"
+  ],
+  "reference_candidate_ids": [
+    "A08",
+    "A09"
+  ],
+  "cover_image_id": "A08",
+  "review_status": "awaiting_human_review_and_catalog_mapping",
+  "indexing_enabled": false,
+  "embeddings_created": false,
+  "holdout_image_ids": [],
+  "model_id": null
+}

@@ -1,0 +1,44 @@
+{
+  "id": "PHOTO-004",
+  "title": "Đèn có chữ MASTHEAD",
+  "name_basis": "Chữ MASTHEAD nhìn thấy trong ảnh; tên mô tả",
+  "category_hint": "Đèn",
+  "grouping_status": "provisional_visual_match",
+  "features": [
+    "Phần thân trên màu nâu, vai hình nón cụt rộng",
+    "Chữ MASTHEAD nổi ở mặt trước",
+    "Phần kính phía dưới có nhiều gờ ngang và một thanh dọc ở trước"
+  ],
+  "confusable_with": [
+    "PHOTO-003",
+    "PHOTO-005"
+  ],
+  "notes": [
+    "Không gộp với đèn C564 hoặc đèn PORT dù có dáng gần giống."
+  ],
+  "catalog_binding": {
+    "museum_id": null,
+    "artifact_id": null,
+    "gallery_id": null,
+    "official_name": null,
+    "catalog_number": null
+  },
+  "historical_facts": {
+    "date": null,
+    "provenance": null,
+    "verified_description": null
+  },
+  "label_evidence": [],
+  "source_image_ids": [
+    "A06"
+  ],
+  "reference_candidate_ids": [
+    "A06"
+  ],
+  "cover_image_id": "A06",
+  "review_status": "awaiting_human_review_and_catalog_mapping",
+  "indexing_enabled": false,
+  "embeddings_created": false,
+  "holdout_image_ids": [],
+  "model_id": null
+}

@@ -1,0 +1,49 @@
+{
+  "id": "PHOTO-003",
+  "title": "Đèn có chữ C564",
+  "name_basis": "Chữ C564 nhìn thấy trên thân; tên mô tả chưa được bảo tàng xác nhận",
+  "category_hint": "Đèn",
+  "grouping_status": "provisional_visual_match",
+  "features": [
+    "Thân tối màu với phần vai hình nón cụt",
+    "Mảng chữ nổi TUNG WOO, C564 và NOT UNDER COMMAND",
+    "Phần kính nhiều gờ ngang, có khung bảo vệ và khóa kèm xích"
+  ],
+  "confusable_with": [
+    "PHOTO-004",
+    "PHOTO-005",
+    "PHOTO-006"
+  ],
+  "notes": [
+    "Ảnh A05 và A12 trùng hoàn toàn theo SHA-256. Không dùng A12 làm ảnh bổ sung hoặc holdout.",
+    "Chưa xác nhận niên đại, công dụng hay đơn vị chế tạo ngoài chữ nhìn thấy trên ảnh."
+  ],
+  "catalog_binding": {
+    "museum_id": null,
+    "artifact_id": null,
+    "gallery_id": null,
+    "official_name": null,
+    "catalog_number": null
+  },
+  "historical_facts": {
+    "date": null,
+    "provenance": null,
+    "verified_description": null
+  },
+  "label_evidence": [],
+  "source_image_ids": [
+    "A04",
+    "A05",
+    "A12"
+  ],
+  "reference_candidate_ids": [
+    "A04",
+    "A05"
+  ],
+  "cover_image_id": "A04",
+  "review_status": "awaiting_human_review_and_catalog_mapping",
+  "indexing_enabled": false,
+  "embeddings_created": false,
+  "holdout_image_ids": [],
+  "model_id": null
+}

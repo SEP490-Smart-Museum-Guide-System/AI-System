@@ -1,0 +1,49 @@
+{
+  "id": "PHOTO-013",
+  "title": "Mâm đồng — theo bảng tên trong ảnh",
+  "name_basis": "Bảng tên trong B06; chưa đối chiếu hồ sơ chính thức",
+  "category_hint": "Đồ dùng dạng mâm/khay",
+  "grouping_status": "provisional_visual_match",
+  "label_evidence": [
+    {
+      "image_id": "B06",
+      "text": "Mâm đồng\nSử dụng phục vụ đồng chí Nguyễn Thị Minh Khai và đồng chí Võ Văn Tần năm 1935 - 1936.",
+      "status": "transcribed_from_photo_unverified"
+    }
+  ],
+  "features": [
+    "Dạng tròn rộng và khá nông, màu nâu đỏ",
+    "Vành rộng, có vết hư hại nhìn thấy ở góc trên bên phải",
+    "Bảng tên nằm ngay phía dưới trong cùng ảnh"
+  ],
+  "confusable_with": [
+    "PHOTO-012"
+  ],
+  "notes": [
+    "Thông tin về người/năm sử dụng chỉ được chép lại từ nhãn, không coi là dữ kiện lịch sử đã kiểm chứng để tự sinh thuyết minh."
+  ],
+  "catalog_binding": {
+    "museum_id": null,
+    "artifact_id": null,
+    "gallery_id": null,
+    "official_name": null,
+    "catalog_number": null
+  },
+  "historical_facts": {
+    "date": null,
+    "provenance": null,
+    "verified_description": null
+  },
+  "source_image_ids": [
+    "B06"
+  ],
+  "reference_candidate_ids": [
+    "B06"
+  ],
+  "cover_image_id": "B06",
+  "review_status": "awaiting_human_review_and_catalog_mapping",
+  "indexing_enabled": false,
+  "embeddings_created": false,
+  "holdout_image_ids": [],
+  "model_id": null
+}
