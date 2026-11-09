@@ -13,3 +13,6 @@ test-data/user-museum-*.zip
 state/models/
 state/vision-evaluation-inputs/
 state/chat-service-key.txt
+state/tts-service-key.txt
+state/tts-audio-cache/
+evaluations/tts-2026-11-09/*.wav

@@ -4,6 +4,8 @@ Model: `onnx-community/Qwen2.5-1.5B-Instruct`, revision `d54957e3af1be04546436e8
 
 Đây là **model văn bản riêng**, khác CLIP nhận diện ảnh. Model chạy trên máy/server chứa AI-System; Flutter/Vercel gọi BE, BE kiểm tra JWT/premium/published rồi gọi AI Chat qua khóa nội bộ. Không chạy trực tiếp model 1,79 GB trong Vercel hoặc trình duyệt.
 
+**09/11/2026:** cùng process/model có thêm `POST /api/v1/studio/drafts` cho Admin/Museum Staff thông qua BE. Soạn thuyết minh/quiz tiếng Việt từ nguồn, kiểm tra JSON/đoạn trích/đáp án, không phân tích ảnh hoặc tự xuất bản. Studio dùng budget tối đa 90 giây, đầu ra 512 token và cùng khóa inference với chat; các giới hạn 45 giây/384 token bên dưới áp dụng cho hỏi đáp Visitor. Xem [Xưởng nội dung AI](../AI_STUDIO_LOCAL_2026_11_09.md).
+
 ## Cài và chạy
 
 PowerShell tại AI-System, dùng Python 3.12:

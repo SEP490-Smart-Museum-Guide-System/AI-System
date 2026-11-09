@@ -2,6 +2,12 @@
 
 Repo chứa các microservice AI cho Smart Museum Guide System. TTS, nhận diện ảnh hiện vật và 3D Scan có các PoC độc lập; xem README từng service để biết giới hạn và cách chạy.
 
+**Nghe trong hệ thống 09/11/2026:** Xưởng AI có audio player đọc bản thuyết minh đang chỉnh sửa, qua gateway BE có JWT và kiểm tra phân công. Xem [triển khai UI, API và kiểm tra](AI_STUDIO_PLAYBACK_2026_11_09.md).
+
+**TTS thật 09/11/2026:** Piper tiếng Việt đã tạo 5 mẫu âm thanh trên CPU, 3 mẫu được phát đến hết qua module FE/proxy/Edge thật. Có file nghe và báo cáo, chưa chấm phát âm từng từ hoặc kiểm thử Flutter/DB/deploy: [kết quả TTS](evaluations/tts-2026-11-09/README.md).
+
+**Xưởng nội dung AI 09/11/2026:** Admin/Museum Staff đã có luồng web → BE → Qwen ONNX local soạn bản nháp thuyết minh/quiz tiếng Việt từ tư liệu. Có kiểm tra phạm vi bảo tàng và nguồn, gửi thẩm định/lưu quiz qua luồng hiện có; chưa phân tích ảnh hoặc tự xác minh lịch sử. Hai đầu ra model thật thành công, một quiz sai bị chặn; chưa kiểm thử toàn bộ với DB/deploy. Xem [thay đổi, lệnh chạy và giới hạn](AI_STUDIO_LOCAL_2026_11_09.md).
+
 **Cập nhật 04/11/2026:** đã sửa lỗi độ tin cậy Vision khi `top_k=1`, giới hạn ảnh/cache, readiness, cleanup/claim job 3D và adapter FE. Có 26 test AI pass, 2 test PostgreSQL chủ động skip khi chạy local. Xem [thay đổi code và các phần còn thiếu](AI_CODE_UPGRADE_2026_11_04.md). Đây chưa phải xác nhận pipeline AI production end-to-end.
 
 **Kiểm thử model thật 08/11/2026:** CLIP ONNX và API nhận diện thật với 14 hồ sơ tham chiếu trong kho RAM cô lập. Trong 4 ảnh cùng nhóm được giữ riêng, cả 4 có đúng hồ sơ đứng đầu, 3 được tự chấp nhận; trong 5 ảnh tương tự lấy từ nguồn ngoài, 4 bị từ chối và 1 bị nhận nhầm. Mẫu nhỏ, chưa xác nhận độ chính xác production hoặc kết nối DB/deploy. Xem [báo cáo và lệnh tái hiện](evaluations/vision-2026-11-08/README.md), hoặc mở [bảng ảnh so sánh từng ca](evaluations/vision-2026-11-08/index.html) trên máy đã tải bộ ảnh/cache kiểm thử.
@@ -44,7 +50,7 @@ AI-System/
 | Nhận diện hiện vật | So khớp CLIP ONNX embeddings với ảnh tham chiếu, trả `artifactId`, similarity và ứng viên | MVP ONNX trong [`AI Vision/README.md`](AI%20Vision/README.md) |
 | Dựng 3D | Nhận bộ ảnh, chạy COLMAP, xuất GLB và chờ curator review | PoC; chưa nối Backend/web/Flutter end-to-end |
 
-**AI không tự viết nội dung thuyết minh cho khách tham quan.** Nội dung, tên gọi và thông tin lịch sử do người phụ trách biên soạn, kiểm duyệt và xuất bản. TTS microservice chỉ biến văn bản được ứng dụng gửi vào thành audio; service không nhận diện hiện vật và không truy cập database nội dung.
+**AI chỉ hỗ trợ soạn bản nháp từ tư liệu; không tự xuất bản thuyết minh cho khách.** Nội dung, tên gọi và thông tin lịch sử do người phụ trách xác minh, kiểm duyệt và xuất bản. TTS microservice chỉ biến văn bản được ứng dụng gửi vào thành audio; service không nhận diện hiện vật và không truy cập database nội dung.
 
 Các service dùng chung `artifactId`. Một hiện vật có thể có ảnh, mã QR, nội dung thuyết minh, audio và mô hình 3D; thiếu mô hình 3D không làm gián đoạn chức năng thuyết minh.
 
@@ -90,7 +96,7 @@ BE hiện có `GET /api/artifacts/{id}/contents/published?languageCode=vi`, tr�
 | Hệ thống quản lý hiện vật | Lưu hồ sơ, nội dung đã duyệt, `qrCode`, `audioUrl`, `modelUrl` và trạng thái xuất bản |
 | Người phụ trách bảo tàng | Duyệt bản thuyết minh, audio và mô hình 3D |
 
-Frontend hiện lấy dữ liệu nghiệp vụ từ BE; dữ liệu demo AI/3D vẫn được giữ riêng theo phạm vi sản phẩm. Playback TTS thật đã có. Hỏi đáp theo hiện vật có service ONNX local và source guard từ 08/11; sinh nội dung/quiz vẫn chưa có model service thật. Không đánh đồng kiểm thử model cô lập với toàn bộ sản phẩm đã end-to-end.
+Frontend hiện lấy dữ liệu nghiệp vụ từ BE; dữ liệu demo AI/3D vẫn được giữ riêng theo phạm vi sản phẩm. Playback TTS thật đã có. Hỏi đáp theo hiện vật có service ONNX local và source guard từ 08/11; sinh bản nháp nội dung/quiz đã nối cùng model local từ 09/11. Không đánh đồng kiểm thử model cô lập với toàn bộ sản phẩm đã end-to-end.
 
 ## Lộ trình tiếp theo
 

@@ -1,0 +1,81 @@
+{
+  "date": "2026-11-09",
+  "scope": "Actual React TTS adapter + Vite proxy + Piper HTTP + Edge headless playback",
+  "backend_db_tested": false,
+  "flutter_player_tested": false,
+  "human_listening_verified": false,
+  "health": {
+    "ok": true,
+    "status": "ok",
+    "service": "tts-service",
+    "voice": "vi_VN-vais1000-medium"
+  },
+  "cases": [
+    {
+      "name": "compressor-ai-draft",
+      "bytes": 336940,
+      "voice": "vi_VN-vais1000-medium",
+      "cacheHit": true,
+      "decodedDuration": 7.639354166666666,
+      "decodedSampleRate": 48000,
+      "peak": 0.7520452737808228,
+      "during": {
+        "currentTime": 0.505392,
+        "paused": false,
+        "error": null
+      },
+      "ended": true,
+      "currentTime": 7.639365,
+      "duration": 7.639365,
+      "error": null,
+      "clientCache": {
+        "cacheHit": true,
+        "sameUrl": true
+      }
+    },
+    {
+      "name": "vietnamese-names-dates",
+      "bytes": 242732,
+      "voice": "vi_VN-vais1000-medium",
+      "cacheHit": true,
+      "decodedDuration": 5.503125,
+      "decodedSampleRate": 48000,
+      "peak": 0.76804119348526,
+      "during": {
+        "currentTime": 0.505597,
+        "paused": false,
+        "error": null
+      },
+      "ended": true,
+      "currentTime": 5.503129,
+      "duration": 5.503129,
+      "error": null,
+      "clientCache": {
+        "cacheHit": true,
+        "sameUrl": true
+      }
+    },
+    {
+      "name": "compressor-readable-units",
+      "bytes": 303660,
+      "voice": "vi_VN-vais1000-medium",
+      "cacheHit": true,
+      "decodedDuration": 6.884708333333333,
+      "decodedSampleRate": 48000,
+      "peak": 0.6470949649810791,
+      "during": {
+        "currentTime": 0.505173,
+        "paused": false,
+        "error": null
+      },
+      "ended": true,
+      "currentTime": 6.884717,
+      "duration": 6.884717,
+      "error": null,
+      "clientCache": {
+        "cacheHit": true,
+        "sameUrl": true
+      }
+    }
+  ]
+}

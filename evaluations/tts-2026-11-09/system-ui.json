@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-09",
+  "real_product_ui": true,
+  "real_jwt_login": true,
+  "real_postgresql": "temporary schema",
+  "real_be": true,
+  "draft_origin": "Text entered and edited in the actual product editor",
+  "real_qwen_generation": false,
+  "real_piper": true,
+  "audio_source": "HTTP response in product audio player, no sample WAV file",
+  "speechStatus": 200,
+  "editedTextReachedBE": true,
+  "during": {
+    "time": 0.518544,
+    "paused": false,
+    "duration": 6.884717,
+    "error": null
+  },
+  "rate": 1.25,
+  "seek": 2,
+  "completed": true,
+  "stoppedOnEdit": true,
+  "editedScriptClearsOldAudio": true,
+  "errors": [],
+  "human_listening_verified": false
+}

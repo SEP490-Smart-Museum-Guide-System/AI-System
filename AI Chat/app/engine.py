@@ -100,11 +100,14 @@ class OnnxChat:
             self.lock.release()
 
     def _generate(self, prompt):
+        return self.generate_json(prompt, parse_answer)
+
+    def generate_json(self, prompt, validator, *, max_new_tokens=None, prefix='', deadline_seconds=None):
         np = self.np
         tokens = self.tokenizer.encode(prompt, add_special_tokens=False).ids
         if len(tokens) > self.max_input_tokens:
             raise ChatFailure('Nội dung hoặc hội thoại quá dài. Hãy bắt đầu cuộc trò chuyện mới hoặc xem bản thuyết minh.', 422)
-        deadline = time.monotonic() + self.deadline_seconds
+        deadline = time.monotonic() + (deadline_seconds or self.deadline_seconds)
         cache = {name: np.empty((1, self.heads, 0, self.head_size), dtype=np.float16 if self.input_meta[name].type == 'tensor(float16)' else np.float32)
                  for name in self.cache_inputs}
         past_length = 0
@@ -127,15 +130,16 @@ class OnnxChat:
         for offset in range(0, len(tokens), 128):
             next_token = forward(tokens[offset:offset + 128])
         generated = []
-        for _ in range(self.max_new_tokens):
+        for _ in range(max_new_tokens or self.max_new_tokens):
             if next_token in self.eos_ids:
                 break
             generated.append(next_token)
-            text = self.tokenizer.decode(generated, skip_special_tokens=True)
+            text = prefix + self.tokenizer.decode(generated, skip_special_tokens=True)
             try:
-                # Return immediately after a complete validated JSON object.
-                return parse_answer(text)
-            except ChatFailure:
+                json.loads(text)
+            except ValueError:
                 pass
+            else:
+                return validator(text)
             next_token = forward([next_token])
-        return parse_answer(self.tokenizer.decode(generated, skip_special_tokens=True))
+        return validator(prefix + self.tokenizer.decode(generated, skip_special_tokens=True))

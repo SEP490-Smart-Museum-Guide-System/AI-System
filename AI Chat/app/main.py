@@ -3,6 +3,7 @@ import logging
 import os
 from pathlib import Path
 import secrets
+from typing import Literal
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
@@ -10,6 +11,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from starlette.datastructures import Headers
 
 from app.engine import ChatFailure, OnnxChat
+from app.studio import generate_draft
 
 LOGGER = logging.getLogger(__name__)
 ROOT = Path(__file__).resolve().parents[2]
@@ -51,6 +53,24 @@ class Question(BaseModel):
             t.role != ('user' if i % 2 == 0 else 'assistant') or not t.text.strip() for i, t in enumerate(self.history)
         ):
             raise ValueError('Invalid question/history')
+        return self
+
+
+class DraftRequest(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    artifactId: int = Field(gt=0)
+    artifactName: str = Field(min_length=1, max_length=1000)
+    sourceText: str = Field(min_length=20, max_length=12000)
+    mode: Literal['narration', 'quiz']
+    audience: Literal['children', 'general', 'scholar'] = 'general'
+    tone: Literal['vivid', 'inspiring', 'academic'] = 'vivid'
+    difficulty: Literal['easy', 'medium', 'hard'] = 'medium'
+    excludeQuestions: list[str] = Field(default_factory=list, max_length=5)
+
+    @model_validator(mode='after')
+    def check_source(self):
+        if len(self.sourceText.strip()) < 20 or any(not q.strip() or len(q) > 1000 for q in self.excludeQuestions):
+            raise ValueError('Invalid source/questions')
         return self
 
 
@@ -131,3 +151,16 @@ def answer(request: Question):
     except Exception:
         LOGGER.error('Local chat inference failed.')
         return JSONResponse({'detail': 'Chưa thể tạo câu trả lời. Vui lòng thử lại.'}, status_code=503)
+
+
+@app.post('/api/v1/studio/drafts')
+def draft(request: DraftRequest):
+    if not app.state.model_ready or app.state.engine is None:
+        raise HTTPException(503, 'Model local chưa sẵn sàng.')
+    try:
+        return generate_draft(app.state.engine, request)
+    except ChatFailure as exc:
+        return JSONResponse({'detail': str(exc)}, status_code=exc.status)
+    except Exception:
+        LOGGER.error('Local studio inference failed.')
+        return JSONResponse({'detail': 'Chưa thể tạo bản nháp. Vui lòng thử lại.'}, status_code=503)

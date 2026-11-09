@@ -1,0 +1,23 @@
+{
+  "source": "Máy nén khí có công suất 7,5hp, do Xí nghiệp thiết bị lạnh sản xuất. Thiết bị có thân kim loại sơn màu xanh, phía bên phải có bánh đai. Đây là tư liệu thử nghiệm dựa trên nhãn và quan sát ảnh, chưa phải hồ sơ đã duyệt.",
+  "real_onnx": true,
+  "production_db": false,
+  "results": [
+    {
+      "mode": "narration",
+      "status": 502,
+      "seconds": 27.21,
+      "response": {
+        "detail": "Bản nháp AI chưa hợp lệ hoặc thiếu căn cứ từ tư liệu. Hãy bổ sung nguồn và tạo lại."
+      }
+    },
+    {
+      "mode": "quiz",
+      "status": 502,
+      "seconds": 36.57,
+      "response": {
+        "detail": "Bản nháp AI chưa hợp lệ hoặc thiếu căn cứ từ tư liệu. Hãy bổ sung nguồn và tạo lại."
+      }
+    }
+  ]
+}

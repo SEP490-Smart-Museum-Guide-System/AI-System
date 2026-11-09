@@ -1,0 +1,29 @@
+{
+  "source": "Máy nén khí có công suất 7,5hp, do Xí nghiệp thiết bị lạnh sản xuất. Thân kim loại sơn màu xanh, phía bên phải có bánh đai.",
+  "real_onnx": true,
+  "production_db": false,
+  "results": [
+    {
+      "mode": "narration",
+      "status": 502,
+      "seconds": 23.32,
+      "response": {
+        "detail": "Bản nháp AI chưa hợp lệ hoặc thiếu căn cứ từ tư liệu. Hãy bổ sung nguồn và tạo lại."
+      }
+    },
+    {
+      "mode": "quiz",
+      "status": 504,
+      "seconds": 45.13,
+      "response": {
+        "detail": "Trợ lý local phản hồi chậm. Vui lòng thử lại."
+      }
+    }
+  ],
+  "raw": [
+    {
+      "mode": "narration",
+      "raw": "**Title:** Máy nén khí Xí nghiệp thiết bị lạnh\n\n**Narration Text:** Máy nén khí này có công suất 7,5hp, được sản xuất bởi Xí nghiệp thiết bị lạnh. Nó có thân kim loại sơn màu xanh và có bánh đai phía bên phải. Đây là một thiết bị quan trọng trong ngành công nghiệp lạnh, giúp tăng hiệu suất và tiết kiệm năng lượng."
+    }
+  ]
+}

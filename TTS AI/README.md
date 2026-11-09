@@ -2,6 +2,10 @@
 
 Microservice tạo audio tiếng Việt từ **văn bản thuyết minh đã được nhân viên bảo tàng duyệt**. Service dùng Piper qua `sherpa-onnx`, tổng hợp trên CPU và trả WAV cho ứng dụng Flutter. Service không nhận diện hiện vật và không tự viết nội dung.
 
+**Kiểm thử model thật 09/11/2026:** đã tổng hợp 5 mẫu WAV bằng Piper tiếng Việt trên CPU, kiểm tra PCM/cache/speed và phát hết 3 mẫu qua module FE thật + proxy Vite + Edge headless. Chưa chấm phát âm từng từ hoặc xác nhận toàn luồng Flutter/DB/deploy. Xem [báo cáo, file nghe và lệnh chạy](../evaluations/tts-2026-11-09/README.md). Chạy Windows không cần Docker: `D:\SEP409\AI-System\tools\start-local-tts.ps1`; model/cache nằm trong `state` được gitignore.
+
+**Nghe ngay trên UI:** Xưởng AI gọi gateway BE `POST /api/artifacts/{id}/ai/speech-preview`, có JWT/phạm vi Admin/Museum Staff, rồi phát response bằng audio player trong trang. Bài kiểm tra UI/JWT/PostgreSQL riêng/BE/Piper thật đã pass. [Hướng dẫn và tình trạng DB local](../AI_STUDIO_PLAYBACK_2026_11_09.md).
+
 **Code hiện tại 04/11/2026:** BE trả nội dung qua `/api/artifacts/{id}/contents/published?languageCode=vi` (`narrationText`, `audioUrl`); Flutter đã phát WAV/audio thật. Phần DBML/query dưới đây là thiết kế tham khảo trước đây, không thay thế entity/DTO BE hiện hành. Xem [nhật ký nâng cấp](../AI_CODE_UPGRADE_2026_11_04.md).
 
 ## Luồng tích hợp

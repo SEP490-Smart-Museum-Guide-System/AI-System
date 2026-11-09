@@ -1,0 +1,71 @@
+{
+  "date": "2026-11-09",
+  "model": "Qwen2.5-1.5B-Instruct / ONNX INT4",
+  "revision": "d54957e3af1be04546436e874a60fe386041b244",
+  "runtime": "1.23.2",
+  "providers": [
+    "CPUExecutionProvider"
+  ],
+  "production_db": false,
+  "image_inference": false,
+  "source_note": "Nhãn ảnh A14/B01 và quan sát ảnh người dùng, chưa là bản ghi được bảo tàng duyệt.",
+  "results": [
+    {
+      "mode": "narration",
+      "artifact": "Máy nén khí",
+      "source": "Máy nén khí có công suất 7,5hp, do Xí nghiệp thiết bị lạnh sản xuất. Thân kim loại sơn màu xanh, phía bên phải có bánh đai.",
+      "status": 200,
+      "seconds": 23.83,
+      "response": {
+        "title": "Máy nén khí",
+        "narrationText": "Máy nén khí này có công suất 7,5hp, được sản xuất bởi Xí nghiệp thiết bị lạnh. Nó có thân kim loại sơn màu xanh và phía bên phải có bánh đai.",
+        "evidenceQuotes": [
+          "Máy nén khí có công suất 7,5hp, do Xí nghiệp thiết bị lạnh sản xuất."
+        ]
+      }
+    },
+    {
+      "mode": "quiz",
+      "artifact": "Máy nén khí",
+      "source": "Máy nén khí có công suất 7,5hp, do Xí nghiệp thiết bị lạnh sản xuất. Thân kim loại sơn màu xanh, phía bên phải có bánh đai.",
+      "status": 200,
+      "seconds": 41.7,
+      "response": {
+        "question": "Máy nén khí có công suất bao nhiêu?",
+        "options": [
+          "5,5hp",
+          "7,5hp",
+          "8,5hp",
+          "9,5hp"
+        ],
+        "correctIndex": 1,
+        "explanation": "Máy nén khí có công suất 7,5hp, do Xí nghiệp thiết bị lạnh sản xuất.",
+        "evidenceQuote": "Máy nén khí có công suất 7,5hp, do Xí nghiệp thiết bị lạnh sản xuất."
+      }
+    },
+    {
+      "mode": "quiz",
+      "artifact": "Van mở dầu",
+      "source": "Van mở dầu cung cấp cho lò hạ áp. Hiện vật có tay vặn và thân kim loại.",
+      "status": 502,
+      "seconds": 35.21,
+      "response": {
+        "detail": "Câu hỏi và đáp án AI chưa khớp tư liệu. Hãy bổ sung nguồn hoặc tạo lại câu hỏi."
+      }
+    }
+  ],
+  "raw_for_validation_audit": [
+    {
+      "mode": "narration",
+      "raw": "{\"title\": \"Máy nén khí\", \"narrationText\": \"Máy nén khí này có công suất 7,5hp, được sản xuất bởi Xí nghiệp thiết bị lạnh. Nó có thân kim loại sơn màu xanh và phía bên phải có bánh đai.\", \"evidenceQuotes\": [\"Máy nén khí có công suất 7,5hp, do Xí nghiệp thiết bị lạnh sản xuất.\"]}"
+    },
+    {
+      "mode": "quiz",
+      "raw": "{\"question\": \"Máy nén khí có công suất bao nhiêu?\", \"options\": [\"5,5hp\", \"7,5hp\", \"8,5hp\", \"9,5hp\"], \"correctIndex\": 2, \"explanation\": \"Máy nén khí có công suất 7,5hp, do Xí nghiệp thiết bị lạnh sản xuất.\", \"evidenceQuote\": \"Máy nén khí có công suất 7,5hp, do Xí nghiệp thiết bị lạnh sản xuất.\"}"
+    },
+    {
+      "mode": "quiz",
+      "raw": "{\"question\": \"Van mở dầu cung cấp cho lò gì?\", \"options\": [\"Nước\", \"Đất\", \"Điện\", \"Dầu\"], \"correctIndex\": 3, \"explanation\": \"Van mở dầu cung cấp cho lò dầu.\", \"evidenceQuote\": \"Van mở dầu cung cấp cho lò hạ áp.\"}"
+    }
+  ]
+}

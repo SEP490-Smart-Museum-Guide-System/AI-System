@@ -1,0 +1,136 @@
+{
+  "date": "2026-11-09",
+  "scope": "Real HTTP + Piper ONNX CPU; test text, not published DB content",
+  "phonetic_accuracy_verified": false,
+  "cases": [
+    {
+      "name": "compressor-ai-draft",
+      "text": "Máy nén khí này có công suất 7,5hp, được sản xuất bởi Xí nghiệp thiết bị lạnh. Nó có thân kim loại sơn màu xanh và phía bên phải có bánh đai.",
+      "speed": 1.0,
+      "status": 200,
+      "cache": "MISS",
+      "voice": "vi_VN-vais1000-medium",
+      "generation_seconds": 3.796,
+      "file": "compressor-ai-draft.wav",
+      "channels": 1,
+      "sample_width": 2,
+      "sample_rate": 22050,
+      "frames": 168448,
+      "duration_seconds": 7.639,
+      "peak": 0.74838,
+      "rms": 0.11144,
+      "clipped_fraction": 0.0,
+      "bytes": 336940,
+      "sha256": "3b0f971f312326277ca1aafeccd7fdc8f752cfd9fa00da98b7a2672261fbddf6"
+    },
+    {
+      "name": "vietnamese-names-dates",
+      "text": "Trống đồng Ngọc Lũ là hiện vật tiêu biểu của văn hóa Đông Sơn. Ngày mùng hai tháng chín năm một nghìn chín trăm bốn mươi lăm.",
+      "speed": 1.0,
+      "status": 200,
+      "cache": "MISS",
+      "voice": "vi_VN-vais1000-medium",
+      "generation_seconds": 0.581,
+      "file": "vietnamese-names-dates.wav",
+      "channels": 1,
+      "sample_width": 2,
+      "sample_rate": 22050,
+      "frames": 121344,
+      "duration_seconds": 5.503,
+      "peak": 0.76709,
+      "rms": 0.12967,
+      "clipped_fraction": 0.0,
+      "bytes": 242732,
+      "sha256": "dcfaa8c718b7ac7d324003b0c840fc8037d62e8f3c04ccbe5bc18ef80c684efd"
+    },
+    {
+      "name": "compressor-readable-units",
+      "text": "Máy nén khí có công suất bảy phẩy năm mã lực, do Xí nghiệp thiết bị lạnh sản xuất. Thân kim loại sơn màu xanh, phía bên phải có bánh đai.",
+      "speed": 1.0,
+      "status": 200,
+      "cache": "MISS",
+      "voice": "vi_VN-vais1000-medium",
+      "generation_seconds": 0.811,
+      "file": "compressor-readable-units.wav",
+      "channels": 1,
+      "sample_width": 2,
+      "sample_rate": 22050,
+      "frames": 151808,
+      "duration_seconds": 6.885,
+      "peak": 0.64221,
+      "rms": 0.10283,
+      "clipped_fraction": 0.0,
+      "bytes": 303660,
+      "sha256": "486f9686a18325b91dfe5838216c652a9f42d6dcb08b9c5ce88bfa8bce77c8c4"
+    },
+    {
+      "name": "valve-slow",
+      "text": "Van mở dầu cung cấp cho lò hạ áp. Hiện vật có tay vặn và thân kim loại.",
+      "speed": 0.75,
+      "status": 200,
+      "cache": "MISS",
+      "voice": "vi_VN-vais1000-medium",
+      "generation_seconds": 0.458,
+      "file": "valve-slow.wav",
+      "channels": 1,
+      "sample_width": 2,
+      "sample_rate": 22050,
+      "frames": 88320,
+      "duration_seconds": 4.005,
+      "peak": 0.54797,
+      "rms": 0.10777,
+      "clipped_fraction": 0.0,
+      "bytes": 176684,
+      "sha256": "cc7a2a75c5e4733e9b2f2474c4a8e6567c5b908309f3cf8f4c851999800bfddd"
+    },
+    {
+      "name": "valve-fast",
+      "text": "Van mở dầu cung cấp cho lò hạ áp. Hiện vật có tay vặn và thân kim loại.",
+      "speed": 1.25,
+      "status": 200,
+      "cache": "MISS",
+      "voice": "vi_VN-vais1000-medium",
+      "generation_seconds": 0.338,
+      "file": "valve-fast.wav",
+      "channels": 1,
+      "sample_width": 2,
+      "sample_rate": 22050,
+      "frames": 74752,
+      "duration_seconds": 3.39,
+      "peak": 0.56488,
+      "rms": 0.10823,
+      "clipped_fraction": 0.0,
+      "bytes": 149548,
+      "sha256": "4eca79f1b5b5b227d7106741cc1ff97abff0cf5bd6a3ad0cd93cb62b2b6d4a67"
+    }
+  ],
+  "validation": [
+    {
+      "request": {
+        "text": " "
+      },
+      "status": 422
+    },
+    {
+      "request": {
+        "text": "Văn bản",
+        "language": "en"
+      },
+      "status": 422
+    },
+    {
+      "request": {
+        "text": "Văn bản",
+        "speed": 3
+      },
+      "status": 422
+    }
+  ],
+  "ready": {
+    "status": "ok",
+    "service": "tts-service",
+    "voice": "vi_VN-vais1000-medium",
+    "model_ready": true,
+    "language": "vi-VN"
+  }
+}
