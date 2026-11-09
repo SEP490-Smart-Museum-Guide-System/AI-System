@@ -9,7 +9,19 @@ from uuid import uuid4
 from fastapi.testclient import TestClient
 from PIL import Image
 import psycopg
-from app import main, reconstruction
+from app import main, reconstruction, jobs
+
+
+class InitializationTests(unittest.TestCase):
+    def test_json_default_is_literal_not_a_second_sql_format_placeholder(self):
+        connection = Mock()
+        connection.__enter__ = Mock(return_value=connection)
+        connection.__exit__ = Mock(return_value=False)
+        with patch.object(jobs, '_connect', return_value=connection):
+            jobs.initialize()
+        statements = [call.args[0].as_string() for call in connection.execute.call_args_list]
+        self.assertEqual(len(statements), 3)
+        self.assertIn("DEFAULT '{}'::jsonb", statements[1])
 
 
 class ApiTests(unittest.TestCase):

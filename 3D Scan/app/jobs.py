@@ -40,7 +40,7 @@ def initialize() -> None:
                 error TEXT,
                 created_at TIMESTAMPTZ NOT NULL,
                 updated_at TIMESTAMPTZ NOT NULL,
-                capture_metadata JSONB NOT NULL DEFAULT '{}'::jsonb
+                capture_metadata JSONB NOT NULL DEFAULT '{{}}'::jsonb
             )
         """).format(_table()))
         db.execute(sql.SQL(

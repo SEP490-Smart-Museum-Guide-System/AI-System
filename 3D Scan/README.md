@@ -16,7 +16,9 @@ Backend cần làm gateway xác thực giữa giao diện scan và service này.
 
 ## Chạy local
 
-Yêu cầu Python 3.11+, COLMAP CLI cài trên máy và truy cập được qua PATH (hoặc cấu hình `COLMAP_COMMAND`). Bản COLMAP phải có các lệnh `automatic_reconstructor`, `poisson_mesher` và `mesh_texturer`. CPU chạy được nhưng chậm; COLMAP dùng CUDA khi máy hỗ trợ.
+Yêu cầu Python 3.11+, COLMAP CLI cài trên máy và truy cập được qua PATH (hoặc cấu hình `COLMAP_COMMAND`). Pipeline cần các lệnh `automatic_reconstructor`, `poisson_mesher`; `mesh_texturer` là bước thử thêm nếu bản COLMAP có hỗ trợ. Các bước sparse có thể chạy CPU, nhưng dense reconstruction của pipeline hiện tại cần CUDA/GPU; không thể coi việc cài COLMAP CPU là dựng được mesh đầy đủ. Xem [COLMAP FAQ](https://colmap.github.io/legacy/3.12/faq.html).
+
+Có thể khởi động cùng các AI khác bằng [một lệnh Docker Compose](../RUN_ALL_AI.md). Image Scan mặc định có binary COLMAP nhưng chưa tích hợp CUDA/GPU passthrough; API healthy chỉ xác nhận binary/DB/worker, chưa xác nhận dựng GLB.
 
 ```powershell
 cd "AI-System/3D Scan"

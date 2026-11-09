@@ -2,6 +2,8 @@
 
 Repo chứa các microservice AI cho Smart Museum Guide System. TTS, nhận diện ảnh hiện vật và 3D Scan có các PoC độc lập; xem README từng service để biết giới hạn và cách chạy.
 
+**Chạy tất cả dịch vụ trên máy thành viên:** từ thư mục repo chạy `powershell -ExecutionPolicy Bypass -File .\tools\start-ai.ps1`. Cần Docker Desktop và cấu hình PostgreSQL BE một lần trong `.env`; script tự chuẩn bị khóa, tải model và đợi bốn API ready. Xem [RUN_ALL_AI.md](RUN_ALL_AI.md) để cài lần đầu, nối BE, dừng và hiểu giới hạn GPU của 3D.
+
 **Nghe trong hệ thống 09/11/2026:** Xưởng AI có audio player đọc bản thuyết minh đang chỉnh sửa, qua gateway BE có JWT và kiểm tra phân công. Xem [triển khai UI, API và kiểm tra](AI_STUDIO_PLAYBACK_2026_11_09.md).
 
 **TTS thật 09/11/2026:** Piper tiếng Việt đã tạo 5 mẫu âm thanh trên CPU, 3 mẫu được phát đến hết qua module FE/proxy/Edge thật. Có file nghe và báo cáo, chưa chấm phát âm từng từ hoặc kiểm thử Flutter/DB/deploy: [kết quả TTS](evaluations/tts-2026-11-09/README.md).

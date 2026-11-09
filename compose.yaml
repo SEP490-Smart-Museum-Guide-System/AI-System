@@ -1,0 +1,115 @@
+name: smgs-ai
+
+x-database: &database
+  AI_SYSTEM_DB_HOST: ${AI_SYSTEM_DB_HOST:-host.docker.internal}
+  AI_SYSTEM_DB_PORT: ${AI_SYSTEM_DB_PORT:-5432}
+  AI_SYSTEM_DB_NAME: ${AI_SYSTEM_DB_NAME:-smgs_db}
+  AI_SYSTEM_DB_USER: ${AI_SYSTEM_DB_USER:-postgres}
+  AI_SYSTEM_DB_PASSWORD: ${AI_SYSTEM_DB_PASSWORD:?Configure the existing BE database password in .env}
+
+services:
+  tts:
+    build: ./TTS AI
+    ports: ["127.0.0.1:${AI_TTS_PORT:-8000}:8000"]
+    environment:
+      TTS_MODEL_DIR: /models
+      TTS_CACHE_DIR: /data/audio-cache
+      TTS_NUM_THREADS: 2
+      TTS_SERVICE_API_KEY: ${TTS_SERVICE_API_KEY:-}
+      TTS_CACHE_MAX_BYTES: ${TTS_CACHE_MAX_BYTES:-536870912}
+      TTS_CACHE_MAX_FILES: ${TTS_CACHE_MAX_FILES:-1000}
+    volumes:
+      - tts-models:/models
+      - tts-audio:/data/audio-cache
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/ready', timeout=4)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 300s
+    restart: unless-stopped
+
+  vision:
+    build: ./AI Vision
+    ports: ["127.0.0.1:${AI_VISION_PORT:-8001}:8001"]
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    environment:
+      <<: *database
+      AI_SERVICE_API_KEY: ${AI_SERVICE_API_KEY:?Run tools/start-ai.ps1 to prepare internal keys}
+      AI_VISION_DB_SCHEMA: ${AI_VISION_DB_SCHEMA:-ai_vision}
+      MODEL_CACHE_DIR: /models
+      MODEL_NUM_THREADS: 2
+      CLIP_ONNX_REPO_ID: ${CLIP_ONNX_REPO_ID:-infinilabs/pizza-clip-base-v1}
+      CLIP_ONNX_REVISION: ${CLIP_ONNX_REVISION:-main}
+      CLIP_ONNX_FILENAME: ${CLIP_ONNX_FILENAME:-clip-vit-base-patch32-vision.onnx}
+      MAX_IMAGE_PIXELS: ${MAX_IMAGE_PIXELS:-20000000}
+    volumes: ["vision-models:/models"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/ready', timeout=4)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 300s
+    restart: unless-stopped
+
+  scan:
+    build: ./3D Scan
+    ports: ["127.0.0.1:${AI_SCAN_PORT:-8002}:8002"]
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    environment:
+      <<: *database
+      SCAN_SERVICE_API_KEY: ${SCAN_SERVICE_API_KEY:?Run tools/start-ai.ps1 to prepare internal keys}
+      SCAN_DB_SCHEMA: ${SCAN_DB_SCHEMA:-ai_3d_scan}
+      SCAN_DATA_DIR: /data
+      COLMAP_COMMAND: colmap
+      QT_QPA_PLATFORM: offscreen
+      SCAN_MAX_IMAGE_PIXELS: ${SCAN_MAX_IMAGE_PIXELS:-20000000}
+      SCAN_MAX_METADATA_BYTES: ${SCAN_MAX_METADATA_BYTES:-16384}
+    volumes: ["scan-data:/data"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8002/ready', timeout=4)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+    restart: unless-stopped
+
+  chat-model:
+    image: smgs-ai-chat:local
+    build:
+      context: .
+      dockerfile: docker/chat.Dockerfile
+    environment:
+      AI_CHAT_CACHE_DIR: /model-cache
+      HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+      HF_HUB_DISABLE_TELEMETRY: "1"
+    volumes: ["./state/models/chat:/model-cache"]
+    command: ["python", "tools/download_chat_model.py"]
+    restart: "no"
+
+  chat:
+    image: smgs-ai-chat:local
+    build:
+      context: .
+      dockerfile: docker/chat.Dockerfile
+    depends_on:
+      chat-model:
+        condition: service_completed_successfully
+    ports: ["127.0.0.1:${AI_CHAT_PORT:-8003}:8003"]
+    environment:
+      AI_CHAT_SERVICE_KEY: ${AI_CHAT_SERVICE_KEY:?Run tools/start-ai.ps1 to prepare internal keys}
+      AI_CHAT_MODEL_DIR: /model-cache/models--onnx-community--Qwen2.5-1.5B-Instruct/snapshots/d54957e3af1be04546436e874a60fe386041b244
+    volumes: ["./state/models/chat:/model-cache:ro"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8003/ready', timeout=4)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 120s
+    restart: unless-stopped
+
+volumes:
+  tts-models:
+  tts-audio:
+  vision-models:
+  scan-data:
