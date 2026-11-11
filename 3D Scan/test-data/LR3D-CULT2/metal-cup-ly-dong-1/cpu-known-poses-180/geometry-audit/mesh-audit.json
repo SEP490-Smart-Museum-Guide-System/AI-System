@@ -1,0 +1,1377 @@
+{
+  "vertices": 70537,
+  "faces": 141041,
+  "watertight": false,
+  "winding_consistent": true,
+  "boundary_edges": 41,
+  "nonmanifold_edges": 0,
+  "degenerate_faces": 0,
+  "normals_finite": true,
+  "bounds": [
+    [
+      -2.877614736557007,
+      -3.5553300380706787,
+      -2.72613787651062
+    ],
+    [
+      2.88423752784729,
+      3.353259325027466,
+      2.718676805496216
+    ]
+  ],
+  "views": [
+    {
+      "image": "sketchfab_collection_1_CAM1_1.0001.png",
+      "silhouette_iou": 0.951413254492671
+    },
+    {
+      "image": "sketchfab_collection_1_CAM1_1.0023.png",
+      "silhouette_iou": 0.9565591881062053
+    },
+    {
+      "image": "sketchfab_collection_1_CAM1_1.0046.png",
+      "silhouette_iou": 0.9522855837813148
+    },
+    {
+      "image": "sketchfab_collection_1_CAM1_1.0068.png",
+      "silhouette_iou": 0.9519652250146113
+    },
+    {
+      "image": "sketchfab_collection_1_CAM1_1.0090.png",
+      "silhouette_iou": 0.9524377648776666
+    },
+    {
+      "image": "sketchfab_collection_1_CAM2_1.0001.png",
+      "silhouette_iou": 0.9626959525285625
+    },
+    {
+      "image": "sketchfab_collection_1_CAM2_1.0023.png",
+      "silhouette_iou": 0.957392076230503
+    },
+    {
+      "image": "sketchfab_collection_1_CAM2_1.0046.png",
+      "silhouette_iou": 0.9577309700564771
+    },
+    {
+      "image": "sketchfab_collection_1_CAM2_1.0068.png",
+      "silhouette_iou": 0.968271110697328
+    },
+    {
+      "image": "sketchfab_collection_1_CAM2_1.0090.png",
+      "silhouette_iou": 0.9634546195700335
+    }
+  ],
+  "top_down_profiles": {
+    "x": {
+      "reference": [
+        {
+          "coordinate": -2.8,
+          "height": 2.862965085533218
+        },
+        {
+          "coordinate": -2.73,
+          "height": 2.8675622588589134
+        },
+        {
+          "coordinate": -2.6599999999999997,
+          "height": 2.8747781197918005
+        },
+        {
+          "coordinate": -2.59,
+          "height": 3.257206676815212
+        },
+        {
+          "coordinate": -2.52,
+          "height": 3.3382239617222775
+        },
+        {
+          "coordinate": -2.4499999999999997,
+          "height": 3.3255777990671502
+        },
+        {
+          "coordinate": -2.38,
+          "height": 3.1647392045897242
+        },
+        {
+          "coordinate": -2.31,
+          "height": 2.96325416853571
+        },
+        {
+          "coordinate": -2.2399999999999998,
+          "height": 2.8425154014259633
+        },
+        {
+          "coordinate": -2.17,
+          "height": 2.714163467863072
+        },
+        {
+          "coordinate": -2.0999999999999996,
+          "height": 2.5115200590007536
+        },
+        {
+          "coordinate": -2.03,
+          "height": 2.3596097093124606
+        },
+        {
+          "coordinate": -1.96,
+          "height": 2.1755443497204947
+        },
+        {
+          "coordinate": -1.89,
+          "height": 2.021753512574218
+        },
+        {
+          "coordinate": -1.8199999999999998,
+          "height": 1.8713786013029232
+        },
+        {
+          "coordinate": -1.75,
+          "height": 1.735190927145812
+        },
+        {
+          "coordinate": -1.68,
+          "height": 1.601733344270496
+        },
+        {
+          "coordinate": -1.6099999999999999,
+          "height": 1.4824509227866312
+        },
+        {
+          "coordinate": -1.54,
+          "height": 1.3976482119915854
+        },
+        {
+          "coordinate": -1.47,
+          "height": 1.3417108620023923
+        },
+        {
+          "coordinate": -1.4,
+          "height": 1.30687152935311
+        },
+        {
+          "coordinate": -1.33,
+          "height": 1.2989729873024158
+        },
+        {
+          "coordinate": -1.26,
+          "height": 1.2970331811876903
+        },
+        {
+          "coordinate": -1.19,
+          "height": 1.2975737813223
+        },
+        {
+          "coordinate": -1.12,
+          "height": 1.3043649457624331
+        },
+        {
+          "coordinate": -1.05,
+          "height": 1.3153496209950195
+        },
+        {
+          "coordinate": -0.98,
+          "height": 1.3197102955536062
+        },
+        {
+          "coordinate": -0.9099999999999999,
+          "height": 1.3213511320506774
+        },
+        {
+          "coordinate": -0.8400000000000001,
+          "height": 1.329882168119357
+        },
+        {
+          "coordinate": -0.77,
+          "height": 1.3380938266141769
+        },
+        {
+          "coordinate": -0.7000000000000002,
+          "height": 1.3423036881425823
+        },
+        {
+          "coordinate": -0.6299999999999999,
+          "height": 1.3373499900341033
+        },
+        {
+          "coordinate": -0.56,
+          "height": 1.3312701251572485
+        },
+        {
+          "coordinate": -0.4900000000000002,
+          "height": 1.3258650438808286
+        },
+        {
+          "coordinate": -0.41999999999999993,
+          "height": 1.3316831674208185
+        },
+        {
+          "coordinate": -0.3500000000000001,
+          "height": 1.3340127381151463
+        },
+        {
+          "coordinate": -0.28000000000000025,
+          "height": 1.3394540228048735
+        },
+        {
+          "coordinate": -0.20999999999999996,
+          "height": 1.3471061558053923
+        },
+        {
+          "coordinate": -0.14000000000000012,
+          "height": 1.3370893860873427
+        },
+        {
+          "coordinate": -0.07000000000000028,
+          "height": 1.347279599063065
+        },
+        {
+          "coordinate": 0.0,
+          "height": 1.3446241714188176
+        },
+        {
+          "coordinate": 0.06999999999999984,
+          "height": 1.3423357330588168
+        },
+        {
+          "coordinate": 0.13999999999999968,
+          "height": 1.3348138737399562
+        },
+        {
+          "coordinate": 0.20999999999999996,
+          "height": 1.3344693164432764
+        },
+        {
+          "coordinate": 0.2799999999999998,
+          "height": 1.3296493368534912
+        },
+        {
+          "coordinate": 0.34999999999999964,
+          "height": 1.312136850247144
+        },
+        {
+          "coordinate": 0.41999999999999993,
+          "height": 1.3136212162696226
+        },
+        {
+          "coordinate": 0.48999999999999977,
+          "height": 1.3071605310605072
+        },
+        {
+          "coordinate": 0.5599999999999996,
+          "height": 1.3031448566379602
+        },
+        {
+          "coordinate": 0.6299999999999999,
+          "height": 1.3019134290141166
+        },
+        {
+          "coordinate": 0.6999999999999997,
+          "height": 1.295111456995111
+        },
+        {
+          "coordinate": 0.77,
+          "height": 1.2815323582739002
+        },
+        {
+          "coordinate": 0.8399999999999999,
+          "height": 1.2727488430108003
+        },
+        {
+          "coordinate": 0.9099999999999997,
+          "height": 1.2682392606958273
+        },
+        {
+          "coordinate": 0.98,
+          "height": 1.261708751138764
+        },
+        {
+          "coordinate": 1.0499999999999998,
+          "height": 1.2580034237237578
+        },
+        {
+          "coordinate": 1.1199999999999997,
+          "height": 1.2542543171369847
+        },
+        {
+          "coordinate": 1.19,
+          "height": 1.2517877826705495
+        },
+        {
+          "coordinate": 1.2599999999999998,
+          "height": 1.2526195988247635
+        },
+        {
+          "coordinate": 1.33,
+          "height": 1.263796278867338
+        },
+        {
+          "coordinate": 1.3999999999999995,
+          "height": 1.2816650545833395
+        },
+        {
+          "coordinate": 1.4699999999999998,
+          "height": 1.312795647341038
+        },
+        {
+          "coordinate": 1.54,
+          "height": 1.3636420440260724
+        },
+        {
+          "coordinate": 1.6099999999999994,
+          "height": 1.4397855022052741
+        },
+        {
+          "coordinate": 1.6799999999999997,
+          "height": 1.5393878016672669
+        },
+        {
+          "coordinate": 1.75,
+          "height": 1.6479413419910387
+        },
+        {
+          "coordinate": 1.8199999999999994,
+          "height": 1.7899906254970848
+        },
+        {
+          "coordinate": 1.8899999999999997,
+          "height": 1.9659088605710981
+        },
+        {
+          "coordinate": 1.96,
+          "height": 2.0729872887693923
+        },
+        {
+          "coordinate": 2.0299999999999994,
+          "height": 2.259571938206123
+        },
+        {
+          "coordinate": 2.0999999999999996,
+          "height": 2.467309144683542
+        },
+        {
+          "coordinate": 2.17,
+          "height": 2.658902007478907
+        },
+        {
+          "coordinate": 2.2399999999999993,
+          "height": 2.8719000111647146
+        },
+        {
+          "coordinate": 2.3099999999999996,
+          "height": 3.044708615417588
+        },
+        {
+          "coordinate": 2.38,
+          "height": 3.2578136699312825
+        },
+        {
+          "coordinate": 2.4499999999999993,
+          "height": 3.307925071123921
+        },
+        {
+          "coordinate": 2.5199999999999996,
+          "height": 3.2752678704457243
+        },
+        {
+          "coordinate": 2.59,
+          "height": 2.8360296058271057
+        },
+        {
+          "coordinate": 2.6599999999999993,
+          "height": 2.840283063885692
+        },
+        {
+          "coordinate": 2.7299999999999995,
+          "height": 2.845529940349828
+        },
+        {
+          "coordinate": 2.8,
+          "height": 2.8468114670476963
+        }
+      ],
+      "reconstruction": [
+        {
+          "coordinate": -2.8,
+          "height": 2.8430214079227767
+        },
+        {
+          "coordinate": -2.73,
+          "height": 2.863457771531311
+        },
+        {
+          "coordinate": -2.6599999999999997,
+          "height": 2.8927078602534317
+        },
+        {
+          "coordinate": -2.59,
+          "height": 3.2355659383850623
+        },
+        {
+          "coordinate": -2.52,
+          "height": 3.3304448476417896
+        },
+        {
+          "coordinate": -2.4499999999999997,
+          "height": 3.304789429781951
+        },
+        {
+          "coordinate": -2.38,
+          "height": 3.1059808378570377
+        },
+        {
+          "coordinate": -2.31,
+          "height": 2.9448462753015026
+        },
+        {
+          "coordinate": -2.2399999999999998,
+          "height": 2.8107397204878612
+        },
+        {
+          "coordinate": -2.17,
+          "height": 2.6704445232639817
+        },
+        {
+          "coordinate": -2.0999999999999996,
+          "height": 2.4914979513371858
+        },
+        {
+          "coordinate": -2.03,
+          "height": 2.3098078503876844
+        },
+        {
+          "coordinate": -1.96,
+          "height": 2.151518780222027
+        },
+        {
+          "coordinate": -1.89,
+          "height": 1.9988305788071983
+        },
+        {
+          "coordinate": -1.8199999999999998,
+          "height": 1.8589081300943637
+        },
+        {
+          "coordinate": -1.75,
+          "height": 1.7213294251972222
+        },
+        {
+          "coordinate": -1.68,
+          "height": 1.6019795012797091
+        },
+        {
+          "coordinate": -1.6099999999999999,
+          "height": 1.483735266142475
+        },
+        {
+          "coordinate": -1.54,
+          "height": 1.4048921533421959
+        },
+        {
+          "coordinate": -1.47,
+          "height": 1.3510532759857417
+        },
+        {
+          "coordinate": -1.4,
+          "height": 1.3166787232135622
+        },
+        {
+          "coordinate": -1.33,
+          "height": 1.2979838127185992
+        },
+        {
+          "coordinate": -1.26,
+          "height": 1.2904813198903295
+        },
+        {
+          "coordinate": -1.19,
+          "height": 1.290404669813535
+        },
+        {
+          "coordinate": -1.12,
+          "height": 1.2942467744257151
+        },
+        {
+          "coordinate": -1.05,
+          "height": 1.300579666413996
+        },
+        {
+          "coordinate": -0.98,
+          "height": 1.3088606171839428
+        },
+        {
+          "coordinate": -0.9099999999999999,
+          "height": 1.3210546829947
+        },
+        {
+          "coordinate": -0.8400000000000001,
+          "height": 1.33150763234417
+        },
+        {
+          "coordinate": -0.77,
+          "height": null
+        },
+        {
+          "coordinate": -0.7000000000000002,
+          "height": null
+        },
+        {
+          "coordinate": -0.6299999999999999,
+          "height": null
+        },
+        {
+          "coordinate": -0.56,
+          "height": null
+        },
+        {
+          "coordinate": -0.4900000000000002,
+          "height": null
+        },
+        {
+          "coordinate": -0.41999999999999993,
+          "height": null
+        },
+        {
+          "coordinate": -0.3500000000000001,
+          "height": null
+        },
+        {
+          "coordinate": -0.28000000000000025,
+          "height": null
+        },
+        {
+          "coordinate": -0.20999999999999996,
+          "height": null
+        },
+        {
+          "coordinate": -0.14000000000000012,
+          "height": null
+        },
+        {
+          "coordinate": -0.07000000000000028,
+          "height": null
+        },
+        {
+          "coordinate": 0.0,
+          "height": null
+        },
+        {
+          "coordinate": 0.06999999999999984,
+          "height": null
+        },
+        {
+          "coordinate": 0.13999999999999968,
+          "height": null
+        },
+        {
+          "coordinate": 0.20999999999999996,
+          "height": null
+        },
+        {
+          "coordinate": 0.2799999999999998,
+          "height": null
+        },
+        {
+          "coordinate": 0.34999999999999964,
+          "height": null
+        },
+        {
+          "coordinate": 0.41999999999999993,
+          "height": null
+        },
+        {
+          "coordinate": 0.48999999999999977,
+          "height": null
+        },
+        {
+          "coordinate": 0.5599999999999996,
+          "height": null
+        },
+        {
+          "coordinate": 0.6299999999999999,
+          "height": null
+        },
+        {
+          "coordinate": 0.6999999999999997,
+          "height": null
+        },
+        {
+          "coordinate": 0.77,
+          "height": null
+        },
+        {
+          "coordinate": 0.8399999999999999,
+          "height": null
+        },
+        {
+          "coordinate": 0.9099999999999997,
+          "height": null
+        },
+        {
+          "coordinate": 0.98,
+          "height": null
+        },
+        {
+          "coordinate": 1.0499999999999998,
+          "height": 0.815914153842485
+        },
+        {
+          "coordinate": 1.1199999999999997,
+          "height": 0.13217617724093852
+        },
+        {
+          "coordinate": 1.19,
+          "height": 0.05353801528202239
+        },
+        {
+          "coordinate": 1.2599999999999998,
+          "height": 1.1935010162105075
+        },
+        {
+          "coordinate": 1.33,
+          "height": 1.256565525559508
+        },
+        {
+          "coordinate": 1.3999999999999995,
+          "height": 1.287117199481228
+        },
+        {
+          "coordinate": 1.4699999999999998,
+          "height": 1.3186762392820859
+        },
+        {
+          "coordinate": 1.54,
+          "height": 1.3663575365129612
+        },
+        {
+          "coordinate": 1.6099999999999994,
+          "height": 1.432868986596549
+        },
+        {
+          "coordinate": 1.6799999999999997,
+          "height": 1.5213783870732231
+        },
+        {
+          "coordinate": 1.75,
+          "height": 1.6275210676526086
+        },
+        {
+          "coordinate": 1.8199999999999994,
+          "height": 1.7697281750073521
+        },
+        {
+          "coordinate": 1.8899999999999997,
+          "height": 1.9090731662145384
+        },
+        {
+          "coordinate": 1.96,
+          "height": 2.044830602148733
+        },
+        {
+          "coordinate": 2.0299999999999994,
+          "height": 2.2193410569736605
+        },
+        {
+          "coordinate": 2.0999999999999996,
+          "height": 2.473139624030795
+        },
+        {
+          "coordinate": 2.17,
+          "height": 2.6405043215960085
+        },
+        {
+          "coordinate": 2.2399999999999993,
+          "height": 2.827066566764584
+        },
+        {
+          "coordinate": 2.3099999999999996,
+          "height": 3.0064205564504354
+        },
+        {
+          "coordinate": 2.38,
+          "height": 3.2136509555478003
+        },
+        {
+          "coordinate": 2.4499999999999993,
+          "height": 3.299067895130516
+        },
+        {
+          "coordinate": 2.5199999999999996,
+          "height": 3.257852309236032
+        },
+        {
+          "coordinate": 2.59,
+          "height": 2.862483555450286
+        },
+        {
+          "coordinate": 2.6599999999999993,
+          "height": 2.843941105993564
+        },
+        {
+          "coordinate": 2.7299999999999995,
+          "height": 2.844267776145647
+        },
+        {
+          "coordinate": 2.8,
+          "height": 2.8381037029020946
+        }
+      ]
+    },
+    "z": {
+      "reference": [
+        {
+          "coordinate": -2.8,
+          "height": null
+        },
+        {
+          "coordinate": -2.73,
+          "height": null
+        },
+        {
+          "coordinate": -2.6599999999999997,
+          "height": 2.865942355060904
+        },
+        {
+          "coordinate": -2.59,
+          "height": 2.870352159101662
+        },
+        {
+          "coordinate": -2.52,
+          "height": 2.871446073671983
+        },
+        {
+          "coordinate": -2.4499999999999997,
+          "height": 3.268042358975571
+        },
+        {
+          "coordinate": -2.38,
+          "height": 3.337641830422652
+        },
+        {
+          "coordinate": -2.31,
+          "height": 3.304391547975677
+        },
+        {
+          "coordinate": -2.2399999999999998,
+          "height": 3.085891422635911
+        },
+        {
+          "coordinate": -2.17,
+          "height": 2.935131699822569
+        },
+        {
+          "coordinate": -2.0999999999999996,
+          "height": 2.75650281549773
+        },
+        {
+          "coordinate": -2.03,
+          "height": 2.53251169995645
+        },
+        {
+          "coordinate": -1.96,
+          "height": 2.3141754835221393
+        },
+        {
+          "coordinate": -1.89,
+          "height": 2.1447451369817063
+        },
+        {
+          "coordinate": -1.8199999999999998,
+          "height": 1.9892450529116892
+        },
+        {
+          "coordinate": -1.75,
+          "height": 1.8070512113934813
+        },
+        {
+          "coordinate": -1.68,
+          "height": 1.6781869229086426
+        },
+        {
+          "coordinate": -1.6099999999999999,
+          "height": 1.5584494952280252
+        },
+        {
+          "coordinate": -1.54,
+          "height": 1.450754936249891
+        },
+        {
+          "coordinate": -1.47,
+          "height": 1.3757659555892963
+        },
+        {
+          "coordinate": -1.4,
+          "height": 1.3228214578644737
+        },
+        {
+          "coordinate": -1.33,
+          "height": 1.288271854069929
+        },
+        {
+          "coordinate": -1.26,
+          "height": 1.2708168205455352
+        },
+        {
+          "coordinate": -1.19,
+          "height": 1.263692108584991
+        },
+        {
+          "coordinate": -1.12,
+          "height": 1.2639843426575643
+        },
+        {
+          "coordinate": -1.05,
+          "height": 1.2729939072806826
+        },
+        {
+          "coordinate": -0.98,
+          "height": 1.2790828169972603
+        },
+        {
+          "coordinate": -0.9099999999999999,
+          "height": 1.2830520032720538
+        },
+        {
+          "coordinate": -0.8400000000000001,
+          "height": 1.294503165669104
+        },
+        {
+          "coordinate": -0.77,
+          "height": 1.305804123671557
+        },
+        {
+          "coordinate": -0.7000000000000002,
+          "height": 1.298432431540765
+        },
+        {
+          "coordinate": -0.6299999999999999,
+          "height": 1.3126128455687278
+        },
+        {
+          "coordinate": -0.56,
+          "height": 1.310725715624672
+        },
+        {
+          "coordinate": -0.4900000000000002,
+          "height": 1.3301413037930319
+        },
+        {
+          "coordinate": -0.41999999999999993,
+          "height": 1.3270970196479588
+        },
+        {
+          "coordinate": -0.3500000000000001,
+          "height": 1.3392384693494106
+        },
+        {
+          "coordinate": -0.28000000000000025,
+          "height": 1.3333585447251968
+        },
+        {
+          "coordinate": -0.20999999999999996,
+          "height": 1.329529079853958
+        },
+        {
+          "coordinate": -0.14000000000000012,
+          "height": 1.3403056520364303
+        },
+        {
+          "coordinate": -0.07000000000000028,
+          "height": 1.3572584776869634
+        },
+        {
+          "coordinate": 0.0,
+          "height": 1.3446241714188176
+        },
+        {
+          "coordinate": 0.06999999999999984,
+          "height": 1.3473924437323452
+        },
+        {
+          "coordinate": 0.13999999999999968,
+          "height": 1.3262687822035573
+        },
+        {
+          "coordinate": 0.20999999999999996,
+          "height": 1.3180794091710157
+        },
+        {
+          "coordinate": 0.2799999999999998,
+          "height": 1.3168364661672616
+        },
+        {
+          "coordinate": 0.34999999999999964,
+          "height": 1.3037303069735193
+        },
+        {
+          "coordinate": 0.41999999999999993,
+          "height": 1.2913783220967758
+        },
+        {
+          "coordinate": 0.48999999999999977,
+          "height": 1.28036712176396
+        },
+        {
+          "coordinate": 0.5599999999999996,
+          "height": 1.2808090770071239
+        },
+        {
+          "coordinate": 0.6299999999999999,
+          "height": 1.274913512063003
+        },
+        {
+          "coordinate": 0.6999999999999997,
+          "height": 1.2666272182869023
+        },
+        {
+          "coordinate": 0.77,
+          "height": 1.2628757032757858
+        },
+        {
+          "coordinate": 0.8399999999999999,
+          "height": 1.2653494832358878
+        },
+        {
+          "coordinate": 0.9099999999999997,
+          "height": 1.2644068983925292
+        },
+        {
+          "coordinate": 0.98,
+          "height": 1.2688229949742125
+        },
+        {
+          "coordinate": 1.0499999999999998,
+          "height": 1.274019702015336
+        },
+        {
+          "coordinate": 1.1199999999999997,
+          "height": 1.2775814332027386
+        },
+        {
+          "coordinate": 1.19,
+          "height": 1.2789393415615233
+        },
+        {
+          "coordinate": 1.2599999999999998,
+          "height": 1.2972643938965354
+        },
+        {
+          "coordinate": 1.33,
+          "height": 1.3335108775345863
+        },
+        {
+          "coordinate": 1.3999999999999995,
+          "height": 1.3741367032062068
+        },
+        {
+          "coordinate": 1.4699999999999998,
+          "height": 1.4466186292741623
+        },
+        {
+          "coordinate": 1.54,
+          "height": 1.540254212985372
+        },
+        {
+          "coordinate": 1.6099999999999994,
+          "height": 1.6744318770271063
+        },
+        {
+          "coordinate": 1.6799999999999997,
+          "height": 1.7828171482003183
+        },
+        {
+          "coordinate": 1.75,
+          "height": 1.9146429128289895
+        },
+        {
+          "coordinate": 1.8199999999999994,
+          "height": 2.0524269179840333
+        },
+        {
+          "coordinate": 1.8899999999999997,
+          "height": 2.244976464626727
+        },
+        {
+          "coordinate": 1.96,
+          "height": 2.47835117086595
+        },
+        {
+          "coordinate": 2.0299999999999994,
+          "height": 2.666789430725713
+        },
+        {
+          "coordinate": 2.0999999999999996,
+          "height": 2.8258187780111754
+        },
+        {
+          "coordinate": 2.17,
+          "height": 2.995348552341651
+        },
+        {
+          "coordinate": 2.2399999999999993,
+          "height": 3.176924907380412
+        },
+        {
+          "coordinate": 2.3099999999999996,
+          "height": 3.3135132407426
+        },
+        {
+          "coordinate": 2.38,
+          "height": 3.3050633826211455
+        },
+        {
+          "coordinate": 2.4499999999999993,
+          "height": 2.8630206269537544
+        },
+        {
+          "coordinate": 2.5199999999999996,
+          "height": 2.859402515532337
+        },
+        {
+          "coordinate": 2.59,
+          "height": 2.8639311729092136
+        },
+        {
+          "coordinate": 2.6599999999999993,
+          "height": 2.8627223365244037
+        },
+        {
+          "coordinate": 2.7299999999999995,
+          "height": null
+        },
+        {
+          "coordinate": 2.8,
+          "height": null
+        }
+      ],
+      "reconstruction": [
+        {
+          "coordinate": -2.8,
+          "height": null
+        },
+        {
+          "coordinate": -2.73,
+          "height": null
+        },
+        {
+          "coordinate": -2.6599999999999997,
+          "height": 2.847282822278652
+        },
+        {
+          "coordinate": -2.59,
+          "height": 2.8711714800615327
+        },
+        {
+          "coordinate": -2.52,
+          "height": 2.900372838139707
+        },
+        {
+          "coordinate": -2.4499999999999997,
+          "height": 3.243063926878362
+        },
+        {
+          "coordinate": -2.38,
+          "height": 3.3076175158755357
+        },
+        {
+          "coordinate": -2.31,
+          "height": 3.242386912988003
+        },
+        {
+          "coordinate": -2.2399999999999998,
+          "height": 3.071640492085317
+        },
+        {
+          "coordinate": -2.17,
+          "height": 2.8937771757787063
+        },
+        {
+          "coordinate": -2.0999999999999996,
+          "height": 2.7193477878527617
+        },
+        {
+          "coordinate": -2.03,
+          "height": 2.5057460595225862
+        },
+        {
+          "coordinate": -1.96,
+          "height": 2.290261146991311
+        },
+        {
+          "coordinate": -1.89,
+          "height": 2.1187237354839796
+        },
+        {
+          "coordinate": -1.8199999999999998,
+          "height": 1.9697286986135347
+        },
+        {
+          "coordinate": -1.75,
+          "height": 1.8187388036284586
+        },
+        {
+          "coordinate": -1.68,
+          "height": 1.6868995842491334
+        },
+        {
+          "coordinate": -1.6099999999999999,
+          "height": 1.569127838991132
+        },
+        {
+          "coordinate": -1.54,
+          "height": 1.4538873957161282
+        },
+        {
+          "coordinate": -1.47,
+          "height": 1.372221441896984
+        },
+        {
+          "coordinate": -1.4,
+          "height": 1.3125312658785278
+        },
+        {
+          "coordinate": -1.33,
+          "height": 1.2677420022704777
+        },
+        {
+          "coordinate": -1.26,
+          "height": 1.2498677360412462
+        },
+        {
+          "coordinate": -1.19,
+          "height": 1.2561524018123003
+        },
+        {
+          "coordinate": -1.12,
+          "height": 1.2639938457402036
+        },
+        {
+          "coordinate": -1.05,
+          "height": 1.2653354256826876
+        },
+        {
+          "coordinate": -0.98,
+          "height": 1.2668581804641186
+        },
+        {
+          "coordinate": -0.9099999999999999,
+          "height": 1.2686018901866216
+        },
+        {
+          "coordinate": -0.8400000000000001,
+          "height": 1.2703455999091247
+        },
+        {
+          "coordinate": -0.77,
+          "height": 1.2723814900515122
+        },
+        {
+          "coordinate": -0.7000000000000002,
+          "height": 1.2752646403475079
+        },
+        {
+          "coordinate": -0.6299999999999999,
+          "height": 1.280342339735737
+        },
+        {
+          "coordinate": -0.56,
+          "height": null
+        },
+        {
+          "coordinate": -0.4900000000000002,
+          "height": null
+        },
+        {
+          "coordinate": -0.41999999999999993,
+          "height": null
+        },
+        {
+          "coordinate": -0.3500000000000001,
+          "height": null
+        },
+        {
+          "coordinate": -0.28000000000000025,
+          "height": null
+        },
+        {
+          "coordinate": -0.20999999999999996,
+          "height": null
+        },
+        {
+          "coordinate": -0.14000000000000012,
+          "height": null
+        },
+        {
+          "coordinate": -0.07000000000000028,
+          "height": null
+        },
+        {
+          "coordinate": 0.0,
+          "height": null
+        },
+        {
+          "coordinate": 0.06999999999999984,
+          "height": null
+        },
+        {
+          "coordinate": 0.13999999999999968,
+          "height": null
+        },
+        {
+          "coordinate": 0.20999999999999996,
+          "height": null
+        },
+        {
+          "coordinate": 0.2799999999999998,
+          "height": null
+        },
+        {
+          "coordinate": 0.34999999999999964,
+          "height": null
+        },
+        {
+          "coordinate": 0.41999999999999993,
+          "height": null
+        },
+        {
+          "coordinate": 0.48999999999999977,
+          "height": null
+        },
+        {
+          "coordinate": 0.5599999999999996,
+          "height": null
+        },
+        {
+          "coordinate": 0.6299999999999999,
+          "height": null
+        },
+        {
+          "coordinate": 0.6999999999999997,
+          "height": null
+        },
+        {
+          "coordinate": 0.77,
+          "height": 1.279474670746826
+        },
+        {
+          "coordinate": 0.8399999999999999,
+          "height": 1.285237307649768
+        },
+        {
+          "coordinate": 0.9099999999999997,
+          "height": 1.29099994455271
+        },
+        {
+          "coordinate": 0.98,
+          "height": 1.2967625814556523
+        },
+        {
+          "coordinate": 1.0499999999999998,
+          "height": 1.3025252183585943
+        },
+        {
+          "coordinate": 1.1199999999999997,
+          "height": 1.3076831286249444
+        },
+        {
+          "coordinate": 1.19,
+          "height": 1.3084471587149018
+        },
+        {
+          "coordinate": 1.2599999999999998,
+          "height": 1.308103281358112
+        },
+        {
+          "coordinate": 1.33,
+          "height": 1.3259320785376603
+        },
+        {
+          "coordinate": 1.3999999999999995,
+          "height": 1.381763956283852
+        },
+        {
+          "coordinate": 1.4699999999999998,
+          "height": 1.4543394619001269
+        },
+        {
+          "coordinate": 1.54,
+          "height": 1.5341888667785155
+        },
+        {
+          "coordinate": 1.6099999999999994,
+          "height": 1.6325002125264914
+        },
+        {
+          "coordinate": 1.6799999999999997,
+          "height": 1.746049374689069
+        },
+        {
+          "coordinate": 1.75,
+          "height": 1.8707347405338595
+        },
+        {
+          "coordinate": 1.8199999999999994,
+          "height": 2.043050204874937
+        },
+        {
+          "coordinate": 1.8899999999999997,
+          "height": 2.2213346461238457
+        },
+        {
+          "coordinate": 1.96,
+          "height": 2.436546056921394
+        },
+        {
+          "coordinate": 2.0299999999999994,
+          "height": 2.654085601136056
+        },
+        {
+          "coordinate": 2.0999999999999996,
+          "height": 2.837612798330839
+        },
+        {
+          "coordinate": 2.17,
+          "height": 2.9744164511970483
+        },
+        {
+          "coordinate": 2.2399999999999993,
+          "height": 3.1673677415107524
+        },
+        {
+          "coordinate": 2.3099999999999996,
+          "height": 3.29104852328823
+        },
+        {
+          "coordinate": 2.38,
+          "height": 3.2952909620285236
+        },
+        {
+          "coordinate": 2.4499999999999993,
+          "height": 2.9022883316738946
+        },
+        {
+          "coordinate": 2.5199999999999996,
+          "height": 2.862435594765533
+        },
+        {
+          "coordinate": 2.59,
+          "height": 2.8587229823572975
+        },
+        {
+          "coordinate": 2.6599999999999993,
+          "height": 2.844714870952969
+        },
+        {
+          "coordinate": 2.7299999999999995,
+          "height": null
+        },
+        {
+          "coordinate": 2.8,
+          "height": null
+        }
+      ]
+    }
+  },
+  "top_down_profile_mean_absolute_error": 0.04325410127415374,
+  "top_down_profile_missing_hits": 45,
+  "top_down_profile_reference_hits": 158
+}

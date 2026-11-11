@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SMGS · Source / CPU reconstruction comparison</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#e6edf7;font:15px Segoe UI,Arial,sans-serif}header{padding:18px 24px;border-bottom:1px solid #263653;background:#111a2b}h1{font-size:20px;margin:0 0 6px}p{color:#afbdd1;margin:0}main{padding:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.panel{min-width:0;border:1px solid #2c3a52;border-radius:12px;overflow:hidden;background:#111a2b}.label{padding:12px 14px;font-weight:600;border-bottom:1px solid #2c3a52}.square{position:relative;width:100%;aspect-ratio:1/1;background:#e9e9e9}.square img,.square canvas{display:block;width:100%;height:100%;object-fit:contain}.tools{display:flex;align-items:center;gap:8px;padding:12px}.tools button,.tools select{background:#1c2b42;color:#e6edf7;border:1px solid #455c7e;border-radius:7px;padding:8px}.hint{padding:0 14px 14px;color:#a9bad3;font-size:13px;line-height:1.45}#status{margin-left:auto;color:#a9bad3;font-size:12px}@media(max-width:800px){main{grid-template-columns:1fr}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head>
+<body>
+<header><h1>Bản dựng không đạt · đối chiếu ảnh và model CPU</h1><p>Calibration COLMAP lỗi (k = −7,596). Mesh này chưa đủ chất lượng trưng bày. Ảnh render LR3D-CULT2; không phải ảnh chụp bình gốm.</p></header>
+<main>
+ <section class="panel"><div class="label" id="sourceLabel">Ảnh sau undistort · đúng camera OpenMVS</div><div class="square"><img id="source" alt="Ảnh đối chiếu"></div><div class="tools"><button id="prev">Ảnh trước</button><select id="view"></select><button id="next">Ảnh sau</button><button id="toggleSource">Xem ảnh gốc</button></div><div class="hint" id="caption"></div></section>
+ <section class="panel"><div class="label">Mesh chẩn đoán · tắt seam leveling</div><div class="square" id="stage"></div><div class="tools"><button id="reset">Đặt lại góc camera nguồn</button><span id="status">Đang tải GLB…</span></div><div class="hint">Dùng calibration undistort 1024×1024 và pose COLMAP. Texture lấy từ ảnh, không tô màu bù. Có thể kéo để xoay; geometry vẫn sai dù mảng đen do seam leveling đã được loại bỏ.</div></section>
+</main>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+const root=document.querySelector('#stage'), status=document.querySelector('#status');
+const scene=new THREE.Scene();scene.background=new THREE.Color('#d8dbe0');
+const camera=new THREE.PerspectiveCamera(35,1,.001,10000);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;root.append(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xffffff,0x544b40,2));const key=new THREE.DirectionalLight(0xffffff,2.5);key.position.set(2,4,5);scene.add(key);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;
+function resize(){const n=root.clientWidth;renderer.setSize(n,n,false)}new ResizeObserver(resize).observe(root);resize();
+const poses=await fetch('./camera-poses.json').then(r=>r.json());const names=Object.keys(poses).sort((a,b)=>Number(a.match(/\d+/)[0])-Number(b.match(/\d+/)[0]));
+const select=document.querySelector('#view');for(const n of names){const o=document.createElement('option');o.value=n;o.textContent=n.replace('image_','view_').replace('.png','_cam1.png');select.append(o)}
+const source=document.querySelector('#source');let model,rawSource=false;
+function showSource(){const name=select.value;source.src=rawSource?`../images/view_${String(Number(name.match(/\d+/)[0])).padStart(3,'0')}_cam1.png`:`./undistorted/${name}`;document.querySelector('#sourceLabel').textContent=rawSource?'Ảnh gốc 512×512 · chưa hiệu chỉnh méo':'Ảnh sau undistort 1024×1024 · đúng camera OpenMVS';document.querySelector('#toggleSource').textContent=rawSource?'Xem ảnh undistort':'Xem ảnh gốc';}
+function align(){const name=select.value,p=poses[name],q=p.qvec,t=new THREE.Vector3(...p.tvec);const rot=new THREE.Quaternion(q[1],q[2],q[3],q[0]);const position=t.clone().applyQuaternion(rot.clone().invert()).negate();const flipYz=new THREE.Quaternion(1,0,0,0);camera.position.copy(position);camera.quaternion.copy(rot.clone().invert().multiply(flipYz));camera.up.set(0,1,0).applyQuaternion(camera.quaternion);const n=camera.near;camera.projectionMatrix.makePerspective(-p.cx*n/p.fx,(p.width-p.cx)*n/p.fx,p.cy*n/p.fy,-(p.height-p.cy)*n/p.fy,n,camera.far);camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();controls.target.copy(position).add(new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion));controls.update();showSource();document.querySelector('#caption').textContent=`${name} · ảnh COLMAP ID ${p.imageId} · f=${p.fx.toFixed(1)} px · calibration 1024×1024. Ảnh gốc chưa khử méo không có cùng phép chiếu.`;}
+document.querySelector('#toggleSource').onclick=()=>{rawSource=!rawSource;showSource()};
+new GLTFLoader().load('./seam-off.glb',g=>{model=g.scene;scene.add(model);align();status.textContent='GLB chẩn đoán đã tải'},undefined,e=>{console.error(e);status.textContent='Không tải được GLB/texture'});
+select.onchange=align;document.querySelector('#prev').onclick=()=>{select.selectedIndex=(select.selectedIndex+names.length-1)%names.length;align()};document.querySelector('#next').onclick=()=>{select.selectedIndex=(select.selectedIndex+1)%names.length;align()};document.querySelector('#reset').onclick=align;
+function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)}animate();
+</script>
+</body>
+</html>

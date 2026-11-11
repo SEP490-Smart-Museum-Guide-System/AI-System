@@ -1,5 +1,7 @@
 # Chạy toàn bộ AI-System cho thành viên
 
+**Chỉ chạy AI và bỏ 3D Scan:** dùng `powershell -ExecutionPolicy Bypass -File .\tools\start-ai.ps1 -SkipScan`. Xem bộ lệnh máy mới tại [RUN_AI_ONLY_NO_SCAN.md](RUN_AI_ONLY_NO_SCAN.md). Hướng dẫn đó không chạy DB/BE/FE.
+
 ## Một lệnh chạy
 
 Mở PowerShell tại thư mục **AI-System** vừa clone/pull:

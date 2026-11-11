@@ -17,3 +17,5 @@ state/tts-service-key.txt
 state/tour-service-key.txt
 state/tts-audio-cache/
 evaluations/tts-2026-11-09/*.wav
+# Downloaded upstream dataset assets; keep attribution and audit reports in Git.
+3D Scan/test-data/LR3D-CULT2/source/

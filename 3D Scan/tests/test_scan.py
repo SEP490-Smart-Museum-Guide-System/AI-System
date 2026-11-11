@@ -34,7 +34,9 @@ class ApiTests(unittest.TestCase):
         self.job = str(uuid4())
         self.headers = {'X-Service-Key': 'server-key'}
         self.run_job = AsyncMock()
-        for target, values in [(main, {'DATA_DIR': self.root, 'SERVICE_API_KEY': 'server-key', '_run_job': self.run_job}), (main.shutil, {'which': Mock(return_value='/fake/colmap')})]:
+        patcher = patch.multiple(main.jobs, initialize=Mock(), queued_ids=Mock(return_value=[]))
+        patcher.start(); self.addCleanup(patcher.stop)
+        for target, values in [(main, {'DATA_DIR': self.root, 'SERVICE_API_KEY': 'server-key', '_run_job': self.run_job, 'openmvs_available': Mock(return_value=True)}), (main.shutil, {'which': Mock(return_value='/fake/colmap')})]:
             patcher = patch.multiple(target, **values); patcher.start(); self.addCleanup(patcher.stop)
         self.client = TestClient(main.app)
 
@@ -89,6 +91,13 @@ class ApiTests(unittest.TestCase):
             self.assertEqual(self.client.get('/ready').status_code, 200)
         self.assertEqual(self.client.get('/live').status_code, 200)
 
+    def test_missing_openmvs_cpu_pipeline_blocks_scan_upload(self):
+        with patch.object(main, 'openmvs_available', return_value=False):
+            response = self.upload()
+        self.assertEqual(response.status_code, 503)
+        self.assertIn('OpenMVS CPU', response.json()['detail'])
+        self.run_job.assert_not_awaited()
+
     def test_invalid_ids_and_unauthorized_calls_never_reach_database(self):
         self.assertEqual(self.client.post('/api/v1/scans', content=b'broken body', headers={'Content-Type': 'multipart/form-data; boundary=x'}).status_code, 401)
         with patch.object(main.jobs, 'get') as get:
@@ -115,19 +124,13 @@ class ApiTests(unittest.TestCase):
 
 
 class WorkerTests(unittest.TestCase):
-    def test_sparse_colmap_points_are_packaged_as_glb_preview(self):
-        with tempfile.TemporaryDirectory(prefix='smgs-sparse-glb-test-') as folder:
-            root = Path(folder)
-            points_path = root / 'points.ply'
-            output_path = root / 'output' / 'model.glb'
-            trimesh = __import__('trimesh')
-            trimesh.points.PointCloud([[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]] * 8,
-                                      colors=[180, 120, 80, 255]).export(points_path)
-            reconstruction._export_sparse_glb(points_path, output_path)
-            self.assertGreater(output_path.stat().st_size, 1024)
-            scene = trimesh.load(output_path, force='scene')
-            self.assertEqual(len(scene.geometry), 1)
-            self.assertEqual(len(next(iter(scene.geometry.values())).vertices), 32)
+    def test_missing_openmvs_fails_instead_of_packaging_sparse_cloud_as_artifact(self):
+        with tempfile.TemporaryDirectory(prefix='smgs-scan-worker-test-') as folder:
+            with patch.object(reconstruction, 'openmvs_available', return_value=False), \
+                    patch.object(reconstruction.jobs, 'update') as update:
+                reconstruction.process(str(uuid4()), Path(folder))
+            self.assertEqual(update.call_args.kwargs['status'], 'FAILED')
+            self.assertIn('OpenMVS CPU', update.call_args.kwargs['error'])
 
     def test_job_not_claimed_is_never_processed(self):
         with patch.object(main.jobs, 'claim', return_value=False), patch.object(main, 'process') as process:

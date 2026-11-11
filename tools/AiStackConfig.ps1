@@ -1,3 +1,10 @@
+function Get-AiStackServices {
+    param([switch]$SkipScan)
+    $selected = @('tts', 'vision', 'chat-model', 'chat', 'tour')
+    if (!$SkipScan) { $selected += 'scan' }
+    return $selected
+}
+
 function Get-AiEnvValue {
     param([string[]]$Lines, [string]$Name)
     $matched = @($Lines | Where-Object { $_ -match ('^\s*' + [regex]::Escape($Name) + '\s*=') })

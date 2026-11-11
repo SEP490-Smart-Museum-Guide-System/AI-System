@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SMGS · Source / CPU reconstruction comparison</title>
+<script>
+// Local file origins cannot fetch the GLB/pose assets. Use the local preview server.
+if(location.protocol==='file:'){
+  location.replace('http://127.0.0.1:8765/test-data/LR3D-CULT2/metal-cup-ly-dong-1/cpu-known-poses-180/comparison.html'+(location.search||'?modelOnly=1')+location.hash);
+}
+</script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#e6edf7;font:15px Segoe UI,Arial,sans-serif}header{padding:18px 24px;border-bottom:1px solid #263653;background:#111a2b}h1{font-size:20px;margin:0 0 6px}p{color:#afbdd1;margin:0}main{padding:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.panel{min-width:0;border:1px solid #2c3a52;border-radius:12px;overflow:hidden;background:#111a2b}.label{padding:12px 14px;font-weight:600;border-bottom:1px solid #2c3a52}.square{position:relative;width:100%;aspect-ratio:1/1;background:#e9e9e9}.square img,.square canvas{display:block;width:100%;height:100%;object-fit:contain}.tools{display:flex;align-items:center;gap:8px;padding:12px}.tools button,.tools select{background:#1c2b42;color:#e6edf7;border:1px solid #455c7e;border-radius:7px;padding:8px}.hint{padding:0 14px 14px;color:#a9bad3;font-size:13px;line-height:1.45}#status{margin-left:auto;color:#a9bad3;font-size:12px}@media(max-width:800px){main{grid-template-columns:1fr}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head>
+<body>
+<header><h1>Bản tái dựng CPU · 180 ảnh · có texture</h1><p>Phần ngoài khớp silhouette 95,1–96,8%; còn thiếu đáy lòng vì cả 180 camera đều bị thành hiện vật che khuất vùng giữa đáy. Texture lấy từ ảnh; giữ nguyên vùng geometry còn thiếu. Có thể chọn OBJ gốc làm đối chứng; đó là asset nhập sẵn, không phải kết quả scan.</p></header>
+<main>
+ <section class="panel"><div class="label" id="sourceLabel">Ảnh render gốc 512×512</div><div class="square"><img id="source" alt="Ảnh đối chiếu"></div><div class="tools"><button id="prev">Ảnh trước</button><select id="view"></select><button id="next">Ảnh sau</button><button id="toggleSource">Xem ảnh gốc</button></div><div class="hint" id="caption"></div></section>
+ <section class="panel"><div class="label" id="modelLabel">Bản tái dựng CPU · có texture · còn thiếu đáy lòng</div><div class="square" id="stage"></div><div class="tools"><button id="reset">Đặt lại góc camera nguồn</button><select id="asset"><option value="reconstructed-partial.glb">Bản tái dựng CPU · có texture</option><option value="model.glb">Chỉ xem geometry</option><option value="REFERENCE_IMPORTED_ASSET.glb">OBJ gốc nhập sẵn · chỉ đối chứng</option></select><span id="status">Đang tải GLB…</span></div><div class="hint">Vị trí camera từ metadata; hướng nhìn/nội tại suy ra và kiểm chứng bằng OBJ tham chiếu. Màu xám chỉ để kiểm tra geometry. OBJ gốc dùng texture gốc, không phải kết quả dựng từ ảnh của SMGS.</div></section>
+</main>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+if(new URLSearchParams(location.search).has('modelOnly')){const style=document.createElement('style');style.textContent='main{display:block;width:100%;max-width:740px}main>.panel:first-child{display:none}.tools{flex-wrap:wrap}.tools select{max-width:100%;min-width:0}';document.head.append(style)}
+const root=document.querySelector('#stage'), status=document.querySelector('#status');
+const scene=new THREE.Scene();scene.background=new THREE.Color('#d8dbe0');
+const camera=new THREE.PerspectiveCamera(35,1,.001,10000);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NoToneMapping;renderer.toneMappingExposure=1;root.append(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xffffff,0x544b40,2));const key=new THREE.DirectionalLight(0xffffff,2.5);key.position.set(2,4,5);scene.add(key);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;
+function resize(){const n=root.clientWidth;renderer.setSize(n,n,false)}new ResizeObserver(resize).observe(root);resize();
+const poses=await fetch('./camera-poses.json').then(r=>r.json());const names=Object.keys(poses).sort((a,b)=>Number(a.match(/\d+/)[0])-Number(b.match(/\d+/)[0]));
+const select=document.querySelector('#view');for(const n of names){const o=document.createElement('option');o.value=n;o.textContent=n;select.append(o)}
+const source=document.querySelector('#source');let model,rawSource=false;
+function showSource(){source.src=`../../source/extracted/metal_cups_1/images/${select.value}`;document.querySelector("#sourceLabel").textContent="Ảnh render gốc 512×512";document.querySelector("#toggleSource").hidden=true;}
+function align(){const name=select.value,p=poses[name],q=p.qvec,t=new THREE.Vector3(...p.tvec);const rot=new THREE.Quaternion(q[1],q[2],q[3],q[0]);const position=t.clone().applyQuaternion(rot.clone().invert()).negate();const flipYz=new THREE.Quaternion(1,0,0,0);camera.position.copy(position);camera.quaternion.copy(rot.clone().invert().multiply(flipYz));camera.up.set(0,1,0).applyQuaternion(camera.quaternion);const n=camera.near;camera.projectionMatrix.makePerspective(-p.cx*n/p.fx,(p.width-p.cx)*n/p.fx,p.cy*n/p.fy,-(p.height-p.cy)*n/p.fy,n,camera.far);camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();controls.target.copy(position).add(new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion));controls.update();showSource();document.querySelector('#caption').textContent=`${name} · ảnh COLMAP ID ${p.imageId} · f=${p.fx.toFixed(1)} px · calibration benchmark 512×512, giữ camera cố định.`;}
+document.querySelector('#toggleSource').onclick=()=>{rawSource=!rawSource;showSource()};
+const asset=document.querySelector('#asset');
+function loadAsset(){const file=asset.value;status.textContent='Đang tải…';new GLTFLoader().load(`./${file}`,g=>{if(asset.value!==file)return;if(model)scene.remove(model);model=g.scene;if(file.startsWith('REFERENCE')){model.traverse(o=>{if(o.isMesh&&o.material.map)o.material=new THREE.MeshBasicMaterial({map:o.material.map,side:THREE.DoubleSide})})}scene.add(model);align();document.querySelector('#modelLabel').textContent=file.startsWith('REFERENCE')?'OBJ + texture gốc · ASSET NHẬP SẴN, không phải kết quả scan':file==='model.glb'?'Geometry · không texture':'Bản tái dựng CPU · có texture · còn thiếu đáy lòng';status.textContent=file.startsWith('REFERENCE')?'Đối chứng gốc đã tải':file==='model.glb'?'Geometry đã tải':'GLB tái dựng có texture đã tải'},undefined,e=>{console.error(e);status.textContent='Không tải được GLB'})};asset.onchange=loadAsset;loadAsset();
+select.onchange=align;document.querySelector('#prev').onclick=()=>{select.selectedIndex=(select.selectedIndex+names.length-1)%names.length;align()};document.querySelector('#next').onclick=()=>{select.selectedIndex=(select.selectedIndex+1)%names.length;align()};document.querySelector('#reset').onclick=align;
+function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)}animate();
+</script>
+</body>
+</html>
+
+

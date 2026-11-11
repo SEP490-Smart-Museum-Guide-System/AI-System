@@ -1,0 +1,1272 @@
+{
+  "target": [
+    0.0,
+    1.3446241714188176,
+    0.0
+  ],
+  "tests": 180,
+  "visible_count": 0,
+  "occluded_count": 180,
+  "samples": [
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 1,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.16907401703596,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 2,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.17453057152337,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 3,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.170945360482538,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 4,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.1771757201811,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 5,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.180222708613073,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 6,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.179879301136,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 7,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.17528145256566,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 8,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.165175271054403,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 9,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.149327475089914,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 10,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.137419293294583,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 11,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.124517903030174,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 12,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.109166080387261,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 13,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.10443993504485,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 14,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.101031171869284,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 15,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.073109050206718,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 16,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.050067781592318,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 17,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.031476173573465,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 18,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.030739605003761,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 19,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.02414968552693,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 20,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.021953676988511,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 21,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.024094378116867,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 22,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.025822868133385,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 23,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.030300263488744,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 24,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.027153271044561,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 25,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.02811170341678,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 26,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.03120922330642,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 27,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.05179430589236,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 28,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.05686460657292,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 29,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.070094430550375,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 30,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.085675111720724,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 31,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.096415837744015,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 32,
+      "target_distance": 17.05309397623681,
+      "nearest_surface_distance": 15.102997938145775,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 33,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.11145230734071,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 34,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.114889947487082,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 35,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.12143767565673,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 36,
+      "target_distance": 17.05309397623681,
+      "nearest_surface_distance": 15.127465650918719,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 37,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.128940941133509,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 38,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.128752168870708,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 39,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.126653908299437,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 40,
+      "target_distance": 17.05309397623681,
+      "nearest_surface_distance": 15.12184085441794,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 41,
+      "target_distance": 17.0530939762368,
+      "nearest_surface_distance": 15.118150881086201,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 42,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.1150691207886,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 43,
+      "target_distance": 17.05309397623681,
+      "nearest_surface_distance": 15.107093650842174,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 44,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.109781373365122,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 45,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.110021717953092,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 46,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.103423867149255,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 47,
+      "target_distance": 17.05309397623681,
+      "nearest_surface_distance": 15.103798027311496,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 48,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.100344645625183,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 49,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.099745063497007,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 50,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.09331545895807,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 51,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.084050045704801,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 52,
+      "target_distance": 17.0530939762368,
+      "nearest_surface_distance": 15.08772635310176,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 53,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.079927826084448,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 54,
+      "target_distance": 17.05309397623681,
+      "nearest_surface_distance": 15.08499254393536,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 55,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.069583404289729,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 56,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.067551047855105,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 57,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.05408868264262,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 58,
+      "target_distance": 17.05309397623681,
+      "nearest_surface_distance": 15.033986343832439,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 59,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.024642962854704,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 60,
+      "target_distance": 17.05309397623681,
+      "nearest_surface_distance": 14.997622907251984,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 61,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.008311580757375,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 62,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.00770584254754,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 63,
+      "target_distance": 17.05309397623681,
+      "nearest_surface_distance": 15.00915228715374,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 64,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.01431907658862,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 65,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.021706774451642,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 66,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.03093806557594,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 67,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.030063476465648,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 68,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.038360789658311,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 69,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.044544519677444,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 70,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.052833830939614,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 71,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.053023466487922,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 72,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.058491629854464,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 73,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.068711111397851,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 74,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.080273643380815,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 75,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.09234557995379,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 76,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.105862837539034,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 77,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.123872649259837,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 78,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.138319466523786,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 79,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.149016318589362,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 80,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.156992989627465,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 81,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.157794697706265,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 82,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.164793621474509,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 83,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.167949637290967,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 84,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.171641609065192,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 85,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.171569538520284,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 86,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.162119331070876,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 87,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.158664388805114,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 88,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.163469811972146,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 89,
+      "target_distance": 17.053093976236802,
+      "nearest_surface_distance": 15.164734609586585,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM1|CAM1",
+      "frame": 90,
+      "target_distance": 17.053093976236806,
+      "nearest_surface_distance": 15.16223299513134,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 1,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.460658485899613,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 2,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.463688601172011,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 3,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.46787190771179,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 4,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.470576957860498,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 5,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.46963266825252,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 6,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.464618459283532,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 7,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.454245882846353,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 8,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.44913192192099,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 9,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.452641879263247,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 10,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.443061424695887,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 11,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.414216713213422,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 12,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.381867368517247,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 13,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.37109443661625,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 14,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.381812063983425,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 15,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.369958744021925,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 16,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.349852257035522,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 17,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.325085720054794,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 18,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.306667805901364,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 19,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.296792212150308,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 20,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.298726865121852,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 21,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.300467895581832,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 22,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.30372099288359,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 23,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.303234083456255,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 24,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.30471651951049,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 25,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.311148212318098,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 26,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.309809338859422,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 27,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.318110352451423,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 28,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.329008727302655,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 29,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.336597641466971,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 30,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.348674288022371,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 31,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.355153892607534,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 32,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.366438279049785,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 33,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.377377677552712,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 34,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.39522422590388,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 35,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.40763920072665,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 36,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.408967019098585,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 37,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.401575808617896,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 38,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.40719725230866,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 39,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.41253187748244,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 40,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.413708453455909,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 41,
+      "target_distance": 17.33515254831136,
+      "nearest_surface_distance": 14.41057858036151,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 42,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.414272292148583,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 43,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.416451686298277,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 44,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.415267689734174,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 45,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.417516129923676,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 46,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.427979372271214,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 47,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.412087892016764,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 48,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.403525743561254,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 49,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.38855052754618,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 50,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.380912913902693,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 51,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.375540455641806,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 52,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.359170321988213,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 53,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.353894755387865,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 54,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.348309514398403,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 55,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.335872837294577,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 56,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.333769628649748,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 57,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.341029963187813,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 58,
+      "target_distance": 17.33515254831137,
+      "nearest_surface_distance": 14.349072798619906,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 59,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.352031903228594,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 60,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.332095778174667,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 61,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.310869365769891,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 62,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.301746150005377,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 63,
+      "target_distance": 17.335152548311367,
+      "nearest_surface_distance": 14.255021316886815,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 64,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.241268347418295,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 65,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.238970726276895,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 66,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.242815931821877,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 67,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.250118697939584,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 68,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.242765776894863,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 69,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.2270482485609,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 70,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.246207386144663,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 71,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.271859809148573,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 72,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.296034975374718,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 73,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.316435226387295,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 74,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.34147581707522,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 75,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.365524687197421,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 76,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.383000711073665,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 77,
+      "target_distance": 17.33515254831136,
+      "nearest_surface_distance": 14.393247447690728,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 78,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.396433029348877,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 79,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.39893393612718,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 80,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.40026662413681,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 81,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.407145559673218,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 82,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.410738247864828,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 83,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.41616452173563,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 84,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.421451219625709,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 85,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.429548978361918,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 86,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.43775617049839,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 87,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.440300996930002,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 88,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.447733838871718,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 89,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.447533975780082,
+      "occluded": true
+    },
+    {
+      "camera": "|Camera|CAM2|CAM2",
+      "frame": 90,
+      "target_distance": 17.335152548311363,
+      "nearest_surface_distance": 14.4618871182606,
+      "occluded": true
+    }
+  ]
+}

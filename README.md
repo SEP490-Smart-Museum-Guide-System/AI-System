@@ -1,5 +1,7 @@
 # AI System — Smart Museum Guide System
 
+**Member chỉ chạy AI, bỏ 3D Scan:** [bộ lệnh máy mới](RUN_AI_ONLY_NO_SCAN.md), với `tools/start-ai.ps1 -SkipScan` để chạy TTS, Vision, Chat/Xưởng AI và Tour.
+
 Repo chứa các microservice AI cho Smart Museum Guide System. TTS, nhận diện ảnh hiện vật và 3D Scan có các PoC độc lập; xem README từng service để biết giới hạn và cách chạy.
 
 **Chạy tất cả dịch vụ trên máy thành viên:** từ thư mục repo chạy `powershell -ExecutionPolicy Bypass -File .\tools\start-ai.ps1`. Cần Docker Desktop và cấu hình PostgreSQL BE một lần trong `.env`; script tự chuẩn bị khóa, tải model và đợi năm API ready. Xem [RUN_ALL_AI.md](RUN_ALL_AI.md) để cài lần đầu, nối BE, dừng và hiểu giới hạn GPU của 3D.
@@ -52,7 +54,7 @@ AI-System/
 | --- | --- | --- |
 | TTS | Nhận văn bản đã duyệt, tổng hợp giọng tiếng Việt bằng Piper/sherpa-onnx và trả audio | MVP trong [`TTS AI/README.md`](TTS%20AI/README.md) |
 | Nhận diện hiện vật | So khớp CLIP ONNX embeddings với ảnh tham chiếu, trả `artifactId`, similarity và ứng viên | MVP ONNX trong [`AI Vision/README.md`](AI%20Vision/README.md) |
-| Dựng 3D | Nhận bộ ảnh, chạy COLMAP, xuất GLB và chờ curator review | PoC; chưa nối Backend/web/Flutter end-to-end |
+| Dựng 3D | COLMAP CPU SfM + OpenMVS CPU SGM, fallback PatchMatch, mesh/texture, xuất GLB bề mặt và chờ duyệt | Sửa pipeline để không dùng sparse points giả làm dense mesh; sample Blender đã cho dense cloud qua PatchMatch CPU, nhưng texture/độ trung thực còn hạn chế và chưa xác nhận trên ảnh hiện vật thật |
 | Hành trình cá nhân | Chọn, sắp xếp điểm theo nội dung/sở thích/thời gian; không mua vé hoặc xuất bản tour | MVP trong [`AI Tour/README.md`](AI%20Tour/README.md) |
 
 **AI chỉ hỗ trợ soạn bản nháp từ tư liệu; không tự xuất bản thuyết minh cho khách.** Nội dung, tên gọi và thông tin lịch sử do người phụ trách xác minh, kiểm duyệt và xuất bản. TTS microservice chỉ biến văn bản được ứng dụng gửi vào thành audio; service không nhận diện hiện vật và không truy cập database nội dung.

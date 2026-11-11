@@ -11,6 +11,17 @@ DB_USER = os.getenv("AI_SYSTEM_DB_USER", "postgres")
 DB_PASSWORD = os.getenv("AI_SYSTEM_DB_PASSWORD", "")
 DB_SCHEMA = os.getenv("SCAN_DB_SCHEMA", "ai_3d_scan")
 COLMAP_COMMAND = os.getenv("COLMAP_COMMAND", "colmap")
+COLMAP_CAMERA_MODEL = os.getenv("SCAN_COLMAP_CAMERA_MODEL", "SIMPLE_RADIAL")
+if COLMAP_CAMERA_MODEL not in {"SIMPLE_RADIAL", "PINHOLE", "SIMPLE_PINHOLE", "OPENCV"}:
+    raise ValueError("Unsupported SCAN_COLMAP_CAMERA_MODEL")
+OPENMVS_BIN_DIR = os.getenv("OPENMVS_BIN_DIR", "")
+OPENMVS_COMMANDS = {
+    "InterfaceCOLMAP": os.getenv("OPENMVS_INTERFACE_COLMAP_COMMAND", "InterfaceCOLMAP"),
+    "DensifyPointCloud": os.getenv("OPENMVS_DENSIFY_COMMAND", "DensifyPointCloud"),
+    "ReconstructMesh": os.getenv("OPENMVS_MESH_COMMAND", "ReconstructMesh"),
+    "RefineMesh": os.getenv("OPENMVS_REFINE_COMMAND", "RefineMesh"),
+    "TextureMesh": os.getenv("OPENMVS_TEXTURE_COMMAND", "TextureMesh"),
+}
 SERVICE_API_KEY = os.getenv("SCAN_SERVICE_API_KEY", "")
 MIN_IMAGES = 5
 MAX_IMAGES = int(os.getenv("SCAN_MAX_IMAGES", "80"))

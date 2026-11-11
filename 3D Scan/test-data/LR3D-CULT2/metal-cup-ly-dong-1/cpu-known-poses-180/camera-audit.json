@@ -1,0 +1,136 @@
+{
+  "original_metadata_fields": [
+    "object_name",
+    "object_center_world",
+    "axis_convention",
+    "frames"
+  ],
+  "original_has_rotation": false,
+  "original_has_intrinsics": false,
+  "metadata_frames": 182,
+  "image_count": 180,
+  "reference_only_for_calibration": true,
+  "assumptions": [
+    "camera looks at object_center_world",
+    "Y-up, zero roll",
+    "perspective camera"
+  ],
+  "trials": [
+    {
+      "frame_offset": -1,
+      "fx": 742.9312642294537,
+      "fy": 745.9721557999679,
+      "cx": 255.58244658787808,
+      "cy": 255.38032671673292,
+      "bbox_rmse_px": 0.3414451006417224
+    },
+    {
+      "frame_offset": 0,
+      "fx": 743.4997636529342,
+      "fy": 745.8549458073744,
+      "cx": 255.42101124186598,
+      "cy": 255.44874309136932,
+      "bbox_rmse_px": 0.2216398618878649
+    }
+  ],
+  "selected": {
+    "frame_offset": 0,
+    "fx": 743.4997636529342,
+    "fy": 745.8549458073744,
+    "cx": 255.42101124186598,
+    "cy": 255.44874309136932,
+    "bbox_rmse_px": 0.2216398618878649
+  },
+  "silhouettes": [
+    {
+      "image": "sketchfab_collection_1_CAM1_1.0001.png",
+      "silhouette_iou": 0.9881344028388719,
+      "held_out": false
+    },
+    {
+      "image": "sketchfab_collection_1_CAM1_1.0012.png",
+      "silhouette_iou": 0.9883732121888775,
+      "held_out": true
+    },
+    {
+      "image": "sketchfab_collection_1_CAM1_1.0023.png",
+      "silhouette_iou": 0.9879026803486193,
+      "held_out": false
+    },
+    {
+      "image": "sketchfab_collection_1_CAM1_1.0034.png",
+      "silhouette_iou": 0.9870261732851986,
+      "held_out": true
+    },
+    {
+      "image": "sketchfab_collection_1_CAM1_1.0046.png",
+      "silhouette_iou": 0.9882788289766306,
+      "held_out": false
+    },
+    {
+      "image": "sketchfab_collection_1_CAM1_1.0057.png",
+      "silhouette_iou": 0.9869670031640801,
+      "held_out": true
+    },
+    {
+      "image": "sketchfab_collection_1_CAM1_1.0068.png",
+      "silhouette_iou": 0.9880216822713317,
+      "held_out": false
+    },
+    {
+      "image": "sketchfab_collection_1_CAM1_1.0079.png",
+      "silhouette_iou": 0.9881573777852612,
+      "held_out": true
+    },
+    {
+      "image": "sketchfab_collection_1_CAM1_1.0090.png",
+      "silhouette_iou": 0.9881690660760428,
+      "held_out": false
+    },
+    {
+      "image": "sketchfab_collection_1_CAM2_1.0001.png",
+      "silhouette_iou": 0.9899599854492542,
+      "held_out": false
+    },
+    {
+      "image": "sketchfab_collection_1_CAM2_1.0012.png",
+      "silhouette_iou": 0.990299888930026,
+      "held_out": true
+    },
+    {
+      "image": "sketchfab_collection_1_CAM2_1.0023.png",
+      "silhouette_iou": 0.9904760122745303,
+      "held_out": false
+    },
+    {
+      "image": "sketchfab_collection_1_CAM2_1.0034.png",
+      "silhouette_iou": 0.9902004126142058,
+      "held_out": true
+    },
+    {
+      "image": "sketchfab_collection_1_CAM2_1.0046.png",
+      "silhouette_iou": 0.9901784732656577,
+      "held_out": false
+    },
+    {
+      "image": "sketchfab_collection_1_CAM2_1.0057.png",
+      "silhouette_iou": 0.9900767823117701,
+      "held_out": true
+    },
+    {
+      "image": "sketchfab_collection_1_CAM2_1.0068.png",
+      "silhouette_iou": 0.9900820793433652,
+      "held_out": false
+    },
+    {
+      "image": "sketchfab_collection_1_CAM2_1.0079.png",
+      "silhouette_iou": 0.9902448994760118,
+      "held_out": true
+    },
+    {
+      "image": "sketchfab_collection_1_CAM2_1.0090.png",
+      "silhouette_iou": 0.9905931586608443,
+      "held_out": false
+    }
+  ]
+}

@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse
 import psycopg
 
 from . import jobs
-from .reconstruction import process
+from .reconstruction import openmvs_available, process
 from .settings import COLMAP_COMMAND, DATA_DIR, MIN_IMAGES, MAX_IMAGE_BYTES, MAX_IMAGES, MAX_METADATA_BYTES, MAX_TOTAL_BYTES, SERVICE_API_KEY
 from .validation import validate_image
 
@@ -79,6 +79,7 @@ async def _run_job(job_id: str, job_dir: Path) -> None:
 @app.get("/ready")
 def health():
     available = shutil.which(COLMAP_COMMAND) is not None
+    mvs_available = openmvs_available()
     database_ready = False
     if app.state.worker_ready:
         try:
@@ -86,10 +87,11 @@ def health():
             database_ready = True
         except psycopg.Error:
             LOGGER.warning("Scan readiness database check failed", exc_info=True)
-    ready = bool(SERVICE_API_KEY) and available and database_ready and app.state.worker_ready
+    ready = bool(SERVICE_API_KEY) and available and mvs_available and database_ready and app.state.worker_ready
     return JSONResponse(status_code=200 if ready else 503, content={
         "status": "ok" if ready else "unavailable", "service": "3d-scan",
-        "colmap_available": available, "worker_ready": app.state.worker_ready,
+        "colmap_available": available, "openmvs_cpu_available": mvs_available,
+        "worker_ready": app.state.worker_ready,
         "database_ready": database_ready,
     })
 
@@ -108,6 +110,8 @@ def create_scan(background_tasks: BackgroundTasks,
     _authorize(x_service_key)
     if shutil.which(COLMAP_COMMAND) is None:
         raise HTTPException(503, detail="Worker chưa có COLMAP. Vui lòng kiểm tra cấu hình dịch vụ.")
+    if not openmvs_available():
+        raise HTTPException(503, detail="Worker chưa có OpenMVS CPU. Chưa thể tạo surface mesh GLB.")
     if not MIN_IMAGES <= len(images) <= MAX_IMAGES:
         raise HTTPException(422, detail=f"Cần ít nhất {MIN_IMAGES} ảnh của cùng một hiện vật (tối đa {MAX_IMAGES} ảnh).")
     if len(capture_metadata.encode('utf-8')) > MAX_METADATA_BYTES:

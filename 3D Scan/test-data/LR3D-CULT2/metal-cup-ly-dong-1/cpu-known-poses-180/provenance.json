@@ -1,0 +1,23 @@
+{
+  "model.glb": {
+    "origin": "OpenMVS reconstruction from 180 rendered images using fixed inferred cameras",
+    "status": "INSUFFICIENT_COVERAGE",
+    "textured": false,
+    "missing_region": "central interior floor",
+    "note": "Neutral display color is geometry inspection only, not artifact color."
+  },
+  "REFERENCE_IMPORTED_ASSET.glb": {
+    "origin": "Original dataset OBJ and PNG converted to GLB",
+    "status": "REFERENCE_ASSET_ONLY",
+    "reconstructed_by_smgs": false,
+    "material_paths_corrected": true
+  },
+  "reconstructed-partial.glb": {
+    "textured": true,
+    "origin": "OpenMVS reconstruction from 180 rendered images with fixed inferred cameras; TextureMesh uses source images",
+    "user_accepts_incomplete_preview": true,
+    "missing_region": "central interior floor",
+    "status": "PARTIAL_RECONSTRUCTION",
+    "original_reference_mesh_used_as_output": false
+  }
+}

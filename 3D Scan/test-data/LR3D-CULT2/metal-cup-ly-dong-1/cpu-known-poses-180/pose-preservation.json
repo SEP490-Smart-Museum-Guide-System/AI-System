@@ -1,0 +1,6 @@
+{
+  "image_count": 180,
+  "max_pose_parameter_difference": 3.3306690738754696e-16,
+  "source_cameras": "1 PINHOLE 512 512 743.4997636529342 745.8549458073744 255.42101124186598 255.44874309136932",
+  "triangulated_cameras": "# Camera list with one line of data per camera:\n#   CAMERA_ID, MODEL, WIDTH, HEIGHT, PARAMS[]\n# Number of cameras: 1\n1 PINHOLE 512 512 743.49976365293423 745.85494580737441 255.42101124186598 255.44874309136932"
+}

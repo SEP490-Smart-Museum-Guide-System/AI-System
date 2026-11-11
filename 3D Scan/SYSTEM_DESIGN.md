@@ -14,15 +14,16 @@ AI-System là service độc lập, chạy và triển khai tách khỏi Backend
 flowchart LR
     A[Nhân viên / Curator<br/>Web hoặc Flutter] -->|Nghiệp vụ hiện vật| B[SMGS Backend Service<br/>độc lập]
     A -->|Ảnh scan / trạng thái / preview| C[AI-System<br/>3D Scan API + worker<br/>service độc lập]
-    C -->|Chạy CLI ở nền| D[COLMAP<br/>SfM / MVS]
-    D -->|Point cloud / mesh| E[Đóng gói và kiểm tra GLB]
-    E --> F[(Lưu trữ ảnh và GLB)]
-    C --> G[(PostgreSQL<br/>schema ai_3d_scan)]
+    C -->|CPU SfM| D[COLMAP<br/>camera poses + sparse cloud]
+    D -->|Undistorted COLMAP project| E[OpenMVS<br/>CPU SGM → dense cloud]
+    E -->|Mesh → refine → texture| F[Kiểm tra surface GLB]
+    F --> G[(Lưu trữ ảnh và GLB)]
+    C --> H[(PostgreSQL<br/>schema ai_3d_scan)]
     C <-->|API liên kết modelUrl sau duyệt<br/>khi tích hợp được bật| B
     I[Khách tham quan] -->|Lấy nội dung hiện vật| B
     B -->|artifact + modelUrl| I
     I --> J[GLB Viewer trong app]
-    J --> F
+    J --> G
 ```
 
 ### Vai trò các thành phần
@@ -31,9 +32,10 @@ flowchart LR
 |---|---|
 | Web/Flutter UI | Gọi Backend Service cho nghiệp vụ catalog; gọi AI-System API cho tác vụ scan, theo dõi job và xem preview theo quyền đã cấu hình. |
 | SMGS Backend Service | Quản lý nghiệp vụ/catalog hiện vật độc lập. Có thể trao đổi `artifactId` và `modelUrl` với AI-System qua API; đây là tích hợp liên service, không phải AI-System nằm trong Backend. |
-| AI-System / 3D Scan Service | Microservice độc lập nhận job, xếp hàng, gọi COLMAP, lưu kết quả và quản lý trạng thái scan. |
-| COLMAP | Tìm vị trí camera từ ảnh, tái tạo point cloud và hình học 3D. Chạy CPU được nhưng chậm; GPU CUDA chỉ là tăng tốc tuỳ cấu hình. |
-| GLB packaging | Chuyển mesh/texture sang GLB, tối ưu dung lượng và kiểm tra file trước khi lưu. |
+| AI-System / 3D Scan Service | Microservice độc lập nhận job, xếp hàng, gọi COLMAP/OpenMVS, lưu kết quả và quản lý trạng thái scan. |
+| COLMAP | Chạy CPU để tìm vị trí camera/pose và sparse points; dense stage của COLMAP bị tắt để không đòi CUDA. |
+| OpenMVS | Nhận COLMAP project; chạy CPU SGM (`DensifyPointCloud --fusion-mode -2`), dựng mesh, refine và dùng `TextureMesh` tạo texture/GLB. Cần binary Linux tương thích; OpenMVS có license AGPL-3.0 cần được xem xét khi phân phối. |
+| GLB validation | Đọc lại file GLB, xác nhận có geometry với vertices và faces; từ chối point-cloud-only output. |
 | PostgreSQL | Lưu metadata/trạng thái job trong schema `ai_3d_scan`. Theo cấu hình PoC hiện tại, schema này nằm trong cùng PostgreSQL database với Backend, nhưng được AI-System quản lý riêng. Tách service không đồng nghĩa bắt buộc phải có database server riêng. |
 | File/object storage | Lưu ảnh gốc và GLB. PoC hiện dùng ổ đĩa local; triển khai nhiều instance cần storage dùng chung. |
 | GLB Viewer | Tải model đã xuất bản và cho khách xoay/phóng to trong app. |
@@ -88,7 +90,7 @@ Trả trạng thái `QUEUED`, `PROCESSING`, `REVIEW_REQUIRED` hoặc `FAILED`. P
 
 ## 6. Tạo GLB và chất lượng
 
-COLMAP tập trung vào tái tạo hình học/texture từ nhiều ảnh. Đầu ra của pipeline cần bước đóng gói và kiểm tra GLB riêng; không nên giả định mọi bản COLMAP tự xuất đúng GLB trong mọi cấu hình. PoC của nhóm yêu cầu các CLI `automatic_reconstructor`, `poisson_mesher` và `mesh_texturer`; cần xác minh phiên bản cài đặt có đủ lệnh tương ứng.
+Pipeline CPU hiện được cấu hình là COLMAP SfM → undistortion → OpenMVS SGM dense cloud → mesh → refine → texture/GLB. Không dùng CUDA và không trả sparse point cloud như model. OpenMVS phải cài đủ `InterfaceCOLMAP`, `DensifyPointCloud`, `ReconstructMesh`, `RefineMesh`, `TextureMesh` trong môi trường worker. Docker image ghim OpenMVS 2.4.0; xem README service về license và kiểm thử.
 
 Tiêu chí kiểm tra curator có thể gồm:
 
@@ -121,7 +123,7 @@ Tiêu chí kiểm tra curator có thể gồm:
 - Không tạo model từ một ảnh duy nhất; cần nhiều ảnh có vùng chồng lấp.
 - CPU không cần thuê GPU nhưng thời gian dựng có thể lâu; demo nên tuần tự, không tuyên bố chịu tải production trước khi đo.
 - COLMAP có thể không tái tạo tốt vật thể bóng, trong suốt, đơn sắc hoặc thiếu chi tiết.
-- PoC hiện đã nhận job, chạy COLMAP và lưu trạng thái; Backend/UI chưa nối end-to-end, curator approval chưa kiểm tra role, `modelUrl` chưa tự cập nhật và media còn lưu local.
+- PoC API nhận job và lưu trạng thái; CPU mesh pipeline đang được kiểm thử với sample. Backend/UI chưa nối end-to-end, curator approval chưa kiểm tra role, `modelUrl` chưa tự cập nhật và media còn lưu local.
 - Vì vậy khi thuyết trình cần phân biệt rõ phần PoC đang có với phần kiến trúc/tích hợp dự kiến.
 
 ## 9. Tóm tắt để thuyết trình
