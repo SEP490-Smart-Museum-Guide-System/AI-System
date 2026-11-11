@@ -2,7 +2,9 @@
 
 Repo chứa các microservice AI cho Smart Museum Guide System. TTS, nhận diện ảnh hiện vật và 3D Scan có các PoC độc lập; xem README từng service để biết giới hạn và cách chạy.
 
-**Chạy tất cả dịch vụ trên máy thành viên:** từ thư mục repo chạy `powershell -ExecutionPolicy Bypass -File .\tools\start-ai.ps1`. Cần Docker Desktop và cấu hình PostgreSQL BE một lần trong `.env`; script tự chuẩn bị khóa, tải model và đợi bốn API ready. Xem [RUN_ALL_AI.md](RUN_ALL_AI.md) để cài lần đầu, nối BE, dừng và hiểu giới hạn GPU của 3D.
+**Chạy tất cả dịch vụ trên máy thành viên:** từ thư mục repo chạy `powershell -ExecutionPolicy Bypass -File .\tools\start-ai.ps1`. Cần Docker Desktop và cấu hình PostgreSQL BE một lần trong `.env`; script tự chuẩn bị khóa, tải model và đợi năm API ready. Xem [RUN_ALL_AI.md](RUN_ALL_AI.md) để cài lần đầu, nối BE, dừng và hiểu giới hạn GPU của 3D.
+
+**Hành trình cá nhân 11/11/2026:** thêm [AI Tour](AI%20Tour/README.md), bộ gợi ý dựa trên nội dung tiếng Việt đã xuất bản, sở thích, quỹ thời gian và quyền truy cập. Flutter có tùy chọn xem trước/lưu/bắt đầu; tour có sẵn và tham quan tự do vẫn độc lập. Service dùng TF-IDF và chủ đề, không tải model ONNX/LLM.
 
 **Nghe trong hệ thống 09/11/2026:** Xưởng AI có audio player đọc bản thuyết minh đang chỉnh sửa, qua gateway BE có JWT và kiểm tra phân công. Xem [triển khai UI, API và kiểm tra](AI_STUDIO_PLAYBACK_2026_11_09.md).
 
@@ -51,6 +53,7 @@ AI-System/
 | TTS | Nhận văn bản đã duyệt, tổng hợp giọng tiếng Việt bằng Piper/sherpa-onnx và trả audio | MVP trong [`TTS AI/README.md`](TTS%20AI/README.md) |
 | Nhận diện hiện vật | So khớp CLIP ONNX embeddings với ảnh tham chiếu, trả `artifactId`, similarity và ứng viên | MVP ONNX trong [`AI Vision/README.md`](AI%20Vision/README.md) |
 | Dựng 3D | Nhận bộ ảnh, chạy COLMAP, xuất GLB và chờ curator review | PoC; chưa nối Backend/web/Flutter end-to-end |
+| Hành trình cá nhân | Chọn, sắp xếp điểm theo nội dung/sở thích/thời gian; không mua vé hoặc xuất bản tour | MVP trong [`AI Tour/README.md`](AI%20Tour/README.md) |
 
 **AI chỉ hỗ trợ soạn bản nháp từ tư liệu; không tự xuất bản thuyết minh cho khách.** Nội dung, tên gọi và thông tin lịch sử do người phụ trách xác minh, kiểm duyệt và xuất bản. TTS microservice chỉ biến văn bản được ứng dụng gửi vào thành audio; service không nhận diện hiện vật và không truy cập database nội dung.
 

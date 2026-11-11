@@ -21,6 +21,7 @@ function Initialize-AiStackEnv {
         @{ Name = 'AI_SERVICE_API_KEY'; File = '' },
         @{ Name = 'SCAN_SERVICE_API_KEY'; File = '' },
         @{ Name = 'AI_CHAT_SERVICE_KEY'; File = 'chat-service-key.txt' },
+        @{ Name = 'AI_TOUR_SERVICE_KEY'; File = 'tour-service-key.txt' },
         @{ Name = 'TTS_SERVICE_API_KEY'; File = 'tts-service-key.txt' }
     )) {
         $value = Get-AiEnvValue $lines $item.Name

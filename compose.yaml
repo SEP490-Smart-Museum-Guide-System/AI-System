@@ -108,6 +108,18 @@ services:
       start_period: 120s
     restart: unless-stopped
 
+  tour:
+    build: ./AI Tour
+    ports: ["127.0.0.1:${AI_TOUR_PORT:-8004}:8004"]
+    environment:
+      AI_TOUR_SERVICE_KEY: ${AI_TOUR_SERVICE_KEY:?Run tools/start-ai.ps1 to prepare internal keys}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8004/ready', timeout=4)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    restart: unless-stopped
+
 volumes:
   tts-models:
   tts-audio:

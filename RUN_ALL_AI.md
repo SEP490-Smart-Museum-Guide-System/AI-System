@@ -30,10 +30,11 @@ Script không tự tạo lại database, không xóa dữ liệu, không tự t�
 | Vision CLIP ONNX | 8001 | `http://127.0.0.1:8001/ready` | Ảnh → ứng viên hiện vật |
 | 3D Scan API/worker | 8002 | `http://127.0.0.1:8002/ready` | Nhận bộ ảnh, quản lý job COLMAP |
 | Chat/Xưởng AI Qwen ONNX | 8003 | `http://127.0.0.1:8003/ready` | Hỏi đáp, soạn thuyết minh/quiz |
+| Hành trình cá nhân | 8004 | `http://127.0.0.1:8004/ready` | Gợi ý điểm từ nội dung đã xuất bản theo sở thích/thời gian |
 
 Compose còn có `chat-model`: đây là bước tải graph/tokenizer Qwen đã pin revision, chạy xong rồi thoát **Exited (0)** là bình thường. Chat chỉ khởi động sau khi bước tải thành công. Model Chat khoảng 1,79 GB, các model khác được tải khi khởi động lần đầu. Lần đầu chậm hơn; các lần sau giữ cache/model. Chat chạy 1 worker để tránh nhân bản model trong RAM. Cần đủ RAM/dung lượng cho Docker và model; chưa benchmark cấu hình máy của từng thành viên.
 
-Script chỉ báo thành công khi cả bốn `/ready` pass, tối đa mặc định 20 phút chờ readiness sau giai đoạn build. Vision ready với `reference_images=0` là hợp lệ cho service mới nhưng chưa nhận diện được hiện vật: cần index ảnh tham chiếu thật. Không tự nạp ảnh demo vào DB.
+Script chỉ báo thành công khi cả năm `/ready` pass, tối đa mặc định 20 phút chờ readiness sau giai đoạn build. Vision ready với `reference_images=0` là hợp lệ cho service mới nhưng chưa nhận diện được hiện vật: cần index ảnh tham chiếu thật. Không tự nạp ảnh demo vào DB. Tour dùng thuật toán TF-IDF/chủ đề, không cần tải thêm model.
 
 ### Giới hạn 3D cần phân biệt
 
@@ -52,9 +53,11 @@ ArtifactGuide__ServiceKey=<AI_CHAT_SERVICE_KEY trong .env>
 ArtifactSpeech__Enabled=true
 ArtifactSpeech__BaseUrl=http://127.0.0.1:8000/
 ArtifactSpeech__ServiceKey=<khóa trong state/tts-service-key.txt>
+PersonalizedTours__BaseUrl=http://127.0.0.1:8004/
+PersonalizedTours__ServiceKey=<khóa trong state/tour-service-key.txt>
 ```
 
-Launcher tự đồng bộ `.env` → `state/chat-service-key.txt` và `state/tts-service-key.txt` (ignored), nên các script BE `start-api-with-local-chat.ps1` và `start-api-with-local-tts.ps1` hiện có dùng lại được nếu các repo nằm theo cấu trúc thư mục chung. Không in khóa ra terminal, không đưa khóa vào `VITE_*`/Flutter.
+Launcher tự đồng bộ `.env` → `state/chat-service-key.txt`, `state/tts-service-key.txt`, `state/tour-service-key.txt` (ignored). Các script BE `start-api-with-local-chat.ps1`, `start-api-with-local-tts.ps1`, `start-api-with-personalized-tours.ps1` dùng lại được nếu các repo nằm theo cấu trúc thư mục chung. Không in khóa ra terminal, không đưa khóa vào `VITE_*`/Flutter.
 
 TTS mặc định giữ key rỗng ở service để tương thích proxy Visitor local hiện tại; BE vẫn có key file riêng để cấu hình gateway. Nếu đặt `TTS_SERVICE_API_KEY` trong `.env`, script đồng bộ giá trị đó sang key file và TTS bắt buộc key. Khi đó client Visitor/proxy cũ phải đi qua gateway giữ key; không đặt secret vào FE. Vision và Scan luôn yêu cầu key nội bộ, chưa tự nối các gateway còn thiếu bằng việc chạy Compose.
 
