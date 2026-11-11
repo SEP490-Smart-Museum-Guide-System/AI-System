@@ -20,7 +20,7 @@ class InitializationTests(unittest.TestCase):
         with patch.object(jobs, '_connect', return_value=connection):
             jobs.initialize()
         statements = [call.args[0].as_string() for call in connection.execute.call_args_list]
-        self.assertEqual(len(statements), 3)
+        self.assertEqual(len(statements), 4)
         self.assertIn("DEFAULT '{}'::jsonb", statements[1])
 
 
@@ -115,6 +115,20 @@ class ApiTests(unittest.TestCase):
 
 
 class WorkerTests(unittest.TestCase):
+    def test_sparse_colmap_points_are_packaged_as_glb_preview(self):
+        with tempfile.TemporaryDirectory(prefix='smgs-sparse-glb-test-') as folder:
+            root = Path(folder)
+            points_path = root / 'points.ply'
+            output_path = root / 'output' / 'model.glb'
+            trimesh = __import__('trimesh')
+            trimesh.points.PointCloud([[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]] * 8,
+                                      colors=[180, 120, 80, 255]).export(points_path)
+            reconstruction._export_sparse_glb(points_path, output_path)
+            self.assertGreater(output_path.stat().st_size, 1024)
+            scene = trimesh.load(output_path, force='scene')
+            self.assertEqual(len(scene.geometry), 1)
+            self.assertEqual(len(next(iter(scene.geometry.values())).vertices), 32)
+
     def test_job_not_claimed_is_never_processed(self):
         with patch.object(main.jobs, 'claim', return_value=False), patch.object(main, 'process') as process:
             asyncio.run(main._run_job(str(uuid4()), Path('unused')))

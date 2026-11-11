@@ -170,6 +170,9 @@ def get_scan(job_id: uuid.UUID, x_service_key: str | None = Header(default=None)
         "status": record["status"], "progress": record["progress"],
         "imageCount": record["image_count"],
         "modelUrl": f"/api/v1/scans/{record['id']}/model" if record["model_path"] else None,
+        "modelType": record.get("model_type"),
+        "modelWarning": ("Bản xem trước là đám mây điểm thưa, chưa phải bề mặt mesh kín."
+                         if record.get("model_type") == "sparse_point_cloud" else None),
         "error": record["error"], "createdAt": record["created_at"],
     }
 
@@ -199,5 +202,6 @@ def approve_scan(job_id: uuid.UUID, x_service_key: str | None = Header(default=N
     if record["status"] != "COMPLETED":
         raise HTTPException(409, detail="Chỉ duyệt được scan đang ở trạng thái REVIEW_REQUIRED.")
     return {"scanJobId": job_id, "artifactId": record["artifact_id"],
-            "status": "COMPLETED", "modelUrl": f"/api/v1/scans/{job_id}/model"}
+            "status": "COMPLETED", "modelUrl": f"/api/v1/scans/{job_id}/model",
+            "modelType": record.get("model_type")}
 

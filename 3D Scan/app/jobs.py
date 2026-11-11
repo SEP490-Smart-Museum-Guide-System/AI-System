@@ -37,12 +37,14 @@ def initialize() -> None:
                 progress INTEGER NOT NULL DEFAULT 0,
                 image_count INTEGER NOT NULL,
                 model_path TEXT,
+                model_type VARCHAR(24),
                 error TEXT,
                 created_at TIMESTAMPTZ NOT NULL,
                 updated_at TIMESTAMPTZ NOT NULL,
                 capture_metadata JSONB NOT NULL DEFAULT '{{}}'::jsonb
             )
         """).format(_table()))
+        db.execute(sql.SQL("ALTER TABLE {} ADD COLUMN IF NOT EXISTS model_type VARCHAR(24)").format(_table()))
         db.execute(sql.SQL(
             "CREATE INDEX IF NOT EXISTS ix_scan_jobs_status_created "
             "ON {} (status, created_at)"
@@ -79,11 +81,12 @@ def create(job_id: str, artifact_id: int, image_count: int, metadata: dict[str, 
 
 
 def update(job_id: str, *, status: str | None = None, progress: int | None = None,
-           model_path: str | None = None, error: str | None = None) -> None:
+           model_path: str | None = None, model_type: str | None = None,
+           error: str | None = None) -> None:
     assignments = [sql.SQL("updated_at = %s")]
     values: list[Any] = [_now()]
     for key, value in (("status", status), ("progress", progress),
-                       ("model_path", model_path), ("error", error)):
+                       ("model_path", model_path), ("model_type", model_type), ("error", error)):
         if value is not None:
             assignments.append(sql.SQL("{} = %s").format(sql.Identifier(key)))
             values.append(value)

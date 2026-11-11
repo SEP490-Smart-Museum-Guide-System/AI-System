@@ -100,3 +100,12 @@
 - Đây là inference bằng pretrained CLIP, không train/fine-tune. Chưa phải benchmark production: cần nhiều hiện vật, ảnh điện thoại trong ánh sáng/tủ kính thật, hard negatives và đo false positives trước khi chỉnh ngưỡng.
 - Ảnh gốc đang là file trong `AI-System/test-data`; DB chỉ lưu tên file và embedding, chưa lưu bytes ảnh. Nếu cần hiển thị/quản lý ảnh trong sản phẩm, lưu file ở object storage và metadata/URL trong DB.
 - `AI-System/.env` chứa cấu hình local và được gitignore. AI Vision health trả 6 reference embeddings.
+
+## 2026-11-11 — Bộ ảnh mẫu đồ gốm và thử COLMAP CPU
+
+- Tải bộ ảnh test từ [LR3D-CULT2](https://data.mendeley.com/datasets/jr23fnrvx2/1), DOI `10.17632/jr23fnrvx2.1`, license CC BY 4.0. Chỉ giữ 40 ảnh PNG render của vật thể `ly_dong_1` (20 góc từ mỗi vòng camera); không giữ mesh nguồn trong thư mục test. Ảnh là render Blender, không phải ảnh chụp hiện vật thật.
+- Đặt ảnh trong `AI-System/3D Scan/test-data/LR3D-CULT2/metal-cup-ly-dong-1/images/`; thêm thông tin nguồn, license và giới hạn academic-use trong README cùng thư mục.
+- COLMAP 3.8 CPU sparse chạy trực tiếp: đăng ký đủ 40/40 ảnh, 3,704 điểm sparse, sai số chiếu lại trung bình 0.307 px. Lưu kết quả `sparse-colmap-cpu.ply` và ảnh xem bốn hướng `sparse-preview.png`.
+- Dense CPU được thử với `--dense 1 --use_gpu 0`; COLMAP bỏ qua PatchMatch stereo vì build không có CUDA, không có dense mesh/GLB.
+- Thử POST thật qua Scan API: trả `QUEUED`, sau đó `FAILED`, lỗi COLMAP exit `-6` do worker không truyền `--use_gpu 0` nên COLMAP cố tạo OpenGL context trong container headless. Service hiện chưa hoàn tất luồng tạo GLB bằng CPU; `/ready` chỉ xác nhận binary, worker và DB.
+- Việc cần xử lí để demo: cấu hình worker dùng CPU cho feature extraction/matching, sau đó chọn một bước dựng dense mesh chạy CPU thay PatchMatch CUDA, hoặc đổi qua COLMAP build/GPU phù hợp. Chưa đưa model mẫu có sẵn vào hồ sơ hiện vật để tránh nhầm là kết quả do AI-System dựng.
