@@ -83,9 +83,18 @@ python "D:\SEP409\AI-System\3D Scan\tools\scan_folder.py" "D:\3D\ceramic_vases_1
 python "D:\SEP409\AI-System\3D Scan\tools\scan_folder.py" "D:\3D\ceramic_vases_1\ceramic_vases_1" --prepare-only --no-serve
 ```
 
-Nếu chưa có image CPU: `docker compose -f "D:\SEP409\AI-System\compose.yaml" build scan`.
-Viewer dùng bundle model-viewer đã cài ở `FrontEnd/smgs_web/node_modules`; nếu thiếu,
-chạy `npm install` trong thư mục đó. Worker Docker không có network khi dựng.
+Sau khi clone riêng repo AI-System, cài Python 3.11+ và Docker Linux containers x64.
+Từ thư mục repo chạy:
+
+```powershell
+python "3D Scan/tools/scan_folder.py" --setup
+```
+
+Script tự build CPU image nếu chưa có, tải model-viewer 4.3.1 có kiểm tra SHA256;
+không cần repo FrontEnd, npm hoặc .env/database cho lệnh local. Sau pull cập nhật
+worker dùng `--setup --rebuild`. Lần đầu cần Internet; worker local khi dựng
+không có network. Đường dẫn D:\SEP409 trong ví dụ chỉ là vị trí máy hiện tại;
+thay bằng vị trí repo của bạn.
 
 Mở lại một job cũ, thay đường dẫn bằng dòng `OUTPUT:` đã in:
 
@@ -100,6 +109,7 @@ python -m http.server 8766 --bind 127.0.0.1 --directory "D:\SEP409\AI-System\3D 
   trạng thái `CHECKED`, bbox RMSE 0.268 px; silhouette đối chiếu camera khoảng
   98.72–99.05%. Đây là số liệu **camera với OBJ tham chiếu**, không phải chất lượng
   của một GLB mới.
-- Chưa chạy toàn bộ reconstruction của bộ ceramic này: người dùng yêu cầu tự chạy.
-- Chưa tích hợp local job vào BE/FE, chưa tự lưu model vào hồ sơ hiện vật. Tải GLB
-  rồi upload vào chức năng model 3D hiện có sau khi kiểm tra.
+- Người dùng sau đó đã chạy toàn bộ ceramic: 180/180 ảnh registered, 511116 dense points, xuất GLB và xác nhận xem tốt.
+- Đã bổ sung luồng upload folder qua BE/FE; xem [STAFF_WEB_GUIDE.md](STAFF_WEB_GUIDE.md)
+  để chạy các service và xem chính xác phần đã kiểm chứng/còn thiếu. Local job
+  vẫn độc lập; có thể chọn GLB local trong tab 3D để xem trước rồi lưu.

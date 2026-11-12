@@ -1,0 +1,14 @@
+{
+  "artifactId": 10,
+  "jobId": "04473380-4377-45f0-bfef-556b95e2d6bd",
+  "status": "COMPLETED",
+  "imageCount": 180,
+  "sizeBytes": 8232748,
+  "storedBytesMatchGenerated": true,
+  "mode": "benchmark",
+  "referenceUsedForCalibration": true,
+  "referenceGeometryCopied": false,
+  "role": "Museum Staff",
+  "flow": "FE folder chooser -> BE gateway -> AI CPU -> FE preview -> BE save -> storage readback",
+  "liveDeleteTested": false
+}

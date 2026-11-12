@@ -1,5 +1,9 @@
 # Implementation log
 
+## 2026-11-12 — Museum Staff web scan integration
+
+Added validated multipart datasets (5–200 photos + optional LR3D metadata/reference OBJ), same local CPU worker through DB-backed API jobs, scoped BE gateway, authenticated preview/save/discard, and React artifact 3D tab with folder selection, polling, preview and model persistence/deletion through existing media service. Standalone local setup no longer depends on sibling FE node_modules. Added start-scan.ps1 and BE start-with-scan.ps1; DB/key are process environment only. No new model storage architecture or fake fallback color. See [guide, checks and remaining work](3D%20Scan/STAFF_WEB_GUIDE.md). Live 180-photo Museum Staff web-to-DB verification passed: job 04473380-4377-45f0-bfef-556b95e2d6bd COMPLETED on demo artifact 10; stored GLB 8,232,748 bytes SHA256 equals generated output. Fixed non-seekable AI download stream by bounded temporary-file buffering before existing GLB validation; regression checked. Unit/API and media checks pass. Live delete not performed.
+
 ## 2026-11-12 — Local folder-to-GLB command
 
 - Added `3D Scan/tools/scan_folder.py`: accepts a quoted folder path (or prompts for it), reads JPG/PNG recursively, chooses `images/` when present to exclude source texture atlases, and launches an isolated CPU Docker worker. Source mounted read-only; no artifact ID, database calls, uploads, or publication. New output folder per run; logs, status JSON, embedded-texture GLB, provenance and HTTP viewer retained.

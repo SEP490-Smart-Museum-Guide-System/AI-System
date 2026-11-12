@@ -1,6 +1,6 @@
 # 3D Scan Service
 
-Microservice PoC nhận ảnh nhiều góc, chạy COLMAP ở nền, chuyển mesh sang GLB và giữ kết quả ở trạng thái curator review. Job metadata được lưu trong schema riêng `ai_3d_scan.scan_jobs` của **cùng PostgreSQL database với BE**, cấu hình qua `AI_SYSTEM_DB_*`. Service không tạo database riêng và chưa tự cập nhật `modelUrl` trong Backend. Ảnh đầu vào và GLB hiện vẫn lưu trên ổ đĩa theo `SCAN_DATA_DIR`.
+Microservice PoC nhận ảnh nhiều góc, chạy COLMAP ở nền, chuyển mesh sang GLB và giữ kết quả ở trạng thái curator review. Job metadata được lưu trong schema riêng `ai_3d_scan.scan_jobs` của **cùng PostgreSQL database với BE**, cấu hình qua `AI_SYSTEM_DB_*`. Service không tạo database riêng. Luồng Museum Staff mới gọi qua BE và lưu GLB vào media hiện vật khi người dùng bấm lưu; xem [STAFF_WEB_GUIDE.md](STAFF_WEB_GUIDE.md). Ảnh đầu vào và GLB hiện vẫn lưu trên ổ đĩa theo `SCAN_DATA_DIR`.
 
 ## Luồng hiện tại
 

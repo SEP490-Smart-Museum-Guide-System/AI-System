@@ -1,5 +1,7 @@
 # AI System — Smart Museum Guide System
 
+**Tạo 3D từ FE (Museum Staff):** chọn folder ảnh → dựng CPU → xem thử → lưu/bỏ. Xem [cách chạy và trạng thái kiểm chứng](<3D Scan/STAFF_WEB_GUIDE.md>).
+
 **Member chỉ chạy AI, bỏ 3D Scan:** [bộ lệnh máy mới](RUN_AI_ONLY_NO_SCAN.md), với `tools/start-ai.ps1 -SkipScan` để chạy TTS, Vision, Chat/Xưởng AI và Tour.
 
 Repo chứa các microservice AI cho Smart Museum Guide System. TTS, nhận diện ảnh hiện vật và 3D Scan có các PoC độc lập; xem README từng service để biết giới hạn và cách chạy.
