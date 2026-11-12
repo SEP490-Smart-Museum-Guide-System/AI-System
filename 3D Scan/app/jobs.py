@@ -119,3 +119,13 @@ def approve(job_id: str) -> dict[str, Any] | None:
             WHERE id=%s AND status='REVIEW_REQUIRED'
         """).format(_table()), (_now(), UUID(job_id)))
     return get(job_id)
+
+
+def for_artifact(artifact_id: int):
+    with _connect() as db:
+        return db.execute(sql.SQL("SELECT id FROM {} WHERE artifact_id=%s AND status NOT IN ('DISCARDED', 'COMPLETED') ORDER BY created_at DESC LIMIT 20").format(_table()), (artifact_id,)).fetchall()
+
+
+def discard(job_id: str) -> bool:
+    with _connect() as db:
+        return db.execute(sql.SQL("UPDATE {} SET status='DISCARDED', updated_at=%s WHERE id=%s AND status IN ('REVIEW_REQUIRED','FAILED') RETURNING id").format(_table()), (_now(), UUID(job_id))).fetchone() is not None

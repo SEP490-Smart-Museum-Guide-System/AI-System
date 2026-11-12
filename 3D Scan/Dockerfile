@@ -18,6 +18,7 @@ COPY requirements.txt ./requirements.txt
 RUN python3.12 -m venv /opt/venv && /opt/venv/bin/pip install --no-cache-dir -r requirements.txt \
     && ln -s /usr/bin/python3.12 /usr/local/bin/python
 COPY app ./app
+COPY tools/*.py ./tools/
 RUN useradd --create-home --uid 10004 appuser && mkdir /data && chown appuser:appuser /data
 USER appuser
 ENV SCAN_DATA_DIR=/data

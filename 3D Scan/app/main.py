@@ -70,9 +70,15 @@ async def _run_job(job_id: str, job_dir: Path) -> None:
     async with _job_slots:
         try:
             if await asyncio.to_thread(jobs.claim, job_id):
-                await asyncio.to_thread(process, job_id, job_dir)
+                if (job_dir / 'config.json').is_file():
+                    from tools.local_scan_worker import run
+                    await asyncio.to_thread(run, job_dir / 'dataset', job_dir,
+                                            on_update=lambda **changes: jobs.update(job_id, **changes))
+                else:
+                    await asyncio.to_thread(process, job_id, job_dir)
         except Exception:
             LOGGER.exception("Scan worker failed for job %s", job_id)
+            await asyncio.to_thread(jobs.update, job_id, status='FAILED', error='Worker lỗi. Kiểm tra log service.')
 
 
 @app.get("/health")
@@ -178,7 +184,49 @@ def get_scan(job_id: uuid.UUID, x_service_key: str | None = Header(default=None)
         "modelWarning": ("Bản xem trước là đám mây điểm thưa, chưa phải bề mặt mesh kín."
                          if record.get("model_type") == "sparse_point_cloud" else None),
         "error": record["error"], "createdAt": record["created_at"],
+        "mode": record.get("capture_metadata", {}).get("mode", "photos"),
     }
+
+
+@app.post('/api/v1/scans/dataset', status_code=202)
+def create_dataset(background_tasks: BackgroundTasks, artifact_id: int = Form(..., gt=0),
+                   images: list[UploadFile] = File(...), mode: str = Form('auto'),
+                   metadata: UploadFile | None = File(None), reference_obj: UploadFile | None = File(None),
+                   x_service_key: str | None = Header(default=None)):
+    from .dataset_upload import save_dataset
+    _authorize(x_service_key)
+    if not openmvs_available() or shutil.which(COLMAP_COMMAND) is None:
+        raise HTTPException(503, 'Worker CPU chưa sẵn sàng.')
+    job_id = str(uuid.uuid4())
+    directory = DATA_DIR / 'scan-jobs' / job_id
+    directory.mkdir(parents=True)
+    try:
+        config = save_dataset(directory, images, metadata, reference_obj, mode)
+        jobs.create(job_id, artifact_id, len(images), {'mode': config['mode'], 'source': 'staff-web'})
+    except Exception:
+        if directory.resolve().parent == (DATA_DIR / 'scan-jobs').resolve():
+            shutil.rmtree(directory)
+        raise
+    finally:
+        for upload in [*images, metadata, reference_obj]:
+            if upload is not None:
+                upload.file.close()
+    background_tasks.add_task(_run_job, job_id, directory)
+    return {'scanJobId': job_id, 'artifactId': artifact_id, 'status': 'QUEUED', 'mode': config['mode']}
+
+
+@app.get('/api/v1/artifacts/{artifact_id}/scans')
+def list_artifact_scans(artifact_id: int, x_service_key: str | None = Header(default=None)):
+    _authorize(x_service_key)
+    return [get_scan(uuid.UUID(str(row['id'])), x_service_key) for row in jobs.for_artifact(artifact_id)]
+
+
+@app.post('/api/v1/scans/{job_id}/discard')
+def discard_scan(job_id: uuid.UUID, x_service_key: str | None = Header(default=None)):
+    _authorize(x_service_key)
+    if not jobs.discard(str(job_id)):
+        raise HTTPException(409, 'Chỉ bỏ kết quả đã xử lý xong hoặc bị lỗi.')
+    return {'scanJobId': str(job_id), 'status': 'DISCARDED'}
 
 
 @app.get("/api/v1/scans/{job_id}/model")

@@ -4,6 +4,8 @@ from datetime import datetime
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 import json
+import hashlib
+import os
 from pathlib import Path
 import re
 import shutil
@@ -12,10 +14,42 @@ import sys
 import threading
 from urllib.parse import unquote, urlparse
 from urllib.request import url2pathname
+from urllib.request import urlopen
 import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 EXTENSIONS = {'.jpg', '.jpeg', '.png'}
+VIEWER_ASSETS = {
+    'viewer.js': ('dist/model-viewer.min.js', '283b0672384614b4847636c306fc93fe4b1fcadc76d668b4e47f0ca76bcf033b'),
+    'model-viewer-LICENSE': ('LICENSE', 'cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30'),
+}
+
+
+def setup_runtime(image, rebuild=False):
+    if not shutil.which('docker'):
+        raise ValueError('Install Docker Desktop (Linux containers) or Docker Engine first.')
+    if subprocess.run(['docker', 'info'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode:
+        raise ValueError('Docker is not running. Start Docker and retry.')
+    exists = subprocess.run(['docker', 'image', 'inspect', image], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0
+    if rebuild or not exists:
+        print('Building CPU image; first setup needs Internet. No .env/database required.', flush=True)
+        subprocess.run(['docker', 'build', '--platform', 'linux/amd64', '-t', image, str(ROOT)], check=True)
+    cache = ROOT / 'state' / 'viewer-assets'
+    cache.mkdir(parents=True, exist_ok=True)
+    for name, (remote, expected) in VIEWER_ASSETS.items():
+        destination = cache / name
+        if destination.exists() and hashlib.sha256(destination.read_bytes()).hexdigest() == expected:
+            continue
+        print(f'Downloading pinned model-viewer 4.3.1: {name}', flush=True)
+        with urlopen('https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/' + remote, timeout=90) as response:
+            data = response.read(4 * 1024 * 1024)
+        if hashlib.sha256(data).hexdigest() != expected:
+            raise ValueError(f'Checksum mismatch: {name}. Asset was not installed.')
+        temporary = destination.with_suffix('.tmp')
+        temporary.write_bytes(data)
+        temporary.replace(destination)
+    print('CPU image and standalone viewer ready.', flush=True)
+    return cache
 
 
 def folder_path(value):
@@ -73,30 +107,27 @@ def main():
     parser.add_argument('--no-serve', action='store_true', help='Exit after worker, without local preview server')
     parser.add_argument('--port', type=int, default=8766)
     parser.add_argument('--image', default='smgs-ai-scan', help='Existing local CPU Docker image')
+    parser.add_argument('--setup', action='store_true', help='Prepare Docker image and viewer only; no dataset required')
+    parser.add_argument('--rebuild', action='store_true', help='Rebuild CPU image after pulling updates')
     args = parser.parse_args()
+    if args.setup:
+        setup_runtime(args.image, args.rebuild)
+        return 0
     source, config = inspect_folder(folder_path(args.folder or input('Folder anh: ')), args.mode)
     print(f"Folder: {source}\nImages: {config['image_count']} ({config['total_bytes'] / 1048576:.1f} MiB)\nMode: {config['mode']}", flush=True)
     if config['mode'] == 'benchmark':
         print('BENCHMARK: reference OBJ is used for camera calibration only, NOT as output geometry.', flush=True)
     if args.check:
         return 0
-    if not shutil.which('docker'):
-        raise ValueError('Docker CLI not found. Install/start Docker Desktop first.')
-    if subprocess.run(['docker', 'info'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode:
-        raise ValueError('Docker Desktop is not running. Open Docker Desktop and run this command again.')
-    if subprocess.run(['docker', 'image', 'inspect', args.image], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode:
-        raise ValueError('CPU image missing. Run: docker compose -f "' + str(ROOT.parent / 'compose.yaml') + '" build scan')
+    viewer_assets = setup_runtime(args.image, args.rebuild)
     job = datetime.now().strftime('%Y%m%d-%H%M%S-') + uuid.uuid4().hex[:8]
     output = ROOT / 'state' / 'local-scans' / job
     output.mkdir(parents=True)
     (output / 'config.json').write_text(json.dumps(config, ensure_ascii=False, indent=2), encoding='utf-8')
     (output / 'status.json').write_text(json.dumps({'status': 'QUEUED', 'progress': 0}), encoding='utf-8')
     shutil.copyfile(ROOT / 'tools' / 'local_scan_viewer.html', output / 'index.html')
-    viewer = ROOT.parents[1] / 'FrontEnd' / 'smgs_web' / 'node_modules' / '@google' / 'model-viewer' / 'dist' / 'model-viewer.min.js'
-    if viewer.exists():
-        shutil.copyfile(viewer, output / 'viewer.js')
-    else:
-        print('Viewer dependency unavailable. Run npm install in FrontEnd/smgs_web. GLB download will still work.', flush=True)
+    for asset in VIEWER_ASSETS:
+        shutil.copyfile(viewer_assets / asset, output / asset)
     server = None
     if not args.no_serve:
         server = ThreadingHTTPServer(('127.0.0.1', args.port), partial(PreviewHandler, directory=str(output)))
@@ -105,8 +136,10 @@ def main():
     print(f'OUTPUT: {output}\nLOG: {output / "worker.log"}', flush=True)
     container = 'smgs-local-' + job
     mounts = [(source, '/source', True), (ROOT, '/service', True), (output, '/job', False)]
-    command = ['docker', 'run', '--rm', '--name', container, '--network', 'none', '--cpus', '4',
+    command = ['docker', 'run', '--rm', '--platform', 'linux/amd64', '--name', container, '--network', 'none', '--cpus', '4',
                '-e', 'QT_QPA_PLATFORM=offscreen', '-e', 'PYTHONDONTWRITEBYTECODE=1', '-e', 'PYTHONUNBUFFERED=1']
+    if sys.platform.startswith('linux'):
+        command += ['--user', f'{os.getuid()}:{os.getgid()}']
     for host, target, readonly in mounts:
         if ',' in str(host):
             raise ValueError('Docker mount paths containing commas are not supported')
@@ -150,6 +183,6 @@ def main():
 if __name__ == '__main__':
     try:
         sys.exit(main())
-    except (ValueError, OSError) as error:
+    except (ValueError, OSError, subprocess.CalledProcessError) as error:
         print(f'ERROR: {error}', file=sys.stderr)
         sys.exit(1)

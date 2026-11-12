@@ -83,10 +83,16 @@ def prepare_priors(root, report):
     return sparse
 
 
-def run(source, root, prepare_only=False):
+def run(source, root, prepare_only=False, on_update=None):
+    def report_status(**changes):
+        write_status(root, **changes)
+        if on_update:
+            allowed = {key: value for key, value in changes.items()
+                       if key in {'status', 'progress', 'model_path', 'model_type', 'error'}}
+            on_update(**allowed)
     config = json.loads((root / 'config.json').read_text(encoding='utf-8'))
     mode = config['mode']
-    write_status(root, status='PROCESSING', progress=0, mode=mode,
+    report_status(status='PROCESSING', progress=0, mode=mode,
                  warning=('Benchmark: camera calibration uses the reference OBJ; output geometry '
                           'and atlas are reconstructed from images.' if mode == 'benchmark' else
                           'Cameras are estimated from photos. Missing or occluded surfaces may remain.'))
@@ -106,13 +112,13 @@ def run(source, root, prepare_only=False):
             if not prepare_only:
                 sparse = prepare_priors(root, report)
         if prepare_only:
-            write_status(root, status='CHECKED', progress=0,
+            report_status(status='CHECKED', progress=0,
                          note='Input validation/calibration only. No model generated.')
             return 0
         def update_local(_id, **changes):
             if changes.get('status') == 'REVIEW_REQUIRED':
                 changes.update(status='FINALIZING', progress=95)
-            write_status(root, **changes)
+            report_status(**changes)
         pipeline.process(root.name, root,
                          on_update=update_local,
                          sparse_model=sparse, dense_method='patchmatch', resolution_level=0)
@@ -133,13 +139,13 @@ def run(source, root, prepare_only=False):
                           reference_geometry_copied=False, synthetic_fill=False,
                           quality='Needs visual review; completeness is not guaranteed.')
         (root / 'provenance.json').write_text(json.dumps(provenance, indent=2), encoding='utf-8')
-        write_status(root, status='REVIEW_REQUIRED', progress=100)
+        report_status(status='REVIEW_REQUIRED', progress=100)
         return 0
     except BaseException as error:
         if isinstance(error, KeyboardInterrupt):
             raise
         logging.exception('Local scan failed')
-        write_status(root, status='FAILED', model_path='', error=str(error)[:800])
+        report_status(status='FAILED', model_path='', error=str(error)[:800])
         return 1
 
 
