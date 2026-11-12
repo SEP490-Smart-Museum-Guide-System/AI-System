@@ -5,6 +5,7 @@ geometry. Output is an explicitly labeled benchmark prior, not a mobile scan API
 """
 import argparse
 import json
+import re
 from pathlib import Path
 
 import numpy as np
@@ -22,6 +23,13 @@ def rotation(position, target):
     return np.array([right, down, forward])
 
 
+def image_key(path):
+    match = re.search(r'CAM(\d+).*\.(\d+)$', path.stem)
+    if not match:
+        raise ValueError(f'Unsupported LR3D image name: {path.name}')
+    return int(match[1]), int(match[2])
+
+
 def run(source, output):
     output.mkdir(parents=True, exist_ok=True)
     metadata = json.loads((source/'metadata.json').read_text())
@@ -29,25 +37,31 @@ def run(source, output):
     frames = {(int(f['camera'].split('CAM')[-1]), f['frame']): f
               for f in metadata['frames']}
     paths = sorted((source/'images').glob('*.png'))
-    mesh = trimesh.load(source/'metal_cups_1.obj', force='mesh', process=False)
+    objects = sorted(source.glob('*.obj'))
+    if len(objects) != 1 or len(paths) < 5:
+        raise ValueError('Benchmark requires exactly one OBJ and at least five PNG images')
+    mesh = trimesh.load(objects[0], force='mesh', process=False, skip_materials=True)
     vertices = np.asarray(mesh.vertices)
     samples = []
     for path in paths:
-        orbit = int(path.name.split('CAM')[1][0])
-        frame = int(path.stem.split('.')[-1])
+        orbit, frame = image_key(path)
         if frame not in (1, 12, 23, 34, 46, 57, 68, 79, 90):
             continue
         a = np.array(Image.open(path).convert('RGB')).astype(float)
         fg = np.max(np.abs(a-a[0, 0]), axis=2) > 18
         y, x = np.where(fg)
+        if not len(x):
+            raise ValueError(f'Cannot isolate foreground: {path.name}')
         samples.append((path, orbit, frame, fg, np.array([x.min(), x.max(), y.min(), y.max()])))
     trials = []
     fitting = [s for s in samples if s[2] in (1, 23, 46, 68, 90)]
+    if len(fitting) < 4 or len(samples) - len(fitting) < 2:
+        raise ValueError('Not enough calibration and held-out views for LR3D benchmark')
     for offset in (-1, 0):
         projected = []
         for path, orbit, frame, fg, box in fitting:
             f = frames[orbit, frame+offset]
-            position = np.array(list(f['position_world'].values()))
+            position = np.array([f['position_world'][axis] for axis in ('x', 'y', 'z')])
             R = rotation(position, center)
             xyz = (vertices-position) @ R.T
             uv = xyz[:, :2]/xyz[:, 2:]
@@ -61,7 +75,7 @@ def run(source, output):
     best = min(trials, key=lambda t: t['bbox_rmse_px'])
     ious = []
     for path, orbit, frame, fg, box in samples:
-        position = np.array(list(frames[orbit, frame+best['frame_offset']]['position_world'].values()))
+        position = np.array([frames[orbit, frame+best['frame_offset']]['position_world'][axis] for axis in ('x', 'y', 'z')])
         xyz = (vertices-position) @ rotation(position, center).T
         uv = xyz[:, :2]/xyz[:, 2:]*[best['fx'],best['fy']]+[best['cx'],best['cy']]
         mask = Image.new('1', (fg.shape[1],fg.shape[0]))
@@ -74,11 +88,14 @@ def run(source, output):
         Image.fromarray(np.uint8(np.stack([fg*255, rendered*255, np.zeros_like(fg)],axis=-1))).save(output/(path.stem+'-silhouette.png'))
     report = dict(original_metadata_fields=list(metadata), original_has_rotation=False,
                   original_has_intrinsics=False, metadata_frames=len(frames), image_count=len(paths),
-                  reference_only_for_calibration=True, assumptions=['camera looks at object_center_world','Y-up, zero roll','perspective camera'],
+                  reference_only_for_calibration=True, reference_obj=objects[0].name,
+                  assumptions=['camera looks at object_center_world','Y-up, zero roll','perspective camera'],
                   trials=trials, selected=best, silhouettes=ious)
     (output/'camera-audit.json').write_text(json.dumps(report,indent=2))
     # Do not silently export an unverified camera reconstruction.
-    if best['bbox_rmse_px'] > 3 or min(x['silhouette_iou'] for x in ious) < .9:
+    if (not all(np.isfinite(best[k]) for k in ('fx','fy','cx','cy','bbox_rmse_px'))
+            or best['fx'] <= 0 or best['fy'] <= 0
+            or best['bbox_rmse_px'] > 3 or min(x['silhouette_iou'] for x in ious) < .9):
         print(json.dumps(report,indent=2))
         raise SystemExit('Inferred cameras do not pass the reference silhouette check; no model exported')
     model = output/'known-cameras'; model.mkdir(exist_ok=True)
@@ -86,8 +103,8 @@ def run(source, output):
     (model/'cameras.txt').write_text(f"1 PINHOLE {width} {height} {best['fx']} {best['fy']} {best['cx']} {best['cy']}\n")
     rows=[]; poses={}
     for i,path in enumerate(paths,1):
-        orbit=int(path.name.split('CAM')[1][0]); frame=int(path.stem.split('.')[-1])
-        C=np.array(list(frames[orbit,frame+best['frame_offset']]['position_world'].values()))
+        orbit,frame=image_key(path)
+        C=np.array([frames[orbit,frame+best['frame_offset']]['position_world'][axis] for axis in ('x','y','z')])
         R=rotation(C,center); t=-R@C
         matrix=np.eye(4); matrix[:3,:3]=R; q=quaternion_from_matrix(matrix)
         rows.append(f"{i} {' '.join(map(str,q))} {' '.join(map(str,t))} 1 {path.name}\n\n")
@@ -95,6 +112,7 @@ def run(source, output):
     (model/'images.txt').write_text(''.join(rows)); (model/'points3D.txt').write_text('')
     (output/'camera-poses.json').write_text(json.dumps(poses))
     print(json.dumps(report,indent=2))
+    return report
 
 
 if __name__ == '__main__':

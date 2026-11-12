@@ -1,5 +1,14 @@
 # Implementation log
 
+## 2026-11-12 — Local folder-to-GLB command
+
+- Added `3D Scan/tools/scan_folder.py`: accepts a quoted folder path (or prompts for it), reads JPG/PNG recursively, chooses `images/` when present to exclude source texture atlases, and launches an isolated CPU Docker worker. Source mounted read-only; no artifact ID, database calls, uploads, or publication. New output folder per run; logs, status JSON, embedded-texture GLB, provenance and HTTP viewer retained.
+- Added `local_scan_worker.py` and `local_scan_viewer.html`; local CPU PatchMatch runs at resolution level 0, followed by existing mesh/refine/texture/embedding steps. CLI injects a JSON status callback and optional fixed sparse model into the shared pipeline. API contract and default SGM/fallback behavior stay unchanged.
+- Generalized the existing LR3D camera audit from a hardcoded metal-cup filename to one OBJ per dataset. Auto benchmark mode explicitly records use of reference silhouettes to infer missing camera intrinsics. Output triangles/texture come from reconstruction; original OBJ is not converted into the output. Normal photo mode estimates cameras with COLMAP.
+- Verified `D:\3D\ceramic_vases_1\ceramic_vases_1`: 180 images / 43.1 MiB. Ran actual container input validation and camera calibration only, yielding `CHECKED`, bbox RMSE 0.268 px and camera/reference silhouette IoU 98.72–99.05%. These metrics do not evaluate a newly reconstructed model. Full ceramic reconstruction has NOT been run; user requested a command to run it themselves.
+- Validation: Python compilation and 17 local/API regression tests passed. Tests ran in a disposable container with test-only httpx installed; no change to service image dependencies. Guide: `3D Scan/LOCAL_FOLDER_GUIDE.md`.
+- Not implemented: local jobs publishing to BE, resume after interruption, arbitrary formats of camera metadata, quality guarantee for unknown image sets. Geometry completeness and per-face texture quality require visual review.
+
 ## 2026-11-04 — Điều chỉnh bộ ảnh 3D theo yêu cầu thực tế
 
 - Web/API nhận từ 5 ảnh cho một hiện vật; bỏ khuyến nghị bắt buộc 15–40 ảnh trên UI. Giữ 80 là giới hạn trên để bảo vệ tài nguyên.

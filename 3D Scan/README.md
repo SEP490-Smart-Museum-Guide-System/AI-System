@@ -4,6 +4,11 @@ Microservice PoC nhận ảnh nhiều góc, chạy COLMAP ở nền, chuyển me
 
 ## Luồng hiện tại
 
+**Chạy local bằng một đường dẫn folder, không cần ID/DB:** xem
+[`LOCAL_FOLDER_GUIDE.md`](LOCAL_FOLDER_GUIDE.md). Lệnh `python tools/scan_folder.py "D:\path\to\images"`
+dùng lại pipeline CPU, xuất GLB và trang preview HTTP. Dataset LR3D có metadata/OBJ
+được gắn nhãn benchmark dùng tham chiếu để hiệu chỉnh camera; ảnh thông thường dùng COLMAP SfM.
+
 ```text
 iPhone/web client → POST ảnh → 3D Scan Service → COLMAP → GLB
                                                 ↓

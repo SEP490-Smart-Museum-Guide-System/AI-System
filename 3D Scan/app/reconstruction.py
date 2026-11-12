@@ -42,6 +42,7 @@ def openmvs_available() -> bool:
 
 
 def _run(args: list[str], cwd: Path, label: str | None = None) -> None:
+    logger.info("Starting: %s", label or Path(args[0]).name)
     try:
         result = subprocess.run(args, cwd=cwd, capture_output=True, text=True,
                                 timeout=6 * 60 * 60, check=False)
@@ -182,7 +183,10 @@ def _validate_camera_calibration(model_dir: Path) -> None:
             )
 
 
-def process(job_id: str, job_dir: Path) -> None:
+def process(job_id: str, job_dir: Path, *, on_update=None, sparse_model=None,
+            dense_method="sgm", resolution_level=1) -> None:
+    # Local CLI supplies a JSON status writer; the API continues using PostgreSQL.
+    update = on_update if on_update is not None else jobs.update
     images_dir = job_dir / "input"
     workspace = job_dir / "colmap"
     mvs_dir = job_dir / "openmvs"
@@ -199,12 +203,14 @@ def process(job_id: str, job_dir: Path) -> None:
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # COLMAP performs only CPU SfM here. Its CUDA-only PatchMatch dense stage is disabled.
-        _run([COLMAP_COMMAND, "automatic_reconstructor", "--workspace_path", str(workspace),
-              "--image_path", str(images_dir), "--use_gpu", "0", "--num_threads", "4",
-              "--dense", "0", "--single_camera", "1", "--camera_model", COLMAP_CAMERA_MODEL], job_dir, "COLMAP SfM")
-        jobs.update(job_id, progress=35)
-
-        models = [path.parent for path in workspace.glob("sparse/*/images.bin")]
+        if sparse_model is None:
+            _run([COLMAP_COMMAND, "automatic_reconstructor", "--workspace_path", str(workspace),
+                  "--image_path", str(images_dir), "--use_gpu", "0", "--num_threads", "4",
+                  "--dense", "0", "--single_camera", "1", "--camera_model", COLMAP_CAMERA_MODEL], job_dir, "COLMAP SfM")
+            models = [path.parent for path in workspace.glob("sparse/*/images.bin")]
+        else:
+            models = [Path(sparse_model)]
+        update(job_id, progress=35)
         if not models:
             raise ReconstructionFailure("COLMAP không tạo được sparse camera model.")
         model_counts = [(model, _registered_image_count(model)) for model in models]
@@ -225,20 +231,24 @@ def process(job_id: str, job_dir: Path) -> None:
               "--input_path", str(sparse_model), "--output_path", str(undistorted),
               "--output_type", "COLMAP", "--max_image_size", "2000", "--blank_pixels", "1"], job_dir,
              "COLMAP image undistortion")
-        jobs.update(job_id, progress=45)
+        update(job_id, progress=45)
 
         scene = mvs_dir / "scene.mvs"
         _run([_tool("InterfaceCOLMAP"), "-i", str(undistorted), "-o", str(scene),
               "--image-folder", str(undistorted / "images")], mvs_dir, "OpenMVS COLMAP import")
-        _run([_tool("DensifyPointCloud"), str(scene), "--fusion-mode", "-2",
-              "--tower-mode", "0", "--max-threads", "4"], mvs_dir, "OpenMVS CPU SGM densification")
-        jobs.update(job_id, progress=70)
+        if dense_method not in {"sgm", "patchmatch"} or resolution_level not in {0, 1, 2}:
+            raise ReconstructionFailure("Invalid local dense reconstruction options")
+        dense_args = (["--resolution-level", str(resolution_level)] if dense_method == "patchmatch" else [])
+        _run([_tool("DensifyPointCloud"), str(scene), "--fusion-mode", "0" if dense_method == "patchmatch" else "-2",
+              *dense_args, "--tower-mode", "0", "--max-threads", "4"], mvs_dir,
+             "OpenMVS CPU PatchMatch densification" if dense_method == "patchmatch" else "OpenMVS CPU SGM densification")
+        update(job_id, progress=70)
 
         dense_scene = mvs_dir / "scene_dense.mvs"
         dense_cloud = mvs_dir / "scene_dense.ply"
         dense_points = _ply_vertex_count(dense_cloud)
         reconstruction_dir = mvs_dir
-        if dense_points == 0:
+        if dense_points == 0 and dense_method == "sgm":
             # SGM can finish successfully while rejecting every depth during fusion.
             # Run CPU PatchMatch in a clean scene directory so its depth-map cache
             # cannot reuse files produced by the SGM attempt.
@@ -250,14 +260,14 @@ def process(job_id: str, job_dir: Path) -> None:
                   "--image-folder", str(undistorted / "images")], reconstruction_dir,
                  "OpenMVS COLMAP re-import for CPU PatchMatch")
             _run([_tool("DensifyPointCloud"), str(patchmatch_scene), "--fusion-mode", "0",
-                  "--resolution-level", "1", "--tower-mode", "0", "--max-threads", "4"], reconstruction_dir,
+                  "--resolution-level", str(resolution_level), "--tower-mode", "0", "--max-threads", "4"], reconstruction_dir,
                  "OpenMVS CPU PatchMatch fallback")
             dense_scene = reconstruction_dir / "scene_dense.mvs"
             dense_cloud = reconstruction_dir / "scene_dense.ply"
             dense_points = _ply_vertex_count(dense_cloud)
         if dense_points == 0:
             raise ReconstructionFailure(
-                "OpenMVS không tạo được dense point cloud (SGM và CPU PatchMatch đều không giữ được điểm). "
+                "OpenMVS không tạo được dense point cloud với các phương án đã chạy. "
                 "Không xuất GLB từ sparse points vì sẽ tạo bề mặt giả hoặc thủng."
             )
         logger.info("OpenMVS dense point cloud contains %s points for job %s", dense_points, job_id)
@@ -274,16 +284,16 @@ def process(job_id: str, job_dir: Path) -> None:
               "--virtual-face-images", "3", "--cost-smoothness-ratio", "0.5",
               "--global-seam-leveling", "0", "--local-seam-leveling", "0",
               "--max-threads", "4"], reconstruction_dir, "OpenMVS texture mapping")
-        jobs.update(job_id, progress=90)
+        update(job_id, progress=90)
 
         model_path = output_dir / "model.glb"
         _embed_glb_textures(model_path)
         _validate_surface_glb(model_path)
-        jobs.update(job_id, status="REVIEW_REQUIRED", progress=100,
+        update(job_id, status="REVIEW_REQUIRED", progress=100,
                     model_path=str(model_path.resolve()), model_type="mesh")
     except subprocess.TimeoutExpired:
-        jobs.update(job_id, status="FAILED", model_path="", model_type="", error="Pipeline dựng 3D vượt quá thời gian xử lý tối đa 6 giờ.")
+        update(job_id, status="FAILED", model_path="", model_type="", error="Một bước dựng 3D vượt thời gian tối đa 6 giờ.")
     except Exception as exc:
         logger.exception("3D reconstruction failed for job %s", job_id)
         safe_message = str(exc) if isinstance(exc, ReconstructionFailure) else "Không thể tạo mesh GLB. Kiểm tra log worker."
-        jobs.update(job_id, status="FAILED", model_path="", model_type="", error=safe_message[:300])
+        update(job_id, status="FAILED", model_path="", model_type="", error=safe_message[:300])

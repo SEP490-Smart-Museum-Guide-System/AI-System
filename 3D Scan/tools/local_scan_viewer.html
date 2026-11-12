@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="vi"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SMGS · Dựng 3D từ folder</title>
+<style>
+body{margin:0;background:#0c1423;color:#e6edf6;font:16px system-ui}main{max-width:1100px;margin:auto;padding:24px}h1{font-size:25px}p{line-height:1.6;color:#b7c5d9}section{padding:18px;border:1px solid #344258;border-radius:12px;margin:16px 0}progress{width:100%;height:20px}model-viewer{width:100%;height:65vh;background:#ddd}a,button{background:#2563eb;color:white;padding:10px 16px;border:0;border-radius:6px;display:inline-block;text-decoration:none;cursor:pointer}#error{color:#ffb4aa;white-space:pre-wrap}#warning{color:#f4cf8b}img{height:90px;max-width:120px;object-fit:contain;margin:5px;background:#ddd}[hidden]{display:none!important}
+</style>
+<main><h1>SMGS · Dựng 3D từ folder · CPU</h1>
+<p id="source">Đang đọc bộ ảnh…</p>
+<section><strong id="status">Đang kết nối</strong><p id="stage"></p><progress id="progress" max="100" value="0"></progress><p id="warning"></p><p id="error"></p></section>
+<section id="result" hidden><model-viewer id="viewer" camera-controls auto-rotate shadow-intensity="0" exposure="1" alt="Bản tái dựng từ bộ ảnh"></model-viewer><p id="viewError"></p><a href="output/model.glb" download="model.glb">Tải model.glb</a> <a href="provenance.json" target="_blank">Nguồn gốc kết quả</a><p>Bản dựng cần kiểm tra: vùng không thấy trong ảnh có thể bị thiếu. Không tự công bố lên hệ thống bảo tàng.</p></section>
+<section><strong>Ảnh đầu vào</strong><div id="photos"></div></section>
+</main><script type="module" src="viewer.js"></script><script>
+const el=id=>document.getElementById(id);let loaded=false;
+const states={QUEUED:'Chờ chạy',PROCESSING:'Đang dựng 3D',FINALIZING:'Kiểm tra GLB và texture',REVIEW_REQUIRED:'Có GLB — cần kiểm tra chất lượng',FAILED:'Không tạo được bản dựng đạt điều kiện',CHECKED:'Đã kiểm tra đầu vào; chưa chạy dựng 3D',CANCELLED:'Đã dừng'};
+el('viewer').addEventListener('error',()=>el('viewError').textContent='Không hiển thị được GLB. Xem lỗi trình duyệt hoặc tải file bằng nút bên dưới.');
+fetch('config.json').then(r=>r.json()).then(c=>{
+ el('source').textContent=`${c.input_folder} · ${c.image_count} ảnh · ${c.mode==='benchmark'?'Benchmark có tham chiếu camera':'Ước lượng camera từ ảnh'}`;
+ let selected=c.images.map((name,i)=>({name,i})).filter((_,i)=>i%Math.max(1,Math.floor(c.images.length/10))===0).slice(0,10);
+ for(const {name,i} of selected){let img=document.createElement('img');let basename=name.split('/').pop();let ext=basename.split('.').pop().toLowerCase();img.src='input/'+encodeURIComponent(c.mode==='benchmark'?basename:`image_${String(i+1).padStart(5,'0')}.${ext}`);img.alt=basename;img.title=basename;el('photos').append(img);}
+}).catch(e=>el('error').textContent=e.message);
+async function poll(){try{const r=await fetch('status.json');if(!r.ok)throw Error('HTTP '+r.status);const s=await r.json();
+ el('status').textContent=states[s.status]||s.status;el('progress').value=s.progress||0;el('error').textContent=s.error||'';
+ el('warning').textContent=s.mode==='benchmark'?'Camera được hiệu chỉnh với OBJ tham chiếu; mesh và texture đầu ra được dựng từ ảnh. Đây không phải phép thử chỉ có ảnh.':'Không bảo đảm tái tạo đầy đủ các bề mặt bị che khuất.';
+ const p=s.progress||0;el('stage').textContent=s.status==='PROCESSING'?(p<35?'Kiểm tra ảnh, camera và ghép đặc trưng…':p<45?'Chuẩn bị ảnh theo camera…':p<70?'Tạo dense point cloud bằng CPU…':p<90?'Dựng mesh, refine và texture…':'Đóng gói GLB…'):'';
+ if(s.status==='REVIEW_REQUIRED'&&!loaded){loaded=true;el('result').hidden=false;el('viewer').src='output/model.glb';}
+ if(!['FAILED','CHECKED','CANCELLED','REVIEW_REQUIRED'].includes(s.status))setTimeout(poll,3000);
+ }catch(e){el('error').textContent='Chưa đọc được trạng thái: '+e.message;setTimeout(poll,5000);}}
+poll();
+</script></html>
