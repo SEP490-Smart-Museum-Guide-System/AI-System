@@ -111,7 +111,7 @@ async def lifespan(app):
     if not SERVICE_KEY:
         raise RuntimeError('Configure AI_CHAT_SERVICE_KEY')
     try:
-        app.state.engine = OnnxChat(os.environ.get('AI_CHAT_MODEL_DIR', str(DEFAULT_MODEL)))
+        app.state.engine = OnnxChat(os.environ.get('AI_CHAT_MODEL_DIR', str(DEFAULT_MODEL)), threads=8)
         app.state.model_ready = True
     except Exception:
         LOGGER.error('Local chat model unavailable; configure/download model assets before using /ready.')
