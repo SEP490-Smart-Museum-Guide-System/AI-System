@@ -1,0 +1,22 @@
+{
+  "checkedAtUtc": "2026-11-17T14:37:02.810447+00:00",
+  "real_model_inference": true,
+  "source_is_synthetic": true,
+  "sourceText": "Bình gốm được dùng để đựng nước. Chất liệu là đất nung. Miệng bình loe rộng. Thân bình có hoa văn khắc chìm. Bình được làm bằng kỹ thuật bàn xoay. Đây là tư liệu giả lập để kiểm thử phần mềm, không phải hồ sơ hiện vật thật.",
+  "requestedCount": 5,
+  "readiness": {
+    "status": "ok",
+    "model_ready": true,
+    "model": "Qwen2.5-1.5B-Instruct / PyTorch",
+    "device": "cuda",
+    "note": "Readiness does not guarantee available ZeroGPU quota."
+  },
+  "event": "error",
+  "response": {
+    "error": "'ChatFailure'",
+    "duration": 10,
+    "visible": true,
+    "title": "Error"
+  },
+  "elapsedSeconds": 5.48
+}

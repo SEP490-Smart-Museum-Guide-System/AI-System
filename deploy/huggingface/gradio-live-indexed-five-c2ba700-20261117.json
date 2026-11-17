@@ -1,0 +1,55 @@
+{
+  "checkedAtUtc": "2026-11-17T14:48:31.003004+00:00",
+  "spaceCommit": "c2ba70080649ec0c98de56612c93c4f2de07cdb5",
+  "real_request": true,
+  "source_is_synthetic": true,
+  "sourceText": "Bình gốm được dùng để đựng nước. Chất liệu là đất nung. Miệng bình loe rộng. Thân bình có hoa văn khắc chìm. Bình được làm bằng kỹ thuật bàn xoay. Đây là tư liệu giả lập để kiểm thử phần mềm, không phải hồ sơ hiện vật thật.",
+  "requestedCount": 5,
+  "readiness": {
+    "status": "ok",
+    "model_ready": true,
+    "model": "Qwen2.5-1.5B-Instruct / PyTorch",
+    "device": "cuda",
+    "note": "Readiness does not guarantee available ZeroGPU quota."
+  },
+  "event": "complete",
+  "response": [
+    {
+      "requestedCount": 5,
+      "generatedCount": 2,
+      "complete": false,
+      "isDraft": true,
+      "questions": [
+        {
+          "question": "Bình gốm DEMO được làm bằng cách nào?",
+          "options": [
+            "bàn xoay",
+            "đập vỡ",
+            "nghiền đá",
+            "phun sơn"
+          ],
+          "correctIndex": 0,
+          "explanation": "Bình được làm bằng kỹ thuật bàn xoay.",
+          "evidenceQuote": "Bình được làm bằng kỹ thuật bàn xoay."
+        },
+        {
+          "question": "Bình gốm này được làm bằng cách nào?",
+          "options": [
+            "bàn xoay",
+            "đập vỡ",
+            "nghiền đá",
+            "tô màu"
+          ],
+          "correctIndex": 0,
+          "explanation": "Bình được làm bằng kỹ thuật bàn xoay.",
+          "evidenceQuote": "Bình được làm bằng kỹ thuật bàn xoay."
+        }
+      ],
+      "warnings": [
+        "Mới tạo 2/5 câu hợp lệ. Bộ câu hỏi chưa hoàn tất; cần kiểm tra và tạo tiếp.",
+        "Bản nháp AI chưa hợp lệ hoặc thiếu căn cứ từ tư liệu. Hãy bổ sung nguồn và tạo lại."
+      ]
+    }
+  ],
+  "elapsedSeconds": 5.38
+}

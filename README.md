@@ -1,5 +1,9 @@
 # AI System — Smart Museum Guide System
 
+**Deploy gen quiz lên Hugging Face Spaces:** xem [hướng dẫn và giới hạn scan 3D](deploy/huggingface/DEPLOY_GUIDE_VI.md). Docker Space mới hiện có điều kiện gói tài khoản; không mặc định miễn phí hoàn toàn.
+
+**Space Gradio/ZeroGPU `Trungnam1644/smgs-ai-quiz`:** dùng [bộ Gradio và lệnh push riêng](deploy/huggingface/GRADIO_GUIDE_VI.md), không cần Docker local. Adapter PyTorch chỉ dành cho Space; service ONNX local giữ nguyên.
+
 **Tạo 3D từ FE (Museum Staff):** chọn folder ảnh → dựng CPU → xem thử → lưu/bỏ. Xem [cách chạy và trạng thái kiểm chứng](<3D Scan/STAFF_WEB_GUIDE.md>).
 
 **Member chỉ chạy AI, bỏ 3D Scan:** [bộ lệnh máy mới](RUN_AI_ONLY_NO_SCAN.md), với `tools/start-ai.ps1 -SkipScan` để chạy TTS, Vision, Chat/Xưởng AI và Tour.

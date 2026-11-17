@@ -1,0 +1,9 @@
+gradio==6.32.0
+# HF injects its supported ZeroGPU SDK version at build time; do not override it.
+spaces
+torch==2.8.0
+transformers==5.0.0
+tokenizers==0.22.1
+huggingface-hub==1.16.0
+safetensors==0.6.2
+urllib3==2.8.0

@@ -1,0 +1,101 @@
+{
+  "model_fixture": true,
+  "real_model_inference": false,
+  "hf_zerogpu_tested": false,
+  "checks": [
+    {
+      "name": "UI",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "name": "readiness",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "name": "missing service key",
+      "actual": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "name": "narration unsupported",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "short source",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "invalid difficulty",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "too many exclusions",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "REST through real Gradio queue",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "name": "raw quiz response",
+      "actual": {
+        "question": "Bình gốm dùng để làm gì?",
+        "options": [
+          "Đựng nước",
+          "Dệt vải",
+          "Ghi chép",
+          "Nấu cơm"
+        ],
+        "correctIndex": 0,
+        "explanation": "Bình gốm được dùng để đựng nước.",
+        "evidenceQuote": "Bình gốm được dùng để đựng nước."
+      },
+      "expected": {
+        "question": "Bình gốm dùng để làm gì?",
+        "options": [
+          "Đựng nước",
+          "Dệt vải",
+          "Ghi chép",
+          "Nấu cơm"
+        ],
+        "correctIndex": 0,
+        "explanation": "Bình gốm được dùng để đựng nước.",
+        "evidenceQuote": "Bình gốm được dùng để đựng nước."
+      },
+      "passed": true
+    },
+    {
+      "name": "duplicate fixture quiz rejected",
+      "actual": 503,
+      "expected": 503,
+      "passed": true
+    }
+  ],
+  "quiz_response": {
+    "question": "Bình gốm dùng để làm gì?",
+    "options": [
+      "Đựng nước",
+      "Dệt vải",
+      "Ghi chép",
+      "Nấu cơm"
+    ],
+    "correctIndex": 0,
+    "explanation": "Bình gốm được dùng để đựng nước.",
+    "evidenceQuote": "Bình gốm được dùng để đựng nước."
+  }
+}

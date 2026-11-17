@@ -1,0 +1,33 @@
+"""Space-only Qwen adapter; local SMGS ONNX services are unchanged."""
+import json
+import os
+import threading
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from app.engine import ChatFailure
+
+MODEL_ID = 'Qwen/Qwen2.5-1.5B-Instruct'
+REVISION = '989aa7980e4cf806f80c7fef2b1adb7bc71aa306'
+
+
+class TorchQuizEngine:
+    def __init__(self):
+        self.device = os.environ.get('SMGS_DEVICE', 'cuda' if os.environ.get('SPACE_ID') else 'cpu')
+        if self.device not in {'cuda', 'cpu'}: raise ValueError('Unsupported SMGS_DEVICE')
+        torch.set_num_threads(2)
+        self.tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, revision=REVISION, trust_remote_code=False)
+        self.model = AutoModelForCausalLM.from_pretrained(MODEL_ID, revision=REVISION, trust_remote_code=False,
+            dtype=torch.float16 if self.device == 'cuda' else torch.float32).to(self.device).eval()
+        self.lock = threading.Lock()
+
+    def generate_json(self, prompt, validator, *, max_new_tokens=None, prefix='', deadline_seconds=None):
+        inputs = self.tokenizer(prompt, return_tensors='pt', add_special_tokens=False)
+        length = inputs['input_ids'].shape[1]
+        if length > 2048: raise ChatFailure('Tư liệu quá dài. Hãy chọn một đoạn ngắn hơn.', 422)
+        inputs = {name: value.to(self.device) for name, value in inputs.items()}
+        with torch.inference_mode():
+            output = self.model.generate(**inputs, do_sample=False, max_new_tokens=min(max_new_tokens or 350, 350),
+                max_time=min(deadline_seconds or 80, 80), pad_token_id=self.tokenizer.eos_token_id)
+        text = prefix + self.tokenizer.decode(output[0, length:], skip_special_tokens=True).strip()
+        # The shared SMGS validator rejects incomplete JSON, fabricated numbers and unsupported answers.
+        return validator(text)

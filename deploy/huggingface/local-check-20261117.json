@@ -1,0 +1,30 @@
+{
+  "environment": "local Docker, NOT Hugging Face runtime",
+  "cpuLimit": 2,
+  "memoryLimit": "16g",
+  "uploadedToHuggingFace": false,
+  "ready": {
+    "status": "ok",
+    "model_ready": true,
+    "model": "Qwen2.5-1.5B-Instruct / ONNX INT4",
+    "runtime": "1.23.2",
+    "providers": [
+      "CPUExecutionProvider"
+    ]
+  },
+  "unauthenticatedStatus": 401,
+  "seconds": 19.14,
+  "status": 200,
+  "response": {
+    "question": "Bình gốm DEMO được dùng để làm gì?",
+    "options": [
+      "Nấu cơm",
+      "Đựng nước",
+      "Dệt vải",
+      "Ghi chép"
+    ],
+    "correctIndex": 1,
+    "explanation": "Bình gốm được dùng để đựng nước.",
+    "evidenceQuote": "Bình gốm được dùng để đựng nước."
+  }
+}
