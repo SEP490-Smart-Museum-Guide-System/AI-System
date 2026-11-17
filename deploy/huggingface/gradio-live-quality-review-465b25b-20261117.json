@@ -1,0 +1,20 @@
+{
+  "spaceCommit": "465b25b226d8b26b70bb3eb7f4cf66dc5ed42332",
+  "realHfRequest": true,
+  "sourceIsSynthetic": true,
+  "questionCount": 5,
+  "distinctTopics": [
+    "purpose",
+    "material",
+    "shape",
+    "decoration",
+    "technique"
+  ],
+  "allAnswersGrounded": true,
+  "assistantReviewedQuestionMeaning": true,
+  "museumStaffApproved": false,
+  "elapsedSeconds": 4.08,
+  "warningNonFatalForThisObservedRun": true,
+  "warningRootCauseConfirmed": false,
+  "rawReport": "gradio-live-quality-465b25b-20261117.json"
+}

@@ -1,0 +1,104 @@
+{
+  "real_model": true,
+  "fixture": false,
+  "hf_gpu_tested": false,
+  "device": "cpu",
+  "dtype": "float16",
+  "modelRevision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "sourcesAreSynthetic": true,
+  "cases": [
+    {
+      "artifactName": "Bình gốm DEMO",
+      "sourceText": "Bình gốm được dùng để đựng nước. Chất liệu là đất nung. Miệng bình loe rộng. Thân bình có hoa văn khắc chìm. Bình được làm bằng kỹ thuật bàn xoay. Đây là tư liệu giả lập để kiểm thử phần mềm, không phải hồ sơ hiện vật thật.",
+      "result": {
+        "requestedCount": 5,
+        "generatedCount": 2,
+        "complete": false,
+        "isDraft": true,
+        "reviewRequired": true,
+        "distinctEvidenceCount": 2,
+        "questions": [
+          {
+            "question": "Bình gốm này được dùng để干嘛?",
+            "options": [
+              "đựng thức ăn",
+              "đựng nước",
+              "đựng thuốc",
+              "đựng đồ chơi"
+            ],
+            "correctIndex": 1,
+            "explanation": "Bình gốm được dùng để đựng nước.",
+            "evidenceQuote": "Bình gốm được dùng để đựng nước."
+          },
+          {
+            "question": "Bình gốm DEMO được làm bằng chất liệu nào?",
+            "options": [
+              "Đất nung",
+              "Ceramic",
+              "Nước",
+              "Sap chiên"
+            ],
+            "correctIndex": 0,
+            "explanation": "Chất liệu là đất nung.",
+            "evidenceQuote": "Chất liệu là đất nung."
+          }
+        ],
+        "warnings": [
+          "Mới tạo 2/5 câu hợp lệ. Bộ câu hỏi chưa hoàn tất; cần kiểm tra và tạo tiếp.",
+          "Đã hết thời gian tạo bộ câu hỏi trong lượt GPU này."
+        ]
+      },
+      "elapsedSeconds": 249.86
+    }
+  ],
+  "attempts": [
+    {
+      "target": {
+        "id": 0,
+        "text": "Bình gốm được dùng để đựng nước."
+      },
+      "attempt": 1,
+      "temperature": 0.0,
+      "startedAtUtc": "2026-11-17T15:06:52.834667+00:00",
+      "rawModelText": "{\"question\":\"Bình gốm này được dùng để干嘛?\", \"options\": [\"đựng thức ăn\", \"đựng nước\", \"đựng thuốc\", \"đựng đồ chơi\"], \"correctIndex\": 1}",
+      "passedSourceValidator": true,
+      "elapsedSeconds": 62.09
+    },
+    {
+      "target": {
+        "id": 1,
+        "text": "Chất liệu là đất nung."
+      },
+      "attempt": 1,
+      "temperature": 0.0,
+      "startedAtUtc": "2026-11-17T15:07:54.924737+00:00",
+      "rawModelText": "{\"question\":\"Bình gốm DEMO được làm bằng chất liệu nào?\", \"options\": [\"Đất nung\", \"Ceramic\", \"Nước\", \"Sap chiên\"], \"correctIndex\": 0}",
+      "passedSourceValidator": true,
+      "elapsedSeconds": 64.14
+    },
+    {
+      "target": {
+        "id": 2,
+        "text": "Miệng bình loe rộng."
+      },
+      "attempt": 1,
+      "temperature": 0.0,
+      "startedAtUtc": "2026-11-17T15:08:59.059789+00:00",
+      "rawModelText": "{\"question\":\"Bình gốm DEMO có miệng rộng không?\", \"options\": [\"Có\", \"Không\", \"Rất rộng\", \"Rất nhỏ\"], \"correctIndex\": 0}",
+      "error": "Câu hỏi chưa có đáp án được hỗ trợ bởi đoạn tư liệu đã chọn. Chỉ dùng đáp án có nguyên văn trong TARGET_EVIDENCE, kèm ba phương án khác.",
+      "elapsedSeconds": 64.23
+    },
+    {
+      "target": {
+        "id": 2,
+        "text": "Miệng bình loe rộng."
+      },
+      "attempt": 2,
+      "temperature": 0.35,
+      "startedAtUtc": "2026-11-17T15:10:03.315535+00:00",
+      "rawModelText": "{\"question\":\"",
+      "error": "Câu hỏi chưa có đáp án được hỗ trợ bởi đoạn tư liệu đã chọn. Chỉ dùng đáp án có nguyên văn trong TARGET_EVIDENCE, kèm ba phương án khác.",
+      "elapsedSeconds": 59.38
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "checkedAtUtc": "2026-11-17T15:36:22.033967+00:00",
+  "spaceCommit": "465b25b226d8b26b70bb3eb7f4cf66dc5ed42332",
+  "real_request": true,
+  "source_is_synthetic": true,
+  "sourceText": "Bình gốm được dùng để đựng nước. Chất liệu là đất nung. Miệng bình loe rộng. Thân bình có hoa văn khắc chìm. Bình được làm bằng kỹ thuật bàn xoay. Đây là tư liệu giả lập để kiểm thử phần mềm, không phải hồ sơ hiện vật thật.",
+  "requestedCount": 5,
+  "event": "complete",
+  "response": [
+    {
+      "requestedCount": 5,
+      "generatedCount": 5,
+      "complete": true,
+      "isDraft": true,
+      "reviewRequired": true,
+      "distinctEvidenceCount": 5,
+      "questions": [
+        {
+          "question": "Theo tư liệu, Bình gốm DEMO được dùng để làm gì?",
+          "options": [
+            "Ghi chép",
+            "Đựng thóc",
+            "Đựng nước",
+            "Dệt vải"
+          ],
+          "correctIndex": 2,
+          "explanation": "Bình gốm được dùng để đựng nước.",
+          "evidenceQuote": "Bình gốm được dùng để đựng nước."
+        },
+        {
+          "question": "Theo tư liệu, Bình gốm DEMO được làm từ chất liệu gì?",
+          "options": [
+            "Đất nung",
+            "Thủy tinh",
+            "Sắt",
+            "Gỗ"
+          ],
+          "correctIndex": 0,
+          "explanation": "Chất liệu là đất nung.",
+          "evidenceQuote": "Chất liệu là đất nung."
+        },
+        {
+          "question": "Theo tư liệu, miệng của Bình gốm DEMO có đặc điểm gì?",
+          "options": [
+            "Thu hẹp",
+            "Bịt kín",
+            "Thẳng đứng",
+            "Loe rộng"
+          ],
+          "correctIndex": 3,
+          "explanation": "Miệng bình loe rộng.",
+          "evidenceQuote": "Miệng bình loe rộng."
+        },
+        {
+          "question": "Theo tư liệu, Bình gốm DEMO có họa tiết hoặc cách trang trí nào?",
+          "options": [
+            "Dát vàng",
+            "In nổi",
+            "Khắc chìm",
+            "Không trang trí"
+          ],
+          "correctIndex": 2,
+          "explanation": "Thân bình có hoa văn khắc chìm.",
+          "evidenceQuote": "Thân bình có hoa văn khắc chìm."
+        },
+        {
+          "question": "Theo tư liệu, Bình gốm DEMO được chế tác bằng kỹ thuật gì?",
+          "options": [
+            "Đúc khuôn",
+            "Bàn xoay",
+            "In máy",
+            "Rèn thủ công"
+          ],
+          "correctIndex": 1,
+          "explanation": "Bình được làm bằng kỹ thuật bàn xoay.",
+          "evidenceQuote": "Bình được làm bằng kỹ thuật bàn xoay."
+        }
+      ],
+      "warnings": []
+    }
+  ],
+  "elapsedSeconds": 4.08
+}

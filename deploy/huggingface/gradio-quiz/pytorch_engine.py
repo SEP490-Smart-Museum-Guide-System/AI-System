@@ -20,13 +20,19 @@ class TorchQuizEngine:
             dtype=torch.float16 if self.device == 'cuda' else torch.float32).to(self.device).eval()
         self.lock = threading.Lock()
 
-    def generate_json(self, prompt, validator, *, max_new_tokens=None, prefix='', deadline_seconds=None):
+    def generate_json(self, prompt, validator, *, max_new_tokens=None, prefix='', deadline_seconds=None,
+            temperature=0.0, seed=None):
         inputs = self.tokenizer(prompt, return_tensors='pt', add_special_tokens=False)
         length = inputs['input_ids'].shape[1]
         if length > 2048: raise ChatFailure('Tư liệu quá dài. Hãy chọn một đoạn ngắn hơn.', 422)
         inputs = {name: value.to(self.device) for name, value in inputs.items()}
-        with torch.inference_mode():
-            output = self.model.generate(**inputs, do_sample=False, max_new_tokens=min(max_new_tokens or 350, 350),
+        sampling = temperature > 0
+        devices = [torch.cuda.current_device()] if self.device == 'cuda' else []
+        with torch.inference_mode(), torch.random.fork_rng(devices=devices):
+            if seed is not None: torch.manual_seed(seed)
+            output = self.model.generate(**inputs, do_sample=sampling,
+                temperature=temperature if sampling else None, top_p=0.9 if sampling else None,
+                top_k=40 if sampling else None, max_new_tokens=min(max_new_tokens or 350, 350),
                 max_time=min(deadline_seconds or 80, 80), pad_token_id=self.tokenizer.eos_token_id)
         text = prefix + self.tokenizer.decode(output[0, length:], skip_special_tokens=True).strip()
         # The shared SMGS validator rejects incomplete JSON, fabricated numbers and unsupported answers.

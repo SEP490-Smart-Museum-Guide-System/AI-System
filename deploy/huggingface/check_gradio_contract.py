@@ -30,9 +30,9 @@ def run(bundle, port):
         'evidenceQuote': 'Bình gốm được dùng để đựng nước.'}
     fixtures = [fixture,
         {**fixture, 'question': 'Bình gốm được làm bằng chất liệu gì?', 'options': ['Đất nung', 'Sắt', 'Nhựa', 'Thủy tinh'], 'evidenceQuote': 'Chất liệu là đất nung.'},
-        {**fixture, 'question': 'Miệng bình có đặc điểm gì?', 'options': ['Loe rộng', 'Bịt kín', 'Có nắp gỗ', 'Hình vuông'], 'evidenceQuote': 'Miệng bình loe rộng.'},
+        {**fixture, 'question': 'Miệng bình có đặc điểm gì?', 'options': ['Loe rộng', 'Thu hẹp', 'Thẳng đứng', 'Khép kín'], 'evidenceQuote': 'Miệng bình loe rộng.'},
         {**fixture, 'question': 'Thân bình có loại hoa văn gì?', 'options': ['Khắc chìm', 'In nổi', 'Dát vàng', 'Không trang trí'], 'evidenceQuote': 'Thân bình có hoa văn khắc chìm.'},
-        {**fixture, 'question': 'Bình được làm bằng kỹ thuật gì?', 'options': ['Bàn xoay', 'Đúc khuôn kim loại', 'Thổi thủy tinh', 'In máy'], 'evidenceQuote': 'Bình được làm bằng kỹ thuật bàn xoay.'}]
+        {**fixture, 'question': 'Bình được làm bằng kỹ thuật gì?', 'options': ['Bàn xoay', 'Đúc khuôn', 'Thổi thủy tinh', 'In máy'], 'evidenceQuote': 'Bình được làm bằng kỹ thuật bàn xoay.'}]
     for item in fixtures[1:]: item['explanation'] = item['evidenceQuote']
     full_source = ' '.join(item['evidenceQuote'] for item in fixtures)
 
@@ -44,6 +44,7 @@ def run(bundle, port):
             self.fail_after = None
             self.fail_once = False
             self.wrong_evidence = False
+            self.targets = []
         def generate_json(self, prompt, validator, **kwargs):
             from app.engine import ChatFailure
             payload = json.loads(prompt.rsplit('<|im_start|>user\n', 1)[1].split('<|im_end|>')[0])
@@ -53,13 +54,16 @@ def run(bundle, port):
                 raise ChatFailure('Invalid first fixture draft.', 502)
             if self.fail_after is not None and len(excluded) >= self.fail_after:
                 raise ChatFailure('GPU quota fixture exhausted.', 503)
-            candidate = fixture if self.force_duplicate else next((item for item in fixtures if item['question'] not in excluded), fixture)
-            if 'EVIDENCE' in payload:
-                index = next((part['id'] for part in payload['EVIDENCE'] if part['text'] == candidate['evidenceQuote']), 0)
-                if self.wrong_evidence:
-                    index = (index + 1) % len(payload['EVIDENCE'])
+            target=payload.get('TARGET_EVIDENCE')
+            if target:
+                self.targets.append(target['id'])
+                candidate=next((item for item in fixtures if item['evidenceQuote']==target['text']),fixture)
+                if self.force_duplicate: candidate=fixture
+                if self.wrong_evidence: candidate=fixtures[(target['id']+1)%len(fixtures)]
                 candidate = {key: candidate[key] for key in ('question', 'options', 'correctIndex')}
-                candidate['evidenceIndex'] = index
+                if payload.get('QUESTION_ONLY'): candidate={'question':candidate['question']}
+            else:
+                candidate=fixture
             return validator(json.dumps(candidate, ensure_ascii=False))
 
     replacement = types.ModuleType('pytorch_engine')
@@ -102,7 +106,8 @@ def run(bundle, port):
             result = client.post(route, headers=headers, json=payload)
             check('REST through real Gradio queue', result.status_code, 200)
             report['quiz_response'] = result.json()
-            check('raw quiz response', result.json(), fixture)
+            check('raw quiz schema preserved',sorted(result.json()),sorted(fixture))
+            check('raw quiz correct answer grounded',result.json()['options'][result.json()['correctIndex']].casefold(),'đựng nước')
             duplicate = client.post(route, headers=headers, json={**payload, 'excludeQuestions': [fixture['question']]})
             check('duplicate fixture quiz rejected', duplicate.status_code, 503)
             batch_route = '/api/v1/studio/quiz-sets'
@@ -115,6 +120,7 @@ def run(bundle, port):
             check('default batch generates five', batch['generatedCount'], 5)
             check('five-question batch is complete', batch['complete'], True)
             check('five unique questions', len(set(q['question'] for q in batch['questions'])), 5)
+            check('five distinct source facts', len(set(q['evidenceQuote'] for q in batch['questions'])),5)
             check('four options per question', [len(q['options']) for q in batch['questions']], [4]*5)
             check('batch count three', client.post(batch_route, headers=headers, json={**batch_payload,'count':3}).json()['generatedCount'], 3)
             check('unsupported count', client.post(batch_route, headers=headers, json={**batch_payload,'count':2}).status_code, 422)
@@ -146,20 +152,22 @@ def run(bundle, port):
             check('batch deadline enforced', expired, True)
             from grounded_quiz import validate_indexed_question, evidence_passages
             passages = evidence_passages(full_source)
-            raw={'question':fixture['question'],'options':fixture['options'],'correctIndex':0,'evidenceIndex':0}
-            grounded, _ = validate_indexed_question(json.dumps(raw), full_source, passages, [])
+            raw={'question':fixture['question'],'options':fixture['options'],'correctIndex':0}
+            grounded, _ = validate_indexed_question(json.dumps(raw), full_source, passages,0, [])
             check('quote is copied exactly from selected source', grounded['evidenceQuote'], passages[0])
-            for label, bad in [('out-of-range evidence index', {**raw,'evidenceIndex':999}),
-                ('wrong evidence for correct option', {**raw,'evidenceIndex':1}),
-                ('invented quote field', {**raw,'evidenceQuote':'Invented text.'})]:
+            for label, bad, target in [('out-of-range evidence index',raw,999),
+                ('wrong evidence for correct option',raw,1),
+                ('invented quote field',{**raw,'evidenceQuote':'Invented text.'},0),
+                ('model cannot override assigned source',{**raw,'evidenceIndex':1},0)]:
                 try:
-                    validate_indexed_question(json.dumps(bad), full_source, passages, [])
+                    validate_indexed_question(json.dumps(bad), full_source, passages,target, [])
                     rejected=False
                 except ChatFailure:
                     rejected=True
                 check(label+' rejected', rejected, True)
             long_source='A'*1100+' '+full_source
             check('long source passages are exact substrings', all(part in long_source and 6<=len(part)<=1000 for part in evidence_passages(long_source)),True)
+            check('duplicate source passages deduplicated',len(evidence_passages(full_source+' '+full_source)),5)
             entry.ENGINE.fail_once=True
             retried=client.post(batch_route,headers=headers,json=batch_payload).json()
             check('one invalid draft retried within batch budget', retried['generatedCount'],5)
@@ -168,7 +176,7 @@ def run(bundle, port):
                 entry.gpu_quiz('Bình',full_source,'easy',[],5)
                 worker_message=False
             except entry.gr.Error as error:
-                worker_message='đoạn tư liệu' in str(error)
+                worker_message=any(word in str(error) for word in ('đoạn tư liệu','dữ kiện'))
             finally:
                 entry.ENGINE.wrong_evidence=False
             check('GPU worker preserves actionable validation error',worker_message,True)

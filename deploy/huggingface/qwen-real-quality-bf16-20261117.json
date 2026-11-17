@@ -1,0 +1,60 @@
+{
+  "real_model": true,
+  "fixture": false,
+  "hf_gpu_tested": false,
+  "device": "cpu",
+  "dtype": "bfloat16",
+  "modelRevision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "sourcesAreSynthetic": true,
+  "cases": [],
+  "attempts": [
+    {
+      "target": {
+        "id": 0,
+        "text": "Bình gốm được dùng để đựng nước."
+      },
+      "attempt": 1,
+      "temperature": 0.0,
+      "startedAtUtc": "2026-11-17T15:15:49.153268+00:00",
+      "rawModelText": "{\"question\":\"Theo tư liệu, Bình gốm DEMO được dùng để làm gì?\", \"options\": [\"nấu cơm\", \"dệt vải\", \"ghi chép\", \"thắp sáng\", \"đựng thóc\"], \"correctIndex\": 0}",
+      "error": "Câu hỏi chưa có đáp án được hỗ trợ bởi đoạn tư liệu đã chọn. Chỉ dùng đáp án có nguyên văn trong TARGET_EVIDENCE, kèm ba phương án khác.",
+      "elapsedSeconds": 46.58
+    },
+    {
+      "target": {
+        "id": 0,
+        "text": "Bình gốm được dùng để đựng nước."
+      },
+      "attempt": 2,
+      "temperature": 0.35,
+      "startedAtUtc": "2026-11-17T15:16:35.737114+00:00",
+      "rawModelText": "{\"question\":\"Bình gốm DEMO được dùng để làm gì?\", \"options\": [\"nấu cơm\", \"dệt vải\", \"ghi chép\", \"thắp sáng\", \"đựng thóc\"], \"correctIndex\": 1}",
+      "error": "Câu hỏi chưa có đáp án được hỗ trợ bởi đoạn tư liệu đã chọn. Chỉ dùng đáp án có nguyên văn trong TARGET_EVIDENCE, kèm ba phương án khác.",
+      "elapsedSeconds": 50.97
+    },
+    {
+      "target": {
+        "id": 1,
+        "text": "Chất liệu là đất nung."
+      },
+      "attempt": 1,
+      "temperature": 0.0,
+      "startedAtUtc": "2026-11-17T15:17:26.707848+00:00",
+      "rawModelText": "{\"question\":\"Chất liệu của Bình gốm DEMO là gì?\", \"options\": [\"Gỗ\", \"Đồng\", \"Sắt\", \"Nhựa\", \"Thủy tinh\", \"Đá\"], \"correctIndex\": 2}",
+      "error": "Câu hỏi chưa có đáp án được hỗ trợ bởi đoạn tư liệu đã chọn. Chỉ dùng đáp án có nguyên văn trong TARGET_EVIDENCE, kèm ba phương án khác.",
+      "elapsedSeconds": 45.12
+    },
+    {
+      "target": {
+        "id": 1,
+        "text": "Chất liệu là đất nung."
+      },
+      "attempt": 2,
+      "temperature": 0.35,
+      "startedAtUtc": "2026-11-17T15:18:11.841557+00:00",
+      "rawModelText": "{\"question\":\"Bình gốm DEMO được làm từ chất liệu nào?\", \"options\": [\"Gỗ\", \"Đồng\", \"Sắt\", \"Nhựa\", \"Thủy tinh\", \"Đá\"], \"correctIndex\": 0}",
+      "error": "Câu hỏi chưa có đáp án được hỗ trợ bởi đoạn tư liệu đã chọn. Chỉ dùng đáp án có nguyên văn trong TARGET_EVIDENCE, kèm ba phương án khác.",
+      "elapsedSeconds": 49.2
+    }
+  ]
+}

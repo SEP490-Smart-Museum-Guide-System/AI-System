@@ -61,7 +61,7 @@ demo = gr.Interface(fn=submit,
         gr.Dropdown([1, 3, 5], value=5, label='Số lượng câu hỏi')],
     outputs=gr.JSON(label='Bộ quiz nháp — kiểm tra số câu, đáp án và nguồn trước khi lưu'),
     title='SMGS · Tạo quiz từ tư liệu hiện vật',
-    description='Mặc định tạo bộ 5 câu trắc nghiệm tiếng Việt, mỗi câu có 4 lựa chọn, đáp án và trích dẫn nguồn. Cả bộ dùng một lượt cấp GPU. Nếu chưa đủ câu, kết quả ghi complete=false và số câu thực tế. Chỉ dán tư liệu được phép đưa lên Space công khai; ZeroGPU có quota và hàng đợi.',
+    description='Mặc định tạo bộ 5 câu trắc nghiệm tiếng Việt, mỗi câu theo một dữ kiện riêng. AI soạn câu hỏi; đáp án và trích dẫn bám nguồn. Với dữ kiện nhận diện được, lựa chọn nhiễu lấy từ danh sách tiếng Việt có kiểm soát. Kết quả cần người duyệt. Cả bộ dùng một lượt cấp GPU; nếu thiếu câu sẽ ghi complete=false. Chỉ dán tư liệu được phép công khai; ZeroGPU có quota và hàng đợi.',
     submit_btn='Tạo bộ câu hỏi',
     flagging_mode='never', api_name='tao_quiz', concurrency_limit=1)
 demo.queue(max_size=8, default_concurrency_limit=1)

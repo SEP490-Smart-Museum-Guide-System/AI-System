@@ -25,13 +25,36 @@ The public UI defaults to a set of **five Vietnamese questions** (1/3/5 selectab
 each with four options, a correct index, explanation and source quote. One GPU
 allocation composes the set sequentially under an 85-second budget. Every question
 passes the existing SMGS source validator and excludes already generated questions.
-The model selects an `evidenceIndex`; the service copies that exact source passage
-into `evidenceQuote` and explanation. The correct option must occur in the selected
-passage, and invented/invalid indices or unsupported answers are rejected. The model
-does not write citation text. One bounded retry is allowed for an invalid candidate,
-within the same overall budget. This does not independently prove question semantics.
+
+## Source-constrained generation
+
+The planner splits exact source spans into usable facts, removes software-test
+disclaimers and duplicate passages, and prioritizes different topics. Each question
+gets its own source passage rather than letting the model repeatedly select one.
+
+For recognized facts (purpose, material, shape, decoration and technique), rules
+extract the answer from that passage and select three Vietnamese distractors from
+a small controlled vocabulary. Choices are shuffled reproducibly. **Qwen writes
+the question** using the assigned fact and a question hint; it does not need to
+count four options or invent an evidence quote. This is a hybrid quiz generator,
+not unconstrained generation of all quiz fields. Unknown fact types retain the
+stricter full-JSON model path; coverage of new museum terminology needs review.
+
+Source grounding, topic compatibility, question/answer similarities, language drift
+and negative/yes-no question checks reject known bad candidates. These are rules,
+not an independent semantic model: they can miss paraphrases or reject legitimate
+questions. A different source passage alone does not prove a different meaning.
+
+Each fact has at most two attempts. A retry receives the rejection reason and uses
+low-temperature sampling with a reproducible seed. Invalid facts can be skipped
+in favor of other source facts; total model calls and time are capped. Quota/time
+failures stop the batch. **No server question or fixed demo question is inserted
+when the model returns an empty or invalid question.** Citation text always comes
+from the original assigned passage.
+
 The result includes `requestedCount`, `generatedCount`, `complete`, `questions`
-and `warnings`. Partial sets remain explicitly incomplete; no fake questions pad
+and `warnings`, with `distinctEvidenceCount` and `reviewRequired=true`.
+Partial sets remain explicitly incomplete; no fake questions pad
 the result. Review the answers and source before publication. Do not paste private museum documents into
 a public demo. No database credentials, private photographs or .env files belong here.
 
@@ -43,6 +66,8 @@ the raw single-question object for compatibility with the current BE/FE loop.
 `POST /api/v1/studio/quiz-sets` accepts the same fields plus `count` (1/3/5,
 default 5) and returns the whole set. This new endpoint is not yet called by the
 existing BE/FE; those still aggregate single-question responses.
+For legacy single-item calls, the prior-question count rotates the assigned fact;
+the API does not infer the evidence used by arbitrary historic questions.
 Narration is not implemented here. Direct Gradio API: `/tao_quiz`, with inputs
 name, source, difficulty, excluded JSON array and count.
 

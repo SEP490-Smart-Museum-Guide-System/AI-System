@@ -10,7 +10,7 @@ def prepare(destination, sdk='docker'):
     if destination.exists(): raise ValueError('Choose a NEW folder; existing files will not be replaced.')
     if sdk == 'gradio':
         folder=ROOT/'deploy/huggingface/gradio-quiz'
-        files={name:folder/name for name in ['app.py','pytorch_engine.py','quiz_set.py','grounded_quiz.py','requirements.txt','README.md']}
+        files={name:folder/name for name in ['app.py','pytorch_engine.py','quiz_set.py','grounded_quiz.py','quiz_quality.py','requirements.txt','README.md']}
         app_files=[ROOT/'AI Chat/app'/name for name in ['__init__.py','engine.py','studio.py']]
     elif sdk == 'docker':
         files = {

@@ -1,0 +1,285 @@
+{
+  "real_model": true,
+  "fixture": false,
+  "hf_gpu_tested": false,
+  "device": "cpu",
+  "dtype": "bfloat16",
+  "modelRevision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "sourcesAreSynthetic": true,
+  "cases": [
+    {
+      "artifactName": "Bình gốm DEMO",
+      "sourceText": "Bình gốm được dùng để đựng nước. Chất liệu là đất nung. Miệng bình loe rộng. Thân bình có hoa văn khắc chìm. Bình được làm bằng kỹ thuật bàn xoay. Đây là tư liệu giả lập để kiểm thử phần mềm, không phải hồ sơ hiện vật thật.",
+      "result": {
+        "requestedCount": 5,
+        "generatedCount": 5,
+        "complete": true,
+        "isDraft": true,
+        "reviewRequired": true,
+        "distinctEvidenceCount": 5,
+        "questions": [
+          {
+            "question": "Theo tư liệu, Bình gốm DEMO được dùng để làm gì?",
+            "options": [
+              "Ghi chép",
+              "Đựng thóc",
+              "đựng nước",
+              "Dệt vải"
+            ],
+            "correctIndex": 2,
+            "explanation": "Bình gốm được dùng để đựng nước.",
+            "evidenceQuote": "Bình gốm được dùng để đựng nước."
+          },
+          {
+            "question": "Theo tư liệu, Bình gốm DEMO được làm từ chất liệu gì?",
+            "options": [
+              "đất nung",
+              "Thủy tinh",
+              "Sắt",
+              "Gỗ"
+            ],
+            "correctIndex": 0,
+            "explanation": "Chất liệu là đất nung.",
+            "evidenceQuote": "Chất liệu là đất nung."
+          },
+          {
+            "question": "Theo tư liệu, miệng của Bình gốm DEMO có đặc điểm gì?",
+            "options": [
+              "Thu hẹp",
+              "Bịt kín",
+              "Thẳng đứng",
+              "loe rộng"
+            ],
+            "correctIndex": 3,
+            "explanation": "Miệng bình loe rộng.",
+            "evidenceQuote": "Miệng bình loe rộng."
+          },
+          {
+            "question": "Theo tư liệu, Bình gốm DEMO có họa tiết hoặc cách trang trí nào?",
+            "options": [
+              "Dát vàng",
+              "In nổi",
+              "khắc chìm",
+              "Không trang trí"
+            ],
+            "correctIndex": 2,
+            "explanation": "Thân bình có hoa văn khắc chìm.",
+            "evidenceQuote": "Thân bình có hoa văn khắc chìm."
+          },
+          {
+            "question": "Theo tư liệu, Bình gốm DEMO được chế tác bằng kỹ thuật gì?",
+            "options": [
+              "Đúc khuôn",
+              "bàn xoay",
+              "In máy",
+              "Rèn thủ công"
+            ],
+            "correctIndex": 1,
+            "explanation": "Bình được làm bằng kỹ thuật bàn xoay.",
+            "evidenceQuote": "Bình được làm bằng kỹ thuật bàn xoay."
+          }
+        ],
+        "warnings": []
+      },
+      "elapsedSeconds": 157.81
+    },
+    {
+      "artifactName": "Trống DEMO",
+      "sourceText": "Trống được dùng để báo hiệu trong lễ hội. Chất liệu là đồng. Thân trống có hình trụ. Mặt trống có họa tiết ngôi sao. Trống được làm bằng kỹ thuật đúc khuôn. Đây là tư liệu giả lập để kiểm thử phần mềm, không phải hồ sơ hiện vật thật.",
+      "result": {
+        "requestedCount": 5,
+        "generatedCount": 5,
+        "complete": true,
+        "isDraft": true,
+        "reviewRequired": true,
+        "distinctEvidenceCount": 5,
+        "questions": [
+          {
+            "question": "Theo tư liệu, Trống DEMO được dùng để làm gì?",
+            "options": [
+              "Đựng thóc",
+              "Dệt vải",
+              "báo hiệu trong lễ hội",
+              "Thắp sáng"
+            ],
+            "correctIndex": 2,
+            "explanation": "Trống được dùng để báo hiệu trong lễ hội.",
+            "evidenceQuote": "Trống được dùng để báo hiệu trong lễ hội."
+          },
+          {
+            "question": "Theo tư liệu, Trống DEMO được làm từ chất liệu gì?",
+            "options": [
+              "Đá",
+              "Gỗ",
+              "đồng",
+              "Thủy tinh"
+            ],
+            "correctIndex": 2,
+            "explanation": "Chất liệu là đồng.",
+            "evidenceQuote": "Chất liệu là đồng."
+          },
+          {
+            "question": "Theo tư liệu, hình dáng của Trống DEMO có đặc điểm gì?",
+            "options": [
+              "hình trụ",
+              "Hình cầu",
+              "Hình hộp",
+              "Hình chóp"
+            ],
+            "correctIndex": 0,
+            "explanation": "Thân trống có hình trụ.",
+            "evidenceQuote": "Thân trống có hình trụ."
+          },
+          {
+            "question": "Theo tư liệu, Trống DEMO có họa tiết hoặc cách trang trí nào?",
+            "options": [
+              "ngôi sao",
+              "Sóng nước",
+              "Hình lá",
+              "Hình mặt trăng"
+            ],
+            "correctIndex": 0,
+            "explanation": "Mặt trống có họa tiết ngôi sao.",
+            "evidenceQuote": "Mặt trống có họa tiết ngôi sao."
+          },
+          {
+            "question": "Theo tư liệu, Trống DEMO được chế tác bằng kỹ thuật gì?",
+            "options": [
+              "đúc khuôn",
+              "Thổi thủy tinh",
+              "Chạm khắc",
+              "Rèn thủ công"
+            ],
+            "correctIndex": 0,
+            "explanation": "Trống được làm bằng kỹ thuật đúc khuôn.",
+            "evidenceQuote": "Trống được làm bằng kỹ thuật đúc khuôn."
+          }
+        ],
+        "warnings": []
+      },
+      "elapsedSeconds": 151.95
+    }
+  ],
+  "attempts": [
+    {
+      "target": {
+        "id": 0,
+        "text": "Bình gốm được dùng để đựng nước."
+      },
+      "attempt": 1,
+      "temperature": 0.0,
+      "startedAtUtc": "2026-11-17T15:20:04.937269+00:00",
+      "rawModelText": "{\"question\":\"Theo tư liệu, Bình gốm DEMO được dùng để làm gì?\"}",
+      "passedSourceValidator": true,
+      "elapsedSeconds": 27.91
+    },
+    {
+      "target": {
+        "id": 1,
+        "text": "Chất liệu là đất nung."
+      },
+      "attempt": 1,
+      "temperature": 0.0,
+      "startedAtUtc": "2026-11-17T15:20:32.847755+00:00",
+      "rawModelText": "{\"question\":\"Theo tư liệu, Bình gốm DEMO được làm từ chất liệu gì?\"}",
+      "passedSourceValidator": true,
+      "elapsedSeconds": 29.41
+    },
+    {
+      "target": {
+        "id": 2,
+        "text": "Miệng bình loe rộng."
+      },
+      "attempt": 1,
+      "temperature": 0.0,
+      "startedAtUtc": "2026-11-17T15:21:02.262417+00:00",
+      "rawModelText": "{\"question\":\"Theo tư liệu, miệng của Bình gốm DEMO có đặc điểm gì?\"}",
+      "passedSourceValidator": true,
+      "elapsedSeconds": 31.36
+    },
+    {
+      "target": {
+        "id": 3,
+        "text": "Thân bình có hoa văn khắc chìm."
+      },
+      "attempt": 1,
+      "temperature": 0.0,
+      "startedAtUtc": "2026-11-17T15:21:33.619901+00:00",
+      "rawModelText": "{\"question\":\"Theo tư liệu, Bình gốm DEMO có họa tiết hoặc cách trang trí nào?\"}",
+      "passedSourceValidator": true,
+      "elapsedSeconds": 34.41
+    },
+    {
+      "target": {
+        "id": 4,
+        "text": "Bình được làm bằng kỹ thuật bàn xoay."
+      },
+      "attempt": 1,
+      "temperature": 0.0,
+      "startedAtUtc": "2026-11-17T15:22:08.019823+00:00",
+      "rawModelText": "{\"question\":\"Theo tư liệu, Bình gốm DEMO được chế tác bằng kỹ thuật gì?\"}",
+      "passedSourceValidator": true,
+      "elapsedSeconds": 34.73
+    },
+    {
+      "target": {
+        "id": 0,
+        "text": "Trống được dùng để báo hiệu trong lễ hội."
+      },
+      "attempt": 1,
+      "temperature": 0.0,
+      "startedAtUtc": "2026-11-17T15:22:42.755124+00:00",
+      "rawModelText": "{\"question\":\"Theo tư liệu, Trống DEMO được dùng để làm gì?\"}",
+      "passedSourceValidator": true,
+      "elapsedSeconds": 28.44
+    },
+    {
+      "target": {
+        "id": 1,
+        "text": "Chất liệu là đồng."
+      },
+      "attempt": 1,
+      "temperature": 0.0,
+      "startedAtUtc": "2026-11-17T15:23:11.200164+00:00",
+      "rawModelText": "{\"question\":\"Theo tư liệu, Trống DEMO được làm từ chất liệu gì?\"}",
+      "passedSourceValidator": true,
+      "elapsedSeconds": 28.58
+    },
+    {
+      "target": {
+        "id": 2,
+        "text": "Thân trống có hình trụ."
+      },
+      "attempt": 1,
+      "temperature": 0.0,
+      "startedAtUtc": "2026-11-17T15:23:39.784693+00:00",
+      "rawModelText": "{\"question\":\"Theo tư liệu, hình dáng của Trống DEMO có đặc điểm gì?\"}",
+      "passedSourceValidator": true,
+      "elapsedSeconds": 29.86
+    },
+    {
+      "target": {
+        "id": 3,
+        "text": "Mặt trống có họa tiết ngôi sao."
+      },
+      "attempt": 1,
+      "temperature": 0.0,
+      "startedAtUtc": "2026-11-17T15:24:09.645026+00:00",
+      "rawModelText": "{\"question\":\"Theo tư liệu, Trống DEMO có họa tiết hoặc cách trang trí nào?\"}",
+      "passedSourceValidator": true,
+      "elapsedSeconds": 32.03
+    },
+    {
+      "target": {
+        "id": 4,
+        "text": "Trống được làm bằng kỹ thuật đúc khuôn."
+      },
+      "attempt": 1,
+      "temperature": 0.0,
+      "startedAtUtc": "2026-11-17T15:24:41.674718+00:00",
+      "rawModelText": "{\"question\":\"Theo tư liệu, Trống DEMO được chế tác bằng kỹ thuật gì?\"}",
+      "passedSourceValidator": true,
+      "elapsedSeconds": 33.02
+    }
+  ]
+}

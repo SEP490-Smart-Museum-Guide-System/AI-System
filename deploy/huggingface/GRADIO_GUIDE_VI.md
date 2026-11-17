@@ -4,6 +4,37 @@ Space đã tạo: https://huggingface.co/spaces/Trungnam1644/smgs-ai-quiz
 
 Space này dùng **Gradio / ZeroGPU**, không dùng Dockerfile ONNX. Đoạn `greet()` Hugging Face gợi ý chỉ là ví dụ tensor; bộ file dưới đây tạo quiz từ tư liệu theo prompt và validator đang dùng trong SMGS.
 
+## Cập nhật xác minh HF — commit 465b25b
+
+Đã kiểm tra runtime thật lúc 22:36 ngày 17/11/2026 (Việt Nam): RUNNING, readiness CUDA, bộ nguồn giả lập bình gốm trả **5/5 câu khác chủ đề, complete=true** sau 4,08 giây. Đã đối chiếu từng câu/đáp án/trích dẫn: công dụng, chất liệu, miệng bình, trang trí, kỹ thuật. [Raw HF response](gradio-live-quality-465b25b-20261117.json), [postflight](gradio-live-quality-review-465b25b-20261117.json). Đây là một lượt demo thành công, chưa phải benchmark nhiều nguồn hoặc kiểm chứng toàn bộ FE/BE/DB.
+
+Log user có `Exception ignored in BaseEventLoop.__del__` / `Invalid file descriptor: -1` ở bước dọn dẹp asyncio. Space và lượt tạo vừa kiểm tra vẫn thành công, nên chưa có bằng chứng cảnh báo đó làm chết service. Chưa xác định chính xác root cause; không vá/suppress toàn bộ asyncio để che log. Có [báo cáo upstream tương tự](https://github.com/gradio-app/gradio/issues/12699). Không cần bật Gradio share tunnel để dùng app đã host trên HF.
+
+## Bản tổng hợp để push một lần — logic chất lượng
+
+Bản hiện tại là **hybrid có ràng buộc nguồn**: AI soạn câu hỏi, không tự bịa đáp án đúng hoặc câu trích. Với các dạng dữ kiện nhận diện được (công dụng, chất liệu, hình dáng, trang trí, kỹ thuật), luật lấy đáp án nguyên văn từ nguồn và chọn ba phương án nhiễu tiếng Việt trong bộ từ vựng có kiểm soát; vị trí đáp án được xáo trộn. Model vẫn phải trả một câu hỏi hợp lệ: không tự điền question từ mẫu khi model trả rỗng/sai. Dạng dữ kiện chưa được luật hỗ trợ vẫn dùng đường JSON đầy đủ và validator chặt hơn, nên độ bao phủ cần đánh giá tiếp.
+
+- Tách đoạn/ý nguồn tại câu, dấu chấm phẩy và các mệnh đề thuộc tính; giữ trích dẫn là substring gốc. Bỏ disclaimer kiểm thử, loại đoạn trùng và ưu tiên các chủ đề khác nhau.
+- Chặn lỗi đã quan sát: hỏi lại cùng ý/đáp án, lệch chủ đề, câu phủ định/Có-Không, chèn chữ Trung Quốc/tiếng Anh; đây là **heuristics**, chưa phải bộ xác minh ngữ nghĩa độc lập, vẫn có thể bỏ sót hoặc chặn nhầm.
+- Tối đa hai lần thử cho một dữ kiện, retry có lý do lỗi và sampling nhẹ có seed. Không dừng cả bộ chỉ vì một dữ kiện lỗi nếu còn dữ kiện khác; giới hạn tổng lượt inference và budget 85 giây. Quota/timeout dừng bộ, giữ kết quả một phần và báo đúng số lượng.
+
+**Đã thử model thật local:** Qwen2.5-1.5B cùng checkpoint ghim, CPU **bfloat16**, hai bộ nguồn giả lập bình gốm và trống: mỗi bộ **5/5 câu, năm chủ đề riêng**, tổng 10 câu/10 lượt đầu. Đã đối chiếu câu hỏi, đáp án, trích dẫn và chạy guard bản cuối. CPU mất 157,81 và 151,95 giây, với budget kiểm thử riêng 360 giây; **không suy ra rằng CPU hoàn tất trong budget GPU 85 giây**. Chưa kiểm tra bản tổng hợp mới trên HF sau push, chưa có đánh giá corpus bảo tàng thật hoặc curator duyệt.
+
+Giữ bằng chứng riêng: [raw Qwen CPU](qwen-real-hybrid-cpu-20261117.json), [đối chiếu sau sinh](qwen-real-hybrid-review-20261117.json). Các báo cáo lỗi HF/CPU trước đó vẫn giữ nguyên, không thay bằng kết quả mới.
+
+Kiểm tra bản bàn giao: 26 unit/adversarial tests và [39 contract/API/queue checks](gradio-quality-final-check-20261117.json) qua. Chạy unit bằng `python -B -m unittest discover -s deploy/huggingface/tests -v` từ repo AI-System. Script `check_real_quiz_cpu.py` cho phép lặp lại inference CPU với bundle và checkpoint tải sẵn; kết quả model thật là báo cáo riêng, không trộn với fixtures.
+
+Trong checkout Space đã chuẩn bị, chạy một lần:
+
+```powershell
+cd D:\SEP409\tmp\hf-gradio-smgs-ai-quiz-20261117
+git add app.py grounded_quiz.py quiz_quality.py quiz_set.py pytorch_engine.py README.md
+git commit -m "Improve grounded five-question generation and diversity checks"
+git push
+```
+
+Không upload model/cache/.env. Sau khi HF Running, phải thử lại bộ 5 trên runtime GPU; `complete=true` chỉ nói đủ số câu qua các kiểm tra hiện tại, không thay cho duyệt lịch sử/ngữ nghĩa của bảo tàng.
+
 ## Đẩy code
 
 Repo Space đã được clone và chuẩn bị ở máy này:
@@ -11,7 +42,7 @@ Repo Space đã được clone và chuẩn bị ở máy này:
 ```powershell
 cd D:\SEP409\tmp\hf-gradio-smgs-ai-quiz-20261117
 git status --short
-git add app.py pytorch_engine.py quiz_set.py grounded_quiz.py requirements.txt README.md app
+git add app.py pytorch_engine.py quiz_set.py grounded_quiz.py quiz_quality.py requirements.txt README.md app
 git commit -m "Deploy SMGS Gradio quiz demo"
 git push
 ```
@@ -21,6 +52,14 @@ Chỉ chạy sau khi các file đã được chuẩn bị xong. Nếu Git hỏi 
 Sau khi push: mở Space → xem Build logs / Container logs → đợi Running. UI nhận tên hiện vật, tư liệu, mức độ, danh sách câu hỏi đã có (JSON array, tùy chọn) và số lượng 1/3/5 (mặc định **5**). Kết quả là bộ câu hỏi nháp cần người duyệt. Kiểm tra `generatedCount` và `complete`; không coi 2/5 câu là bộ 5 câu đã hoàn tất. Chưa push nghĩa là app trên HF chưa được cập nhật.
 
 ## Bản sửa startup và bộ 5 câu — 17/11/2026
+
+### Lượt thử commit c2ba700: 2/5, chưa đạt yêu cầu
+
+Space đã RUNNING đúng commit `c2ba700`. Lượt Qwen thật sau sửa trích dẫn có response nhưng `generatedCount=2`, `complete=false`; hai câu khác chữ nhưng cùng hỏi kỹ thuật bàn xoay. Thời gian request 5,38 giây. [Phản hồi nguyên bản](gradio-live-indexed-five-c2ba700-20261117.json). Đây không phải bộ 5 câu thành công.
+
+Bản tiếp theo giao một đoạn nguồn khác nhau cho từng câu thay vì chỉ nhắc model ưu tiên đoạn chưa dùng. Model trả ba trường question/options/correctIndex; không tự chọn hoặc đổi evidenceIndex. Đáp án phải nằm trong đoạn được giao, trích dẫn lấy nguyên văn đoạn đó. Tư liệu trùng nguyên văn được khử trùng; nếu không đủ đoạn hoặc model không đạt validator thì báo thiếu câu, không lấp bằng câu giả. Validator được áp dụng vào đoạn mục tiêu, vì một phương án nhiễu có thể là dữ kiện đúng ở đoạn khác nhưng không trả lời câu hỏi này. Đây vẫn không phải kiểm chứng ngữ nghĩa độc lập.
+
+Luồng FE cũ gửi số câu đã có qua excludeQuestions nên request thứ 1–5 được lần lượt giao các đoạn nguồn kế tiếp; không phân tích ý nghĩa của câu loại trừ để đoán đoạn nguồn lịch sử. Kiểm tra local: `gradio-targeted-check-20261117.json` (fixtures). Cần user push và thử Qwen thật lại; không lấy số tests local làm chứng cứ model thật đã sinh đủ 5.
 
 ### Sau khi Space đã Running: sửa trích dẫn model viết lại
 
@@ -106,7 +145,7 @@ API batch độc lập: `POST /api/v1/studio/quiz-sets`, cùng header/payload, t
 
 ## Giới hạn cần hiểu
 
-Kiểm chứng local: 10 ca kiểm tra HTTP/queue đã qua bằng model fixture được ghi rõ trong [kết quả gốc](gradio-local-check-20261117.json). UI và hàng đợi là Gradio thật; quiz trong báo cáo này là fixture kiểm thử, không phải đầu ra Qwen thật. Đã cài/import dependencies; chưa xác minh suy luận PyTorch hoặc ZeroGPU trên HF. Chạy lại với môi trường có requirements của bundle:
+Kiểm chứng ban đầu: 10 ca HTTP/queue bằng model fixture được ghi rõ trong [kết quả gốc](gradio-local-check-20261117.json). UI/hàng đợi là Gradio thật; quiz trong báo cáo ban đầu này là fixture, không phải Qwen thật. Kết quả model thật và giới hạn của bản tổng hợp mới nằm ở mục đầu tài liệu. Chạy lại contract bằng môi trường có requirements của bundle:
 
 ```powershell
 cd D:\SEP409\AI-System

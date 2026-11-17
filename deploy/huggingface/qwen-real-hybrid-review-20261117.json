@@ -1,0 +1,38 @@
+{
+  "inputReport": "qwen-real-hybrid-cpu-20261117.json",
+  "realModel": true,
+  "runtime": "CPU bfloat16",
+  "hfGpuVerified": false,
+  "reviewMethod": "Assistant review against the supplied synthetic sources plus latest rule-based postflight checks",
+  "museumStaffApproved": false,
+  "cases": [
+    {
+      "artifactName": "Bình gốm DEMO",
+      "questionCount": 5,
+      "topics": [
+        "purpose",
+        "material",
+        "shape",
+        "decoration",
+        "technique"
+      ],
+      "allAnswersSupportedByAssignedSource": true,
+      "distinctTopics": 5,
+      "elapsedSeconds": 157.81
+    },
+    {
+      "artifactName": "Trống DEMO",
+      "questionCount": 5,
+      "topics": [
+        "purpose",
+        "material",
+        "shape",
+        "decoration",
+        "technique"
+      ],
+      "allAnswersSupportedByAssignedSource": true,
+      "distinctTopics": 5,
+      "elapsedSeconds": 151.95
+    }
+  ]
+}

@@ -1,0 +1,361 @@
+{
+  "model_fixture": true,
+  "real_model_inference": false,
+  "hf_zerogpu_tested": false,
+  "dependencies": {
+    "gradio": "6.32.0",
+    "spaces": "0.51.3",
+    "torch": "2.8.0+cpu",
+    "transformers": "5.0.0",
+    "huggingface-hub": "1.16.0"
+  },
+  "checks": [
+    {
+      "name": "UI",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "name": "ZeroGPU launch hook runs once (probe)",
+      "actual": [
+        "startup"
+      ],
+      "expected": [
+        "startup"
+      ],
+      "passed": true
+    },
+    {
+      "name": "SSR disabled despite environment default",
+      "actual": false,
+      "expected": false,
+      "passed": true
+    },
+    {
+      "name": "default quiz set size",
+      "actual": 5,
+      "expected": 5,
+      "passed": true
+    },
+    {
+      "name": "readiness",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "name": "missing service key",
+      "actual": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "name": "narration unsupported",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "short source",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "invalid difficulty",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "too many exclusions",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "REST through real Gradio queue",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "name": "raw quiz response",
+      "actual": {
+        "question": "Bình gốm dùng để làm gì?",
+        "options": [
+          "Đựng nước",
+          "Dệt vải",
+          "Ghi chép",
+          "Nấu cơm"
+        ],
+        "correctIndex": 0,
+        "explanation": "Bình gốm được dùng để đựng nước.",
+        "evidenceQuote": "Bình gốm được dùng để đựng nước."
+      },
+      "expected": {
+        "question": "Bình gốm dùng để làm gì?",
+        "options": [
+          "Đựng nước",
+          "Dệt vải",
+          "Ghi chép",
+          "Nấu cơm"
+        ],
+        "correctIndex": 0,
+        "explanation": "Bình gốm được dùng để đựng nước.",
+        "evidenceQuote": "Bình gốm được dùng để đựng nước."
+      },
+      "passed": true
+    },
+    {
+      "name": "duplicate fixture quiz rejected",
+      "actual": 503,
+      "expected": 503,
+      "passed": true
+    },
+    {
+      "name": "batch requires service key",
+      "actual": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "name": "batch HTTP",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "name": "default batch generates five",
+      "actual": 5,
+      "expected": 5,
+      "passed": true
+    },
+    {
+      "name": "five-question batch is complete",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "five unique questions",
+      "actual": 5,
+      "expected": 5,
+      "passed": true
+    },
+    {
+      "name": "five distinct source facts",
+      "actual": 5,
+      "expected": 5,
+      "passed": true
+    },
+    {
+      "name": "four options per question",
+      "actual": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "expected": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "passed": true
+    },
+    {
+      "name": "batch count three",
+      "actual": 3,
+      "expected": 3,
+      "passed": true
+    },
+    {
+      "name": "unsupported count",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "legacy FE five sequential drafts",
+      "actual": 5,
+      "expected": 5,
+      "passed": true
+    },
+    {
+      "name": "duplicate does not pad batch",
+      "actual": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "name": "duplicate batch marked incomplete",
+      "actual": false,
+      "expected": false,
+      "passed": true
+    },
+    {
+      "name": "partial batch explains failure",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "quota failure preserves two valid questions",
+      "actual": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "name": "quota failure is incomplete",
+      "actual": false,
+      "expected": false,
+      "passed": true
+    },
+    {
+      "name": "batch deadline enforced",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "quote is copied exactly from selected source",
+      "actual": "Bình gốm được dùng để đựng nước.",
+      "expected": "Bình gốm được dùng để đựng nước.",
+      "passed": true
+    },
+    {
+      "name": "out-of-range evidence index rejected",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "wrong evidence for correct option rejected",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "invented quote field rejected",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "model cannot override assigned source rejected",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "long source passages are exact substrings",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "duplicate source passages deduplicated",
+      "actual": 5,
+      "expected": 5,
+      "passed": true
+    },
+    {
+      "name": "one invalid draft retried within batch budget",
+      "actual": 5,
+      "expected": 5,
+      "passed": true
+    },
+    {
+      "name": "GPU worker preserves actionable validation error",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    }
+  ],
+  "quiz_response": {
+    "question": "Bình gốm dùng để làm gì?",
+    "options": [
+      "Đựng nước",
+      "Dệt vải",
+      "Ghi chép",
+      "Nấu cơm"
+    ],
+    "correctIndex": 0,
+    "explanation": "Bình gốm được dùng để đựng nước.",
+    "evidenceQuote": "Bình gốm được dùng để đựng nước."
+  },
+  "five_question_fixture_response": {
+    "requestedCount": 5,
+    "generatedCount": 5,
+    "complete": true,
+    "isDraft": true,
+    "questions": [
+      {
+        "question": "Bình gốm dùng để làm gì?",
+        "options": [
+          "Đựng nước",
+          "Dệt vải",
+          "Ghi chép",
+          "Nấu cơm"
+        ],
+        "correctIndex": 0,
+        "explanation": "Bình gốm được dùng để đựng nước.",
+        "evidenceQuote": "Bình gốm được dùng để đựng nước."
+      },
+      {
+        "question": "Bình gốm được làm bằng chất liệu gì?",
+        "options": [
+          "Đất nung",
+          "Sắt",
+          "Nhựa",
+          "Thủy tinh"
+        ],
+        "correctIndex": 0,
+        "explanation": "Chất liệu là đất nung.",
+        "evidenceQuote": "Chất liệu là đất nung."
+      },
+      {
+        "question": "Miệng bình có đặc điểm gì?",
+        "options": [
+          "Loe rộng",
+          "Bịt kín",
+          "Có nắp gỗ",
+          "Hình vuông"
+        ],
+        "correctIndex": 0,
+        "explanation": "Miệng bình loe rộng.",
+        "evidenceQuote": "Miệng bình loe rộng."
+      },
+      {
+        "question": "Thân bình có loại hoa văn gì?",
+        "options": [
+          "Khắc chìm",
+          "In nổi",
+          "Dát vàng",
+          "Không trang trí"
+        ],
+        "correctIndex": 0,
+        "explanation": "Thân bình có hoa văn khắc chìm.",
+        "evidenceQuote": "Thân bình có hoa văn khắc chìm."
+      },
+      {
+        "question": "Bình được làm bằng kỹ thuật gì?",
+        "options": [
+          "Bàn xoay",
+          "Đúc khuôn kim loại",
+          "Thổi thủy tinh",
+          "In máy"
+        ],
+        "correctIndex": 0,
+        "explanation": "Bình được làm bằng kỹ thuật bàn xoay.",
+        "evidenceQuote": "Bình được làm bằng kỹ thuật bàn xoay."
+      }
+    ],
+    "warnings": []
+  }
+}
