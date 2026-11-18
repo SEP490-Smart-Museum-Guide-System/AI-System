@@ -1,0 +1,66 @@
+{
+  "real_model": true,
+  "fixture": false,
+  "hf_gpu_tested": false,
+  "device": "cpu",
+  "dtype": "bfloat16",
+  "modelRevision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "sourcesAreSynthetic": true,
+  "startedAtUtc": "2026-11-18T08:22:40.911369+00:00",
+  "cases": [
+    {
+      "context": {
+        "artifactId": 1,
+        "artifactName": "Bình gốm DEMO",
+        "title": "Tư liệu giả lập để kiểm thử phần mềm",
+        "description": "Bình gốm được dùng để đựng nước. Chất liệu là đất nung.",
+        "narrationText": "Miệng bình loe rộng. Thân bình có hoa văn khắc chìm. Bình được làm bằng kỹ thuật bàn xoay."
+      },
+      "question": "Bình gốm được làm bằng chất liệu gì?",
+      "expectedAnswerContains": "đất nung",
+      "rawModelText": "{\"answer\":\"đất nung\", \"supported\":true}",
+      "result": {
+        "answer": "đất nung",
+        "supported": true
+      },
+      "passed": true,
+      "elapsedSeconds": 43.83
+    },
+    {
+      "context": {
+        "artifactId": 2,
+        "artifactName": "Trống DEMO",
+        "title": "Tư liệu giả lập để kiểm thử phần mềm",
+        "description": "Trống được dùng để báo hiệu trong lễ hội. Chất liệu là đồng.",
+        "narrationText": "Mặt trống có họa tiết ngôi sao. Trống được làm bằng kỹ thuật đúc khuôn."
+      },
+      "question": "Trống được dùng để làm gì?",
+      "expectedAnswerContains": "báo hiệu",
+      "rawModelText": "{\"answer\":\"Báo hiệu trong lễ hội\",\"supported\":true}",
+      "result": {
+        "answer": "Báo hiệu trong lễ hội",
+        "supported": true
+      },
+      "passed": true,
+      "elapsedSeconds": 36.8
+    },
+    {
+      "context": {
+        "artifactId": 1,
+        "artifactName": "Bình gốm DEMO",
+        "title": "Tư liệu giả lập để kiểm thử phần mềm",
+        "description": "Bình gốm được dùng để đựng nước. Chất liệu là đất nung.",
+        "narrationText": "Miệng bình loe rộng. Thân bình có hoa văn khắc chìm. Bình được làm bằng kỹ thuật bàn xoay."
+      },
+      "question": "Bình gốm được chế tác vào năm nào?",
+      "expectedAnswerContains": null,
+      "rawModelText": "{\"answer\":\"Năm không được cung cấp trong dữ liệu hiện vật.\", \"supported\":false",
+      "error": {
+        "status": 502,
+        "detail": "Model chưa tạo được câu trả lời hợp lệ. Vui lòng thử lại."
+      },
+      "passed": false,
+      "elapsedSeconds": 45.02
+    }
+  ]
+}

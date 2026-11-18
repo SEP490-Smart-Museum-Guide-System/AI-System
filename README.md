@@ -1,5 +1,7 @@
 # AI System — Smart Museum Guide System
 
+**Chatbot + personalized tour trên HF:** bộ Space riêng `smgs-ai-guide`, adapter Qwen PyTorch/ZeroGPU cho chat và thuật toán tour CPU hiện có. Xem [cấu hình Secrets, export, deploy và giới hạn](deploy/huggingface/GUIDE_TOUR_DEPLOY_VI.md). Trạng thái kiểm chứng cloud ghi trong `IMPLEMENTATION_LOG.md`; Space quiz vẫn độc lập.
+
 **Deploy gen quiz lên Hugging Face Spaces:** xem [hướng dẫn và giới hạn scan 3D](deploy/huggingface/DEPLOY_GUIDE_VI.md). Docker Space mới hiện có điều kiện gói tài khoản; không mặc định miễn phí hoàn toàn.
 
 **Space Gradio/ZeroGPU `Trungnam1644/smgs-ai-quiz`:** dùng [bộ Gradio và lệnh push riêng](deploy/huggingface/GRADIO_GUIDE_VI.md), không cần Docker local. Adapter PyTorch chỉ dành cho Space; service ONNX local giữ nguyên.

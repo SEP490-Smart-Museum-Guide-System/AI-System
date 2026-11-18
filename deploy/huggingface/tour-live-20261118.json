@@ -1,0 +1,1442 @@
+{
+  "checkedAtUtc": "2026-11-18T08:38:19.538017+00:00",
+  "baseUrl": "https://trungnam1644-smgs-ai-guide.hf.space",
+  "syntheticData": true,
+  "realCloudTourAlgorithm": true,
+  "gpuRequired": false,
+  "authenticatedRestTested": false,
+  "cases": [
+    {
+      "name": "pottery 20 minutes",
+      "input": {
+        "museumId": 1,
+        "availableMinutes": 20,
+        "interests": [
+          "gốm"
+        ],
+        "maxStops": 3,
+        "candidates": [
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "museumId": 1,
+            "name": "Bình gốm DEMO",
+            "title": "Gốm",
+            "description": "Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "đất nung"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 5
+          },
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "museumId": 1,
+            "name": "Bát gốm DEMO",
+            "title": "Gốm",
+            "description": "Bát gốm dùng trong sinh hoạt. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "sinh hoạt"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 4
+          },
+          {
+            "artifactId": 3,
+            "contentVersionId": 103,
+            "museumId": 1,
+            "name": "Trống đồng DEMO",
+            "title": "Đồ đồng",
+            "description": "Trống bằng đồng dùng để báo hiệu trong lễ hội. Dữ liệu giả lập.",
+            "topics": [
+              "đồng",
+              "lễ hội"
+            ],
+            "galleryId": 2,
+            "galleryName": "Phòng demo B",
+            "floorId": 2,
+            "visitMinutes": 6
+          }
+        ]
+      },
+      "transport": "public-gradio-queue",
+      "event": "complete",
+      "output": {
+        "engineVersion": "content-tfidf-v1",
+        "estimatedMinutes": 11.5,
+        "usedFallback": false,
+        "notice": "Thời gian gồm tham quan và di chuyển ước tính theo phòng/tầng; chưa phải thời gian dẫn đường đo thực tế.",
+        "stops": [
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "visitMinutes": 4.0,
+            "walkMinutes": 2.0,
+            "score": 1.45429,
+            "matchedInterests": [
+              "gốm"
+            ],
+            "reason": "Phù hợp sở thích: gốm."
+          },
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "visitMinutes": 5.0,
+            "walkMinutes": 0.5,
+            "score": 1.45189,
+            "matchedInterests": [
+              "gốm"
+            ],
+            "reason": "Phù hợp sở thích: gốm. Cùng phòng với điểm trước để hạn chế đi vòng."
+          }
+        ]
+      },
+      "elapsedSeconds": 0.53
+    },
+    {
+      "name": "bronze 20 minutes",
+      "input": {
+        "museumId": 1,
+        "availableMinutes": 20,
+        "interests": [
+          "đồng"
+        ],
+        "maxStops": 3,
+        "candidates": [
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "museumId": 1,
+            "name": "Bình gốm DEMO",
+            "title": "Gốm",
+            "description": "Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "đất nung"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 5
+          },
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "museumId": 1,
+            "name": "Bát gốm DEMO",
+            "title": "Gốm",
+            "description": "Bát gốm dùng trong sinh hoạt. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "sinh hoạt"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 4
+          },
+          {
+            "artifactId": 3,
+            "contentVersionId": 103,
+            "museumId": 1,
+            "name": "Trống đồng DEMO",
+            "title": "Đồ đồng",
+            "description": "Trống bằng đồng dùng để báo hiệu trong lễ hội. Dữ liệu giả lập.",
+            "topics": [
+              "đồng",
+              "lễ hội"
+            ],
+            "galleryId": 2,
+            "galleryName": "Phòng demo B",
+            "floorId": 2,
+            "visitMinutes": 6
+          }
+        ]
+      },
+      "transport": "public-gradio-queue",
+      "event": "complete",
+      "output": {
+        "engineVersion": "content-tfidf-v1",
+        "estimatedMinutes": 8.0,
+        "usedFallback": false,
+        "notice": "Thời gian gồm tham quan và di chuyển ước tính theo phòng/tầng; chưa phải thời gian dẫn đường đo thực tế.",
+        "stops": [
+          {
+            "artifactId": 3,
+            "contentVersionId": 103,
+            "visitMinutes": 6.0,
+            "walkMinutes": 2.0,
+            "score": 1.53203,
+            "matchedInterests": [
+              "đồng"
+            ],
+            "reason": "Phù hợp sở thích: đồng."
+          }
+        ]
+      },
+      "elapsedSeconds": 1.09
+    },
+    {
+      "name": "insufficient five minutes",
+      "input": {
+        "museumId": 1,
+        "availableMinutes": 5,
+        "interests": [
+          "gốm"
+        ],
+        "maxStops": 3,
+        "candidates": [
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "museumId": 1,
+            "name": "Bình gốm DEMO",
+            "title": "Gốm",
+            "description": "Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "đất nung"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 5
+          },
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "museumId": 1,
+            "name": "Bát gốm DEMO",
+            "title": "Gốm",
+            "description": "Bát gốm dùng trong sinh hoạt. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "sinh hoạt"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 4
+          },
+          {
+            "artifactId": 3,
+            "contentVersionId": 103,
+            "museumId": 1,
+            "name": "Trống đồng DEMO",
+            "title": "Đồ đồng",
+            "description": "Trống bằng đồng dùng để báo hiệu trong lễ hội. Dữ liệu giả lập.",
+            "topics": [
+              "đồng",
+              "lễ hội"
+            ],
+            "galleryId": 2,
+            "galleryName": "Phòng demo B",
+            "floorId": 2,
+            "visitMinutes": 6
+          }
+        ]
+      },
+      "transport": "public-gradio-queue",
+      "event": "complete",
+      "output": {
+        "engineVersion": "content-tfidf-v1",
+        "estimatedMinutes": 0.0,
+        "usedFallback": false,
+        "notice": "Thời gian hiện tại chưa đủ cho một điểm dừng. Hãy tăng thời gian hoặc đổi bảo tàng.",
+        "stops": []
+      },
+      "elapsedSeconds": 1.12
+    },
+    {
+      "name": "exact six-minute budget",
+      "input": {
+        "museumId": 1,
+        "availableMinutes": 6,
+        "interests": [
+          "gốm"
+        ],
+        "maxStops": 3,
+        "candidates": [
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "museumId": 1,
+            "name": "Bình gốm DEMO",
+            "title": "Gốm",
+            "description": "Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "đất nung"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 5
+          },
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "museumId": 1,
+            "name": "Bát gốm DEMO",
+            "title": "Gốm",
+            "description": "Bát gốm dùng trong sinh hoạt. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "sinh hoạt"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 4
+          },
+          {
+            "artifactId": 3,
+            "contentVersionId": 103,
+            "museumId": 1,
+            "name": "Trống đồng DEMO",
+            "title": "Đồ đồng",
+            "description": "Trống bằng đồng dùng để báo hiệu trong lễ hội. Dữ liệu giả lập.",
+            "topics": [
+              "đồng",
+              "lễ hội"
+            ],
+            "galleryId": 2,
+            "galleryName": "Phòng demo B",
+            "floorId": 2,
+            "visitMinutes": 6
+          }
+        ]
+      },
+      "transport": "public-gradio-queue",
+      "event": "complete",
+      "output": {
+        "engineVersion": "content-tfidf-v1",
+        "estimatedMinutes": 6.0,
+        "usedFallback": false,
+        "notice": "Thời gian gồm tham quan và di chuyển ước tính theo phòng/tầng; chưa phải thời gian dẫn đường đo thực tế.",
+        "stops": [
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "visitMinutes": 4.0,
+            "walkMinutes": 2.0,
+            "score": 1.45429,
+            "matchedInterests": [
+              "gốm"
+            ],
+            "reason": "Phù hợp sở thích: gốm."
+          }
+        ]
+      },
+      "elapsedSeconds": 1.06
+    },
+    {
+      "name": "max one stop",
+      "input": {
+        "museumId": 1,
+        "availableMinutes": 20,
+        "interests": [
+          "gốm"
+        ],
+        "maxStops": 1,
+        "candidates": [
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "museumId": 1,
+            "name": "Bình gốm DEMO",
+            "title": "Gốm",
+            "description": "Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "đất nung"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 5
+          },
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "museumId": 1,
+            "name": "Bát gốm DEMO",
+            "title": "Gốm",
+            "description": "Bát gốm dùng trong sinh hoạt. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "sinh hoạt"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 4
+          },
+          {
+            "artifactId": 3,
+            "contentVersionId": 103,
+            "museumId": 1,
+            "name": "Trống đồng DEMO",
+            "title": "Đồ đồng",
+            "description": "Trống bằng đồng dùng để báo hiệu trong lễ hội. Dữ liệu giả lập.",
+            "topics": [
+              "đồng",
+              "lễ hội"
+            ],
+            "galleryId": 2,
+            "galleryName": "Phòng demo B",
+            "floorId": 2,
+            "visitMinutes": 6
+          }
+        ]
+      },
+      "transport": "public-gradio-queue",
+      "event": "complete",
+      "output": {
+        "engineVersion": "content-tfidf-v1",
+        "estimatedMinutes": 6.0,
+        "usedFallback": false,
+        "notice": "Thời gian gồm tham quan và di chuyển ước tính theo phòng/tầng; chưa phải thời gian dẫn đường đo thực tế.",
+        "stops": [
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "visitMinutes": 4.0,
+            "walkMinutes": 2.0,
+            "score": 1.45429,
+            "matchedInterests": [
+              "gốm"
+            ],
+            "reason": "Phù hợp sở thích: gốm."
+          }
+        ]
+      },
+      "elapsedSeconds": 1.08
+    },
+    {
+      "name": "unmatched interests",
+      "input": {
+        "museumId": 1,
+        "availableMinutes": 20,
+        "interests": [
+          "thiên văn"
+        ],
+        "maxStops": 3,
+        "candidates": [
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "museumId": 1,
+            "name": "Bình gốm DEMO",
+            "title": "Gốm",
+            "description": "Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "đất nung"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 5
+          },
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "museumId": 1,
+            "name": "Bát gốm DEMO",
+            "title": "Gốm",
+            "description": "Bát gốm dùng trong sinh hoạt. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "sinh hoạt"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 4
+          },
+          {
+            "artifactId": 3,
+            "contentVersionId": 103,
+            "museumId": 1,
+            "name": "Trống đồng DEMO",
+            "title": "Đồ đồng",
+            "description": "Trống bằng đồng dùng để báo hiệu trong lễ hội. Dữ liệu giả lập.",
+            "topics": [
+              "đồng",
+              "lễ hội"
+            ],
+            "galleryId": 2,
+            "galleryName": "Phòng demo B",
+            "floorId": 2,
+            "visitMinutes": 6
+          }
+        ]
+      },
+      "transport": "public-gradio-queue",
+      "event": "complete",
+      "output": {
+        "engineVersion": "content-tfidf-v1",
+        "estimatedMinutes": 11.5,
+        "usedFallback": true,
+        "notice": "Chưa có nội dung khớp sở thích; đây là hành trình thay thế. Thời gian gồm tham quan và di chuyển ước tính theo phòng/tầng; chưa phải thời gian dẫn đường đo thực tế.",
+        "stops": [
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "visitMinutes": 4.0,
+            "walkMinutes": 2.0,
+            "score": 0.0,
+            "matchedInterests": [],
+            "reason": "Điểm khám phá thay thế vì chưa tìm thấy nội dung khớp sở thích."
+          },
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "visitMinutes": 5.0,
+            "walkMinutes": 0.5,
+            "score": 0.0,
+            "matchedInterests": [],
+            "reason": "Điểm khám phá thay thế vì chưa tìm thấy nội dung khớp sở thích. Cùng phòng với điểm trước để hạn chế đi vòng."
+          }
+        ]
+      },
+      "elapsedSeconds": 1.08
+    },
+    {
+      "name": "mixed interests 40 minutes",
+      "input": {
+        "museumId": 1,
+        "availableMinutes": 40,
+        "interests": [
+          "gốm",
+          "đồng"
+        ],
+        "maxStops": 3,
+        "candidates": [
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "museumId": 1,
+            "name": "Bình gốm DEMO",
+            "title": "Gốm",
+            "description": "Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "đất nung"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 5
+          },
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "museumId": 1,
+            "name": "Bát gốm DEMO",
+            "title": "Gốm",
+            "description": "Bát gốm dùng trong sinh hoạt. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "sinh hoạt"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 4
+          },
+          {
+            "artifactId": 3,
+            "contentVersionId": 103,
+            "museumId": 1,
+            "name": "Trống đồng DEMO",
+            "title": "Đồ đồng",
+            "description": "Trống bằng đồng dùng để báo hiệu trong lễ hội. Dữ liệu giả lập.",
+            "topics": [
+              "đồng",
+              "lễ hội"
+            ],
+            "galleryId": 2,
+            "galleryName": "Phòng demo B",
+            "floorId": 2,
+            "visitMinutes": 6
+          }
+        ]
+      },
+      "transport": "public-gradio-queue",
+      "event": "complete",
+      "output": {
+        "engineVersion": "content-tfidf-v1",
+        "estimatedMinutes": 21.5,
+        "usedFallback": false,
+        "notice": "Thời gian gồm tham quan và di chuyển ước tính theo phòng/tầng; chưa phải thời gian dẫn đường đo thực tế.",
+        "stops": [
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "visitMinutes": 4.0,
+            "walkMinutes": 2.0,
+            "score": 1.45429,
+            "matchedInterests": [
+              "gốm"
+            ],
+            "reason": "Phù hợp sở thích: gốm."
+          },
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "visitMinutes": 5.0,
+            "walkMinutes": 0.5,
+            "score": 1.45189,
+            "matchedInterests": [
+              "gốm"
+            ],
+            "reason": "Phù hợp sở thích: gốm. Cùng phòng với điểm trước để hạn chế đi vòng."
+          },
+          {
+            "artifactId": 3,
+            "contentVersionId": 103,
+            "visitMinutes": 6.0,
+            "walkMinutes": 4.0,
+            "score": 1.53203,
+            "matchedInterests": [
+              "đồng"
+            ],
+            "reason": "Phù hợp sở thích: đồng."
+          }
+        ]
+      },
+      "elapsedSeconds": 1.03
+    },
+    {
+      "name": "identical request repeat",
+      "input": {
+        "museumId": 1,
+        "availableMinutes": 20,
+        "interests": [
+          "gốm"
+        ],
+        "maxStops": 3,
+        "candidates": [
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "museumId": 1,
+            "name": "Bình gốm DEMO",
+            "title": "Gốm",
+            "description": "Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "đất nung"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 5
+          },
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "museumId": 1,
+            "name": "Bát gốm DEMO",
+            "title": "Gốm",
+            "description": "Bát gốm dùng trong sinh hoạt. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "sinh hoạt"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 4
+          },
+          {
+            "artifactId": 3,
+            "contentVersionId": 103,
+            "museumId": 1,
+            "name": "Trống đồng DEMO",
+            "title": "Đồ đồng",
+            "description": "Trống bằng đồng dùng để báo hiệu trong lễ hội. Dữ liệu giả lập.",
+            "topics": [
+              "đồng",
+              "lễ hội"
+            ],
+            "galleryId": 2,
+            "galleryName": "Phòng demo B",
+            "floorId": 2,
+            "visitMinutes": 6
+          }
+        ]
+      },
+      "transport": "public-gradio-queue",
+      "event": "complete",
+      "output": {
+        "engineVersion": "content-tfidf-v1",
+        "estimatedMinutes": 11.5,
+        "usedFallback": false,
+        "notice": "Thời gian gồm tham quan và di chuyển ước tính theo phòng/tầng; chưa phải thời gian dẫn đường đo thực tế.",
+        "stops": [
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "visitMinutes": 4.0,
+            "walkMinutes": 2.0,
+            "score": 1.45429,
+            "matchedInterests": [
+              "gốm"
+            ],
+            "reason": "Phù hợp sở thích: gốm."
+          },
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "visitMinutes": 5.0,
+            "walkMinutes": 0.5,
+            "score": 1.45189,
+            "matchedInterests": [
+              "gốm"
+            ],
+            "reason": "Phù hợp sở thích: gốm. Cùng phòng với điểm trước để hạn chế đi vòng."
+          }
+        ]
+      },
+      "elapsedSeconds": 1.06
+    },
+    {
+      "name": "reject mixed museums",
+      "input": {
+        "museumId": 1,
+        "availableMinutes": 20,
+        "interests": [
+          "gốm"
+        ],
+        "maxStops": 3,
+        "candidates": [
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "museumId": 2,
+            "name": "Bình gốm DEMO",
+            "title": "Gốm",
+            "description": "Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "đất nung"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 5
+          },
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "museumId": 1,
+            "name": "Bát gốm DEMO",
+            "title": "Gốm",
+            "description": "Bát gốm dùng trong sinh hoạt. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "sinh hoạt"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 4
+          },
+          {
+            "artifactId": 3,
+            "contentVersionId": 103,
+            "museumId": 1,
+            "name": "Trống đồng DEMO",
+            "title": "Đồ đồng",
+            "description": "Trống bằng đồng dùng để báo hiệu trong lễ hội. Dữ liệu giả lập.",
+            "topics": [
+              "đồng",
+              "lễ hội"
+            ],
+            "galleryId": 2,
+            "galleryName": "Phòng demo B",
+            "floorId": 2,
+            "visitMinutes": 6
+          }
+        ]
+      },
+      "transport": "public-gradio-queue",
+      "event": "error",
+      "output": {
+        "error": "JSON tour chưa hợp lệ: kiểm tra bảo tàng, hiện vật, sở thích và quỹ thời gian.",
+        "duration": 10,
+        "visible": true,
+        "title": "Error"
+      },
+      "elapsedSeconds": 1.08
+    },
+    {
+      "name": "reject duplicate artifact IDs",
+      "input": {
+        "museumId": 1,
+        "availableMinutes": 20,
+        "interests": [
+          "gốm"
+        ],
+        "maxStops": 3,
+        "candidates": [
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "museumId": 1,
+            "name": "Bình gốm DEMO",
+            "title": "Gốm",
+            "description": "Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "đất nung"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 5
+          },
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "museumId": 1,
+            "name": "Bình gốm DEMO",
+            "title": "Gốm",
+            "description": "Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "đất nung"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 5
+          }
+        ]
+      },
+      "transport": "public-gradio-queue",
+      "event": "error",
+      "output": {
+        "error": "JSON tour chưa hợp lệ: kiểm tra bảo tàng, hiện vật, sở thích và quỹ thời gian.",
+        "duration": 10,
+        "visible": true,
+        "title": "Error"
+      },
+      "elapsedSeconds": 1.11
+    },
+    {
+      "name": "reject empty interests",
+      "input": {
+        "museumId": 1,
+        "availableMinutes": 20,
+        "interests": [],
+        "maxStops": 3,
+        "candidates": [
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "museumId": 1,
+            "name": "Bình gốm DEMO",
+            "title": "Gốm",
+            "description": "Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "đất nung"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 5
+          },
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "museumId": 1,
+            "name": "Bát gốm DEMO",
+            "title": "Gốm",
+            "description": "Bát gốm dùng trong sinh hoạt. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "sinh hoạt"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 4
+          },
+          {
+            "artifactId": 3,
+            "contentVersionId": 103,
+            "museumId": 1,
+            "name": "Trống đồng DEMO",
+            "title": "Đồ đồng",
+            "description": "Trống bằng đồng dùng để báo hiệu trong lễ hội. Dữ liệu giả lập.",
+            "topics": [
+              "đồng",
+              "lễ hội"
+            ],
+            "galleryId": 2,
+            "galleryName": "Phòng demo B",
+            "floorId": 2,
+            "visitMinutes": 6
+          }
+        ]
+      },
+      "transport": "public-gradio-queue",
+      "event": "error",
+      "output": {
+        "error": "JSON tour chưa hợp lệ: kiểm tra bảo tàng, hiện vật, sở thích và quỹ thời gian.",
+        "duration": 10,
+        "visible": true,
+        "title": "Error"
+      },
+      "elapsedSeconds": 1.09
+    },
+    {
+      "name": "reject duration beyond limit",
+      "input": {
+        "museumId": 1,
+        "availableMinutes": 241,
+        "interests": [
+          "gốm"
+        ],
+        "maxStops": 3,
+        "candidates": [
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "museumId": 1,
+            "name": "Bình gốm DEMO",
+            "title": "Gốm",
+            "description": "Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "đất nung"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 5
+          },
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "museumId": 1,
+            "name": "Bát gốm DEMO",
+            "title": "Gốm",
+            "description": "Bát gốm dùng trong sinh hoạt. Dữ liệu giả lập.",
+            "topics": [
+              "gốm",
+              "sinh hoạt"
+            ],
+            "galleryId": 1,
+            "galleryName": "Phòng demo A",
+            "floorId": 1,
+            "visitMinutes": 4
+          },
+          {
+            "artifactId": 3,
+            "contentVersionId": 103,
+            "museumId": 1,
+            "name": "Trống đồng DEMO",
+            "title": "Đồ đồng",
+            "description": "Trống bằng đồng dùng để báo hiệu trong lễ hội. Dữ liệu giả lập.",
+            "topics": [
+              "đồng",
+              "lễ hội"
+            ],
+            "galleryId": 2,
+            "galleryName": "Phòng demo B",
+            "floorId": 2,
+            "visitMinutes": 6
+          }
+        ]
+      },
+      "transport": "public-gradio-queue",
+      "event": "error",
+      "output": {
+        "error": "JSON tour chưa hợp lệ: kiểm tra bảo tàng, hiện vật, sở thích và quỹ thời gian.",
+        "duration": 10,
+        "visible": true,
+        "title": "Error"
+      },
+      "elapsedSeconds": 1.11
+    }
+  ],
+  "checks": [
+    {
+      "name": "readiness HTTP",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "name": "tour key configured",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "REST rejects missing key before JSON",
+      "actual": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "name": "REST rejects wrong key",
+      "actual": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "name": "pottery 20 minutes accepted/rejected as expected",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "pottery 20 minutes only input artifact IDs",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "pottery 20 minutes no duplicate stops",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "pottery 20 minutes within time budget",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "pottery 20 minutes duration equals stop totals",
+      "actual": 11.5,
+      "expected": 11.5,
+      "passed": true
+    },
+    {
+      "name": "pottery 20 minutes preserves content versions",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "pottery stops are bowl then vase",
+      "actual": [
+        2,
+        1
+      ],
+      "expected": [
+        2,
+        1
+      ],
+      "passed": true
+    },
+    {
+      "name": "bronze 20 minutes accepted/rejected as expected",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "bronze 20 minutes only input artifact IDs",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "bronze 20 minutes no duplicate stops",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "bronze 20 minutes within time budget",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "bronze 20 minutes duration equals stop totals",
+      "actual": 8.0,
+      "expected": 8.0,
+      "passed": true
+    },
+    {
+      "name": "bronze 20 minutes preserves content versions",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "bronze preference changes actual stops",
+      "actual": [
+        3
+      ],
+      "expected": [
+        3
+      ],
+      "passed": true
+    },
+    {
+      "name": "insufficient five minutes accepted/rejected as expected",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "insufficient five minutes only input artifact IDs",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "insufficient five minutes no duplicate stops",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "insufficient five minutes within time budget",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "insufficient five minutes duration equals stop totals",
+      "actual": 0,
+      "expected": 0.0,
+      "passed": true
+    },
+    {
+      "name": "insufficient five minutes preserves content versions",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "insufficient time returns zero stops",
+      "actual": [],
+      "expected": [],
+      "passed": true
+    },
+    {
+      "name": "exact six-minute budget accepted/rejected as expected",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "exact six-minute budget only input artifact IDs",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "exact six-minute budget no duplicate stops",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "exact six-minute budget within time budget",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "exact six-minute budget duration equals stop totals",
+      "actual": 6.0,
+      "expected": 6.0,
+      "passed": true
+    },
+    {
+      "name": "exact six-minute budget preserves content versions",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "boundary fits bowl with orientation",
+      "actual": 6.0,
+      "expected": 6,
+      "passed": true
+    },
+    {
+      "name": "max one stop accepted/rejected as expected",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "max one stop only input artifact IDs",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "max one stop no duplicate stops",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "max one stop within time budget",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "max one stop duration equals stop totals",
+      "actual": 6.0,
+      "expected": 6.0,
+      "passed": true
+    },
+    {
+      "name": "max one stop preserves content versions",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "maxStops respected",
+      "actual": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "name": "unmatched interests accepted/rejected as expected",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "unmatched interests only input artifact IDs",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "unmatched interests no duplicate stops",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "unmatched interests within time budget",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "unmatched interests duration equals stop totals",
+      "actual": 11.5,
+      "expected": 11.5,
+      "passed": true
+    },
+    {
+      "name": "unmatched interests preserves content versions",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "unmatched interests explicitly labelled",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "mixed interests 40 minutes accepted/rejected as expected",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "mixed interests 40 minutes only input artifact IDs",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "mixed interests 40 minutes no duplicate stops",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "mixed interests 40 minutes within time budget",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "mixed interests 40 minutes duration equals stop totals",
+      "actual": 21.5,
+      "expected": 21.5,
+      "passed": true
+    },
+    {
+      "name": "mixed interests 40 minutes preserves content versions",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "mixed preferences include all three supplied objects",
+      "actual": [
+        1,
+        2,
+        3
+      ],
+      "expected": [
+        1,
+        2,
+        3
+      ],
+      "passed": true
+    },
+    {
+      "name": "identical request repeat accepted/rejected as expected",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "identical request repeat only input artifact IDs",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "identical request repeat no duplicate stops",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "identical request repeat within time budget",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "identical request repeat duration equals stop totals",
+      "actual": 11.5,
+      "expected": 11.5,
+      "passed": true
+    },
+    {
+      "name": "identical request repeat preserves content versions",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "deterministic same request",
+      "actual": {
+        "engineVersion": "content-tfidf-v1",
+        "estimatedMinutes": 11.5,
+        "usedFallback": false,
+        "notice": "Thời gian gồm tham quan và di chuyển ước tính theo phòng/tầng; chưa phải thời gian dẫn đường đo thực tế.",
+        "stops": [
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "visitMinutes": 4.0,
+            "walkMinutes": 2.0,
+            "score": 1.45429,
+            "matchedInterests": [
+              "gốm"
+            ],
+            "reason": "Phù hợp sở thích: gốm."
+          },
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "visitMinutes": 5.0,
+            "walkMinutes": 0.5,
+            "score": 1.45189,
+            "matchedInterests": [
+              "gốm"
+            ],
+            "reason": "Phù hợp sở thích: gốm. Cùng phòng với điểm trước để hạn chế đi vòng."
+          }
+        ]
+      },
+      "expected": {
+        "engineVersion": "content-tfidf-v1",
+        "estimatedMinutes": 11.5,
+        "usedFallback": false,
+        "notice": "Thời gian gồm tham quan và di chuyển ước tính theo phòng/tầng; chưa phải thời gian dẫn đường đo thực tế.",
+        "stops": [
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "visitMinutes": 4.0,
+            "walkMinutes": 2.0,
+            "score": 1.45429,
+            "matchedInterests": [
+              "gốm"
+            ],
+            "reason": "Phù hợp sở thích: gốm."
+          },
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "visitMinutes": 5.0,
+            "walkMinutes": 0.5,
+            "score": 1.45189,
+            "matchedInterests": [
+              "gốm"
+            ],
+            "reason": "Phù hợp sở thích: gốm. Cùng phòng với điểm trước để hạn chế đi vòng."
+          }
+        ]
+      },
+      "passed": true
+    },
+    {
+      "name": "reject mixed museums accepted/rejected as expected",
+      "actual": false,
+      "expected": false,
+      "passed": true
+    },
+    {
+      "name": "reject duplicate artifact IDs accepted/rejected as expected",
+      "actual": false,
+      "expected": false,
+      "passed": true
+    },
+    {
+      "name": "reject empty interests accepted/rejected as expected",
+      "actual": false,
+      "expected": false,
+      "passed": true
+    },
+    {
+      "name": "reject duration beyond limit accepted/rejected as expected",
+      "actual": false,
+      "expected": false,
+      "passed": true
+    }
+  ],
+  "notVerified": [
+    "Authenticated REST success: run with --prompt-key and enter a current Secret locally. No key copied from chat or saved to this report.",
+    "Real museum data/access control, tour persistence, high concurrency and full product integration."
+  ]
+}

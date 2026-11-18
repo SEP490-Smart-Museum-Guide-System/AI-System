@@ -1,0 +1,551 @@
+{
+  "chat_model_fixture": true,
+  "tour_algorithm_real": true,
+  "real_model_inference": false,
+  "hf_zerogpu_tested": false,
+  "dependencies": {
+    "gradio": "6.32.0",
+    "spaces": "0.51.3",
+    "torch": "2.8.0+cpu",
+    "transformers": "5.0.0",
+    "huggingface-hub": "1.16.0"
+  },
+  "checks": [
+    {
+      "name": "UI",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "name": "ZeroGPU canonical launch hook",
+      "actual": [
+        "startup"
+      ],
+      "expected": [
+        "startup"
+      ],
+      "passed": true
+    },
+    {
+      "name": "SSR disabled despite environment",
+      "actual": false,
+      "expected": false,
+      "passed": true
+    },
+    {
+      "name": "liveness",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "name": "readiness with both keys",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "name": "both public functions registered",
+      "actual": [
+        "goi_y_tour",
+        "hoi_hien_vat"
+      ],
+      "expected": [
+        "goi_y_tour",
+        "hoi_hien_vat"
+      ],
+      "passed": true
+    },
+    {
+      "name": "keys absent from public config",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "/api/v1/guide/answers unauthorized before malformed JSON",
+      "actual": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "name": "/api/v1/tours/recommend unauthorized before malformed JSON",
+      "actual": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "name": "chat key cannot access tour",
+      "actual": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "name": "tour key cannot access chat",
+      "actual": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "name": "REST chat traverses real Gradio queue",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "name": "original raw answer schema preserved",
+      "actual": {
+        "answer": "Chất liệu là đất nung.",
+        "supported": true
+      },
+      "expected": {
+        "answer": "Chất liệu là đất nung.",
+        "supported": true
+      },
+      "passed": true
+    },
+    {
+      "name": "answer absent from source rejected",
+      "actual": {
+        "answer": "",
+        "supported": false
+      },
+      "expected": {
+        "answer": "",
+        "supported": false
+      },
+      "passed": true
+    },
+    {
+      "name": "tour HTTP",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "name": "tour output equals original CPU algorithm",
+      "actual": {
+        "engineVersion": "content-tfidf-v1",
+        "estimatedMinutes": 11.5,
+        "usedFallback": false,
+        "notice": "Thời gian gồm tham quan và di chuyển ước tính theo phòng/tầng; chưa phải thời gian dẫn đường đo thực tế.",
+        "stops": [
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "visitMinutes": 4.0,
+            "walkMinutes": 2.0,
+            "score": 1.45429,
+            "matchedInterests": [
+              "gốm"
+            ],
+            "reason": "Phù hợp sở thích: gốm."
+          },
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "visitMinutes": 5.0,
+            "walkMinutes": 0.5,
+            "score": 1.45189,
+            "matchedInterests": [
+              "gốm"
+            ],
+            "reason": "Phù hợp sở thích: gốm. Cùng phòng với điểm trước để hạn chế đi vòng."
+          }
+        ]
+      },
+      "expected": {
+        "engineVersion": "content-tfidf-v1",
+        "estimatedMinutes": 11.5,
+        "usedFallback": false,
+        "notice": "Thời gian gồm tham quan và di chuyển ước tính theo phòng/tầng; chưa phải thời gian dẫn đường đo thực tế.",
+        "stops": [
+          {
+            "artifactId": 2,
+            "contentVersionId": 102,
+            "visitMinutes": 4.0,
+            "walkMinutes": 2.0,
+            "score": 1.45429,
+            "matchedInterests": [
+              "gốm"
+            ],
+            "reason": "Phù hợp sở thích: gốm."
+          },
+          {
+            "artifactId": 1,
+            "contentVersionId": 101,
+            "visitMinutes": 5.0,
+            "walkMinutes": 0.5,
+            "score": 1.45189,
+            "matchedInterests": [
+              "gốm"
+            ],
+            "reason": "Phù hợp sở thích: gốm. Cùng phòng với điểm trước để hạn chế đi vòng."
+          }
+        ]
+      },
+      "passed": true
+    },
+    {
+      "name": "tour does not invoke model",
+      "actual": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "name": "interests change first stop",
+      "actual": 3,
+      "expected": 3,
+      "passed": true
+    },
+    {
+      "name": "tour estimate within budget",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "insufficient time gives explicit zero stops",
+      "actual": [],
+      "expected": [],
+      "passed": true
+    },
+    {
+      "name": "unmatched interests labelled fallback",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "mixed museum",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "duplicate candidate",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "empty interests",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "invalid duration",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "blank question",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "odd history",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "reversed history",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "unknown field",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "combined source size",
+      "actual": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "name": "valid paired history accepted",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "name": "worker preserves error 422",
+      "actual": [
+        422,
+        "Fixture model error."
+      ],
+      "expected": [
+        422,
+        "Fixture model error."
+      ],
+      "passed": true
+    },
+    {
+      "name": "worker preserves error 502",
+      "actual": [
+        502,
+        "Fixture model error."
+      ],
+      "expected": [
+        502,
+        "Fixture model error."
+      ],
+      "passed": true
+    },
+    {
+      "name": "worker preserves error 503",
+      "actual": [
+        503,
+        "Fixture model error."
+      ],
+      "expected": [
+        503,
+        "Fixture model error."
+      ],
+      "passed": true
+    },
+    {
+      "name": "worker preserves error 504",
+      "actual": [
+        504,
+        "Fixture model error."
+      ],
+      "expected": [
+        504,
+        "Fixture model error."
+      ],
+      "passed": true
+    },
+    {
+      "name": "tour works with failed chat engine",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "name": "chat streaming body limit",
+      "actual": 413,
+      "expected": 413,
+      "passed": true
+    },
+    {
+      "name": "tour streaming body limit",
+      "actual": 413,
+      "expected": 413,
+      "passed": true
+    },
+    {
+      "name": "valid JSON still parsed after limit rejection",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "name": "missing tour key reported by readiness",
+      "actual": 503,
+      "expected": 503,
+      "passed": true
+    },
+    {
+      "name": "missing tour configuration",
+      "actual": 503,
+      "expected": 503,
+      "passed": true
+    },
+    {
+      "name": "chat JSON schema matches original service",
+      "actual": {
+        "$defs": {
+          "Context": {
+            "additionalProperties": false,
+            "properties": {
+              "artifactId": {
+                "exclusiveMinimum": 0,
+                "title": "Artifactid",
+                "type": "integer"
+              },
+              "artifactName": {
+                "maxLength": 1000,
+                "title": "Artifactname",
+                "type": "string"
+              },
+              "title": {
+                "maxLength": 1000,
+                "title": "Title",
+                "type": "string"
+              },
+              "description": {
+                "maxLength": 24000,
+                "title": "Description",
+                "type": "string"
+              },
+              "narrationText": {
+                "default": "",
+                "maxLength": 24000,
+                "title": "Narrationtext",
+                "type": "string"
+              }
+            },
+            "required": [
+              "artifactId",
+              "artifactName",
+              "title",
+              "description"
+            ],
+            "title": "Context",
+            "type": "object"
+          },
+          "Turn": {
+            "additionalProperties": false,
+            "properties": {
+              "role": {
+                "pattern": "^(user|assistant)$",
+                "title": "Role",
+                "type": "string"
+              },
+              "text": {
+                "maxLength": 4000,
+                "minLength": 1,
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "role",
+              "text"
+            ],
+            "title": "Turn",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "context": {
+            "$ref": "#/$defs/Context"
+          },
+          "question": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Question",
+            "type": "string"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/$defs/Turn"
+            },
+            "maxItems": 8,
+            "title": "History",
+            "type": "array"
+          }
+        },
+        "required": [
+          "context",
+          "question"
+        ],
+        "title": "Question",
+        "type": "object"
+      },
+      "expected": {
+        "$defs": {
+          "Context": {
+            "additionalProperties": false,
+            "properties": {
+              "artifactId": {
+                "exclusiveMinimum": 0,
+                "title": "Artifactid",
+                "type": "integer"
+              },
+              "artifactName": {
+                "maxLength": 1000,
+                "title": "Artifactname",
+                "type": "string"
+              },
+              "title": {
+                "maxLength": 1000,
+                "title": "Title",
+                "type": "string"
+              },
+              "description": {
+                "maxLength": 24000,
+                "title": "Description",
+                "type": "string"
+              },
+              "narrationText": {
+                "default": "",
+                "maxLength": 24000,
+                "title": "Narrationtext",
+                "type": "string"
+              }
+            },
+            "required": [
+              "artifactId",
+              "artifactName",
+              "title",
+              "description"
+            ],
+            "title": "Context",
+            "type": "object"
+          },
+          "Turn": {
+            "additionalProperties": false,
+            "properties": {
+              "role": {
+                "pattern": "^(user|assistant)$",
+                "title": "Role",
+                "type": "string"
+              },
+              "text": {
+                "maxLength": 4000,
+                "minLength": 1,
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "role",
+              "text"
+            ],
+            "title": "Turn",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "context": {
+            "$ref": "#/$defs/Context"
+          },
+          "question": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Question",
+            "type": "string"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/$defs/Turn"
+            },
+            "maxItems": 8,
+            "title": "History",
+            "type": "array"
+          }
+        },
+        "required": [
+          "context",
+          "question"
+        ],
+        "title": "Question",
+        "type": "object"
+      },
+      "passed": true
+    }
+  ]
+}

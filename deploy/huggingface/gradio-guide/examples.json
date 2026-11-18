@@ -1,0 +1,24 @@
+{
+  "chat": {
+    "context": {
+      "artifactId": 1,
+      "artifactName": "Bình gốm DEMO",
+      "title": "Tư liệu giả lập để kiểm thử phần mềm",
+      "description": "Bình gốm được dùng để đựng nước. Chất liệu là đất nung.",
+      "narrationText": "Miệng bình loe rộng. Thân bình có hoa văn khắc chìm. Bình được làm bằng kỹ thuật bàn xoay."
+    },
+    "question": "Bình gốm được làm bằng chất liệu gì?",
+    "history": []
+  },
+  "tour": {
+    "museumId": 1,
+    "availableMinutes": 20,
+    "interests": ["gốm"],
+    "maxStops": 3,
+    "candidates": [
+      {"artifactId": 1, "contentVersionId": 101, "museumId": 1, "name": "Bình gốm DEMO", "title": "Gốm", "description": "Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.", "topics": ["gốm", "đất nung"], "galleryId": 1, "galleryName": "Phòng demo A", "floorId": 1, "visitMinutes": 5},
+      {"artifactId": 2, "contentVersionId": 102, "museumId": 1, "name": "Bát gốm DEMO", "title": "Gốm", "description": "Bát gốm dùng trong sinh hoạt. Dữ liệu giả lập.", "topics": ["gốm", "sinh hoạt"], "galleryId": 1, "galleryName": "Phòng demo A", "floorId": 1, "visitMinutes": 4},
+      {"artifactId": 3, "contentVersionId": 103, "museumId": 1, "name": "Trống đồng DEMO", "title": "Đồ đồng", "description": "Trống bằng đồng dùng để báo hiệu trong lễ hội. Dữ liệu giả lập.", "topics": ["đồng", "lễ hội"], "galleryId": 2, "galleryName": "Phòng demo B", "floorId": 2, "visitMinutes": 6}
+    ]
+  }
+}

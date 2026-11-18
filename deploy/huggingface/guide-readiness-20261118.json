@@ -1,0 +1,13 @@
+{
+  "checkedAtUtc": "2026-11-18T08:35:45.697777+00:00",
+  "httpStatus": 200,
+  "readiness": {
+    "status": "ok",
+    "model_ready": true,
+    "device": "cuda",
+    "chat_api_configured": true,
+    "tour_api_configured": true,
+    "tour_engine": "content-tfidf-v1"
+  },
+  "credentialsUsed": false
+}

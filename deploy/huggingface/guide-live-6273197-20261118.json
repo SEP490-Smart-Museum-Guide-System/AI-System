@@ -1,0 +1,226 @@
+{
+  "baseUrl": "https://trungnam1644-smgs-ai-guide.hf.space",
+  "checkedAtUtc": "2026-11-18T08:28:00.760213+00:00",
+  "real_model_request": true,
+  "sourcesAreSynthetic": true,
+  "anonymous": true,
+  "checks": [
+    {
+      "name": "Space model loaded",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "deployed model uses CUDA",
+      "actual": "cuda",
+      "expected": "cuda",
+      "passed": true
+    },
+    {
+      "name": "/api/v1/guide/answers rejects anonymous REST",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "/api/v1/tours/recommend rejects anonymous REST",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "pottery tour returns stops",
+      "actual": [
+        2,
+        1
+      ],
+      "expected": [
+        2,
+        1
+      ],
+      "passed": true
+    },
+    {
+      "name": "bronze preference selects different artifact",
+      "actual": [
+        3
+      ],
+      "expected": [
+        3
+      ],
+      "passed": true
+    },
+    {
+      "name": "short budget explicitly returns no stops",
+      "actual": [],
+      "expected": [],
+      "passed": true
+    },
+    {
+      "name": "real chatbot answer supported from material source",
+      "actual": false,
+      "expected": true,
+      "passed": false
+    }
+  ],
+  "calls": [
+    {
+      "api": "goi_y_tour",
+      "input": [
+        "{\"museumId\": 1, \"availableMinutes\": 20, \"interests\": [\"gốm\"], \"maxStops\": 3, \"candidates\": [{\"artifactId\": 1, \"contentVersionId\": 101, \"museumId\": 1, \"name\": \"Bình gốm DEMO\", \"title\": \"Gốm\", \"description\": \"Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.\", \"topics\": [\"gốm\", \"đất nung\"], \"galleryId\": 1, \"galleryName\": \"Phòng demo A\", \"floorId\": 1, \"visitMinutes\": 5}, {\"artifactId\": 2, \"contentVersionId\": 102, \"museumId\": 1, \"name\": \"Bát gốm DEMO\", \"title\": \"Gốm\", \"description\": \"Bát gốm dùng trong sinh hoạt. Dữ liệu giả lập.\", \"topics\": [\"gốm\", \"sinh hoạt\"], \"galleryId\": 1, \"galleryName\": \"Phòng demo A\", \"floorId\": 1, \"visitMinutes\": 4}, {\"artifactId\": 3, \"contentVersionId\": 103, \"museumId\": 1, \"name\": \"Trống đồng DEMO\", \"title\": \"Đồ đồng\", \"description\": \"Trống bằng đồng dùng để báo hiệu trong lễ hội. Dữ liệu giả lập.\", \"topics\": [\"đồng\", \"lễ hội\"], \"galleryId\": 2, \"galleryName\": \"Phòng demo B\", \"floorId\": 2, \"visitMinutes\": 6}]}"
+      ],
+      "events": [
+        {
+          "event": "complete",
+          "data": [
+            {
+              "engineVersion": "content-tfidf-v1",
+              "estimatedMinutes": 11.5,
+              "usedFallback": false,
+              "notice": "Thời gian gồm tham quan và di chuyển ước tính theo phòng/tầng; chưa phải thời gian dẫn đường đo thực tế.",
+              "stops": [
+                {
+                  "artifactId": 2,
+                  "contentVersionId": 102,
+                  "visitMinutes": 4.0,
+                  "walkMinutes": 2.0,
+                  "score": 1.45429,
+                  "matchedInterests": [
+                    "gốm"
+                  ],
+                  "reason": "Phù hợp sở thích: gốm."
+                },
+                {
+                  "artifactId": 1,
+                  "contentVersionId": 101,
+                  "visitMinutes": 5.0,
+                  "walkMinutes": 0.5,
+                  "score": 1.45189,
+                  "matchedInterests": [
+                    "gốm"
+                  ],
+                  "reason": "Phù hợp sở thích: gốm. Cùng phòng với điểm trước để hạn chế đi vòng."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "elapsedSeconds": 0.59
+    },
+    {
+      "api": "goi_y_tour",
+      "input": [
+        "{\"museumId\": 1, \"availableMinutes\": 20, \"interests\": [\"đồng\"], \"maxStops\": 3, \"candidates\": [{\"artifactId\": 1, \"contentVersionId\": 101, \"museumId\": 1, \"name\": \"Bình gốm DEMO\", \"title\": \"Gốm\", \"description\": \"Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.\", \"topics\": [\"gốm\", \"đất nung\"], \"galleryId\": 1, \"galleryName\": \"Phòng demo A\", \"floorId\": 1, \"visitMinutes\": 5}, {\"artifactId\": 2, \"contentVersionId\": 102, \"museumId\": 1, \"name\": \"Bát gốm DEMO\", \"title\": \"Gốm\", \"description\": \"Bát gốm dùng trong sinh hoạt. Dữ liệu giả lập.\", \"topics\": [\"gốm\", \"sinh hoạt\"], \"galleryId\": 1, \"galleryName\": \"Phòng demo A\", \"floorId\": 1, \"visitMinutes\": 4}, {\"artifactId\": 3, \"contentVersionId\": 103, \"museumId\": 1, \"name\": \"Trống đồng DEMO\", \"title\": \"Đồ đồng\", \"description\": \"Trống bằng đồng dùng để báo hiệu trong lễ hội. Dữ liệu giả lập.\", \"topics\": [\"đồng\", \"lễ hội\"], \"galleryId\": 2, \"galleryName\": \"Phòng demo B\", \"floorId\": 2, \"visitMinutes\": 6}]}"
+      ],
+      "events": [
+        {
+          "event": "complete",
+          "data": [
+            {
+              "engineVersion": "content-tfidf-v1",
+              "estimatedMinutes": 8.0,
+              "usedFallback": false,
+              "notice": "Thời gian gồm tham quan và di chuyển ước tính theo phòng/tầng; chưa phải thời gian dẫn đường đo thực tế.",
+              "stops": [
+                {
+                  "artifactId": 3,
+                  "contentVersionId": 103,
+                  "visitMinutes": 6.0,
+                  "walkMinutes": 2.0,
+                  "score": 1.53203,
+                  "matchedInterests": [
+                    "đồng"
+                  ],
+                  "reason": "Phù hợp sở thích: đồng."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "elapsedSeconds": 1.08
+    },
+    {
+      "api": "goi_y_tour",
+      "input": [
+        "{\"museumId\": 1, \"availableMinutes\": 5, \"interests\": [\"gốm\"], \"maxStops\": 3, \"candidates\": [{\"artifactId\": 1, \"contentVersionId\": 101, \"museumId\": 1, \"name\": \"Bình gốm DEMO\", \"title\": \"Gốm\", \"description\": \"Bình gốm bằng đất nung dùng để đựng nước. Dữ liệu giả lập.\", \"topics\": [\"gốm\", \"đất nung\"], \"galleryId\": 1, \"galleryName\": \"Phòng demo A\", \"floorId\": 1, \"visitMinutes\": 5}, {\"artifactId\": 2, \"contentVersionId\": 102, \"museumId\": 1, \"name\": \"Bát gốm DEMO\", \"title\": \"Gốm\", \"description\": \"Bát gốm dùng trong sinh hoạt. Dữ liệu giả lập.\", \"topics\": [\"gốm\", \"sinh hoạt\"], \"galleryId\": 1, \"galleryName\": \"Phòng demo A\", \"floorId\": 1, \"visitMinutes\": 4}, {\"artifactId\": 3, \"contentVersionId\": 103, \"museumId\": 1, \"name\": \"Trống đồng DEMO\", \"title\": \"Đồ đồng\", \"description\": \"Trống bằng đồng dùng để báo hiệu trong lễ hội. Dữ liệu giả lập.\", \"topics\": [\"đồng\", \"lễ hội\"], \"galleryId\": 2, \"galleryName\": \"Phòng demo B\", \"floorId\": 2, \"visitMinutes\": 6}]}"
+      ],
+      "events": [
+        {
+          "event": "complete",
+          "data": [
+            {
+              "engineVersion": "content-tfidf-v1",
+              "estimatedMinutes": 0.0,
+              "usedFallback": false,
+              "notice": "Thời gian hiện tại chưa đủ cho một điểm dừng. Hãy tăng thời gian hoặc đổi bảo tàng.",
+              "stops": []
+            }
+          ]
+        }
+      ],
+      "elapsedSeconds": 1.08
+    },
+    {
+      "api": "hoi_hien_vat",
+      "input": [
+        "{\"artifactId\": 1, \"artifactName\": \"Bình gốm DEMO\", \"title\": \"Tư liệu giả lập để kiểm thử phần mềm\", \"description\": \"Bình gốm được dùng để đựng nước. Chất liệu là đất nung.\", \"narrationText\": \"Miệng bình loe rộng. Thân bình có hoa văn khắc chìm. Bình được làm bằng kỹ thuật bàn xoay.\"}",
+        "Bình gốm được làm bằng chất liệu gì?",
+        "[]"
+      ],
+      "events": [
+        {
+          "event": "error",
+          "data": {
+            "error": "You have exceeded your ZeroGPU runs limit. Authenticate with a Hugging Face token for more quota - https://huggingface.co/settings/tokens",
+            "duration": 10,
+            "visible": true,
+            "title": "ZeroGPU quota exceeded"
+          }
+        }
+      ],
+      "elapsedSeconds": 1.05
+    }
+  ],
+  "space": {
+    "sha": "6273197d802ba21bd4deed0f2d913c77bdf86e75",
+    "runtime": {
+      "stage": "RUNNING",
+      "hardware": {
+        "current": "zero-a10g",
+        "requested": "zero-a10g"
+      },
+      "gcTimeout": 172800,
+      "replicas": {
+        "current": 1,
+        "requested": 1
+      },
+      "devMode": false,
+      "domains": [
+        {
+          "domain": "trungnam1644-smgs-ai-guide.hf.space",
+          "stage": "READY"
+        }
+      ],
+      "sha": "6273197d802ba21bd4deed0f2d913c77bdf86e75",
+      "pySpacesVersion": "0.51.3"
+    },
+    "sdk": "gradio"
+  },
+  "readiness": {
+    "status": 503,
+    "body": {
+      "status": "configuration_required",
+      "model_ready": true,
+      "model": "Qwen2.5-1.5B-Instruct / PyTorch",
+      "device": "cuda",
+      "chat_api_configured": false,
+      "tour_api_configured": false,
+      "tour_engine": "content-tfidf-v1",
+      "note": "Readiness does not guarantee ZeroGPU quota or uptime."
+    }
+  },
+  "real_chat_completed": false
+}
