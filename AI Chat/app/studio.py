@@ -2,7 +2,8 @@
 import json
 import re
 import unicodedata
-from app.engine import ChatFailure
+import time
+from app.engine import ChatFailure, make_prompt, parse_answer, ground_answer
 
 
 def norm(text):
@@ -86,11 +87,23 @@ Không tự đặt niên đại hay dữ kiện cho hiện vật. Không markdow
         prompt = f'<|im_start|>system\n{system}<|im_end|>\n{example}<|im_start|>user\n{payload}<|im_end|>\n<|im_start|>assistant\n{prefix}'
         # Quiz: use fewer tokens since the JSON output is bounded in size.
         quiz_tokens = 350 if request.mode == 'quiz' else 512
-        result = engine.generate_json(prompt, lambda text: validate_draft(text, source, request.mode, request.excludeQuestions), max_new_tokens=quiz_tokens, prefix=prefix, deadline_seconds=150 if request.mode == 'quiz' else 180)
-        # Note: validate_draft already performs extractive grounding — it confirms that the
-        # correct option text appears verbatim in source (matches[0] must be unique). A second
-        # inference-based verification pass is therefore redundant and doubles latency on CPU.
-        # Skipped to keep quiz generation under ~60s on a 16-thread CPU machine.
+        started = time.monotonic()
+        result = engine.generate_json(prompt, lambda text: validate_draft(text, source, request.mode, request.excludeQuestions), max_new_tokens=quiz_tokens, prefix=prefix, deadline_seconds=120 if request.mode == 'quiz' else 180)
+        if request.mode == 'quiz':
+            # Source containment alone does not establish that the option answers this question.
+            # Ask independently without disclosing the proposed options/answer, within one request budget.
+            context = {'artifactName': request.artifactName, 'description': source, 'narrationText': ''}
+            remaining = 150 - (time.monotonic() - started)
+            if remaining <= 0:
+                raise ChatFailure('Hết thời gian kiểm chứng câu hỏi. Vui lòng tạo lại.', 504)
+            verified = engine.generate_json(make_prompt(context, result['question'], []), parse_answer,
+                                           max_new_tokens=128, deadline_seconds=remaining)
+            verified = ground_answer(verified, context)
+            def fact(value):
+                return re.sub(r'(?<=\d),(?=\d)', '.', ''.join(norm(value).split()))
+            if not verified['supported'] or fact(verified['answer']) != fact(result['options'][result['correctIndex']]):
+                raise ChatFailure('Câu hỏi và đáp án chưa khớp với tư liệu. Vui lòng tạo lại.', 502)
+        # This check reduces inconsistency; it does not replace Curator review or prove historical truth.
         return result
     finally:
         engine.lock.release()
