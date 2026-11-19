@@ -1,0 +1,18 @@
+{
+  "origin": "https://tts.172-198-161-72.sslip.io",
+  "tlsCertificateVerified": true,
+  "realPiperOnAzure": true,
+  "sourceSynthetic": true,
+  "beIntegrationTested": false,
+  "speechStatus": 200,
+  "durationSeconds": 5.279,
+  "elapsedSecondsIncludingCacheCall": 1.875,
+  "checks": {
+    "ready200": true,
+    "missingKey401": true,
+    "authorizedSpeech200": true,
+    "validMonoPcm": true,
+    "prosodyV4": true,
+    "cacheHitIdentical": true
+  }
+}

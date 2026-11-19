@@ -1,6 +1,9 @@
 .env
 .env.*
 !.env.example
+!deploy/azure/.env.azure.example
+deploy/azure/*verification.json
+deploy/azure/*.wav
 __pycache__/
 *.py[cod]
 .venv/

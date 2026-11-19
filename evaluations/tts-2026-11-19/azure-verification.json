@@ -1,0 +1,34 @@
+{
+  "realPiperCpuOnAzure": true,
+  "sourceSynthetic": true,
+  "humanListeningApproved": false,
+  "scope": "VM loopback HTTP, not public HTTPS or BE integration",
+  "generationSeconds": 2.29,
+  "ready": {
+    "status": "ok",
+    "service": "tts-service",
+    "voice": "vi_VN-vais1000-medium",
+    "model_ready": true,
+    "language": "vi-VN",
+    "prosody": "museum-v4",
+    "speed_factor": 0.9,
+    "silence_scale": 1.0
+  },
+  "audio": {
+    "channels": 1,
+    "sampleWidth": 2,
+    "sampleRate": 22050,
+    "frames": 390191,
+    "durationSeconds": 17.696
+  },
+  "checks": {
+    "realReady": true,
+    "speech200": true,
+    "pcm16Mono": true,
+    "museumV4": true,
+    "baselineSpeed09": true,
+    "cacheIdentical": true,
+    "missingKeyRejectedBeforeBody": true,
+    "invalidSpeedRejected": true
+  }
+}

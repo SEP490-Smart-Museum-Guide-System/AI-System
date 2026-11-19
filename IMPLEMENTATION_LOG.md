@@ -1,5 +1,26 @@
 # Implementation log
 
+## 2026-11-19 — Azure Scan/TTS deployment
+
+- Connected to user-started smgs-ai-server at 172.198.161.72, installed Docker
+  Engine 29.10.0 and Compose 5.8.0 from official Ubuntu repository. Deployed only
+  TTS + Caddy; left existing HF/BE/FE/DB untouched.
+- Dedicated deploy/azure Compose limits CPU/RAM, uses named model/cache/Scan
+  volumes, nonroot Python containers, loopback API ports and public HTTPS proxy.
+  User opened TCP 80/443 in NSG; VM managed identity could not read/manage NSG.
+- TTS https://tts.172-198-161-72.sslip.io/ready returned 200 with public TLS
+  validation. Real Piper museum-v4 WAV is 17.696 seconds. Passed 8 VM HTTP checks,
+  6 public HTTPS checks and restart cache persistence; human listening/production
+  BE integration remain unverified. Config with real key is stored only in ignored
+  deploy/azure/.env.be-tts, also on VM with mode 600; key not printed in chat/logs.
+- Scan CPU image built; COLMAP and five OpenMVS executables resolved libraries
+  and ran help in a network-disabled container. API not started: existing BE-host
+  PostgreSQL credentials/network access are pending from user/BE owner. Deploy
+  guard rejects missing DB values. No claim of completed cloud reconstruction.
+- Scan hostname has TLS but currently returns 502 because API is deliberately
+  absent. Proxy error-log request metadata removal was verified with a fake key.
+  No automatic VM deallocation/RBAC schedule installed. VM remains running for TTS.
+
 ## 2026-11-19 — TTS pacing and BE/HF integration audit
 
 - Added museum-v4 punctuation/paragraph pauses, explicit sherpa GenerationConfig,

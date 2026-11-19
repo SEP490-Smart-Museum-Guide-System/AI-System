@@ -1,5 +1,12 @@
 # Scan 3D cloud khi chưa deploy Backend — 18/11/2026
 
+**Cập nhật thực tế 19/11:** user xác nhận PostgreSQL nằm trên server BE, không
+phải Supabase. BE online tại https://smgs-52-62-165-39.sslip.io. VM Azure đã tạo;
+TTS đã chạy HTTPS có xác thực và kiểm thử WAV/cache/ngắt câu thật. Scan image
+CPU đã build và kiểm tra native runtime, nhưng API Scan chưa khởi động vì còn
+chờ kết nối DB từ bạn phụ trách BE. Trạng thái mới: [deploy/azure](azure/README.md).
+Các dòng phương án/chưa tạo VM/Supabase bên dưới là lịch sử đánh giá.
+
 ## Yêu cầu cập nhật: AI-System chạy hoàn toàn trên cloud
 
 **Điều chỉnh theo user sau đó:** DB hiện dùng Supabase; không dựng PostgreSQL mới trên Azure và không deploy BE/FE trong công việc này. User đã tạo Space HF `Trungnam1644/smgs-ai-guide` cho chatbot + personalized tour; triển khai bộ này trước, giữ Space quiz riêng. TTS và Scan là phạm vi cloud tiếp theo. Các đề xuất VM/DB bên dưới là lịch sử đánh giá, không phải cấu hình đã tạo. Hướng dẫn mới: `huggingface/GUIDE_TOUR_DEPLOY_VI.md`.

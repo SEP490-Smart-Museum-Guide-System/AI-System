@@ -18,4 +18,9 @@ Giả thuyết ban đầu chỉ đổi silence_scale chưa đủ; các lượt v
 tạo GenerationConfig riêng trong overload sid/speed. Bản v4 truyền config tường
 minh và đặt khoảng nghỉ câu. Không khẳng định silence_scale là nguyên nhân duy nhất.
 Cache phân biệt version prosody và mọi tham số nghỉ/tốc độ.
-Chưa deploy Azure hoặc kiểm chứng phát qua BE production.
+**Cập nhật deploy Azure:** `azure-verification.json` ghi 8/8 kiểm tra HTTP loopback
+với Piper thật; WAV `azure-museum-v4.wav` dài 17,696 giây. HTTPS công khai có TLS
+hợp lệ tại https://tts.172-198-161-72.sslip.io; `azure-public-verification.json`
+ghi 6/6 kiểm tra readiness/auth/WAV/cache. `azure-restart-verification.json` xác
+nhận model/cache còn nguyên sau restart và WAV không đổi. Chưa kiểm chứng phát
+qua BE production hoặc có người nghe duyệt giọng đọc.

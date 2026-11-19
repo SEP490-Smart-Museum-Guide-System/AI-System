@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-19",
+  "vm": "smgs-ai-server",
+  "publicIp": "172.198.161.72",
+  "runningServices": [
+    "tts",
+    "proxy"
+  ],
+  "databaseLocation": "BE server, user confirmed",
+  "scanDatabaseConfigured": false,
+  "scanCloudReconstructionTested": false,
+  "ttsOrigin": "https://tts.172-198-161-72.sslip.io",
+  "ttsPublicHttpsVerified": true,
+  "ttsBeIntegrationTested": false,
+  "automaticDeallocationConfigured": false,
+  "images": {
+    "tts": "sha256:d439bf2bfec35ceab56e9540a35eef52ff82ae197b834c2ab2917b31e8c66e33",
+    "scan": "sha256:65e6d8a031a2c4f55ddbce75f159cac849b226fa5dbb7b6072c431ff98533c8c",
+    "caddy": "sha256:4851e54a46b206517c574821bb5cc67f170d2156041e9fbc4c9193b45e84a75b"
+  }
+}

@@ -1,0 +1,100 @@
+name: smgs-ai-azure
+
+x-logs: &logs
+  driver: json-file
+  options:
+    max-size: '10m'
+    max-file: '3'
+
+services:
+  tts:
+    image: smgs-tts:azure
+    build: '../../TTS AI'
+    restart: unless-stopped
+    ports: ['127.0.0.1:8000:8000']
+    environment:
+      TTS_MODEL_DIR: /models
+      TTS_CACHE_DIR: /data/audio-cache
+      TTS_SERVICE_API_KEY: ${TTS_SERVICE_API_KEY:?Set TTS_SERVICE_API_KEY in .env.azure}
+      TTS_NUM_THREADS: '2'
+      TTS_SPEED_FACTOR: '0.9'
+      TTS_SILENCE_SCALE: '1.0'
+      TTS_SENTENCE_PAUSE_MS: '320'
+      TTS_CLAUSE_PAUSE_MS: '140'
+      TTS_PARAGRAPH_PAUSE_MS: '450'
+    volumes: ['tts-models:/models', 'tts-audio:/data/audio-cache']
+    read_only: true
+    tmpfs: ['/tmp:size=256m,mode=1777']
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    mem_limit: 2g
+    cpus: 1.0
+    pids_limit: 128
+    logging: *logs
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/ready', timeout=4)"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 300s
+
+  scan:
+    profiles: [scan]
+    image: smgs-scan:azure
+    build: '../../3D Scan'
+    restart: unless-stopped
+    ports: ['127.0.0.1:8002:8002']
+    environment:
+      SCAN_SERVICE_API_KEY: ${SCAN_SERVICE_API_KEY:?Set SCAN_SERVICE_API_KEY in .env.azure}
+      AI_SYSTEM_DB_HOST: ${AI_SYSTEM_DB_HOST:-unconfigured.invalid}
+      AI_SYSTEM_DB_PORT: ${AI_SYSTEM_DB_PORT:-5432}
+      AI_SYSTEM_DB_NAME: ${AI_SYSTEM_DB_NAME:-}
+      AI_SYSTEM_DB_USER: ${AI_SYSTEM_DB_USER:-}
+      AI_SYSTEM_DB_PASSWORD: ${AI_SYSTEM_DB_PASSWORD:-}
+      PGSSLMODE: ${PGSSLMODE:-require}
+      SCAN_DB_SCHEMA: ai_3d_scan
+      SCAN_DATA_DIR: /data
+      SCAN_MAX_IMAGES: '180'
+      SCAN_MAX_TOTAL_BYTES: '524288000'
+      QT_QPA_PLATFORM: offscreen
+    volumes: ['scan-data:/data']
+    read_only: true
+    tmpfs: ['/tmp:size=1g,mode=1777']
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    mem_limit: 11g
+    cpus: 3.0
+    pids_limit: 512
+    logging: *logs
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8002/ready', timeout=8)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  proxy:
+    image: caddy:2
+    restart: unless-stopped
+    ports: ['80:80', '443:443']
+    environment:
+      TTS_HOST: ${TTS_HOST:?Set TTS_HOST}
+      SCAN_HOST: ${SCAN_HOST:?Set SCAN_HOST}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt: ['no-new-privileges:true']
+    mem_limit: 256m
+    cpus: 0.25
+    pids_limit: 128
+    logging: *logs
+
+volumes:
+  tts-models:
+  tts-audio:
+  scan-data:
+  caddy-data:
+  caddy-config:

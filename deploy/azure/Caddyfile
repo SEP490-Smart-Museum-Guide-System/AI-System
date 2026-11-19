@@ -1,0 +1,36 @@
+{
+    log default {
+        format filter {
+            wrap json
+            fields {
+                request delete
+            }
+        }
+    }
+}
+
+{$TTS_HOST} {
+    request_body {
+        max_size 128KB
+    }
+    @api path /api/v1/speech /ready /health /live
+    handle @api {
+        reverse_proxy tts:8000
+    }
+    handle {
+        respond 404
+    }
+}
+
+{$SCAN_HOST} {
+    request_body {
+        max_size 520MB
+    }
+    @api path /api/v1/scans /api/v1/scans/* /ready /health /live
+    handle @api {
+        reverse_proxy scan:8002
+    }
+    handle {
+        respond 404
+    }
+}
