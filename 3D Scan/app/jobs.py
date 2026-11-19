@@ -28,7 +28,13 @@ def _connect() -> psycopg.Connection:
 
 def initialize() -> None:
     with _connect() as db:
-        db.execute(sql.SQL("CREATE SCHEMA IF NOT EXISTS {}").format(sql.Identifier(DB_SCHEMA)))
+        # PostgreSQL checks database CREATE even for CREATE SCHEMA IF NOT EXISTS.
+        # A pre-provisioned Scan schema must work without database-wide CREATE.
+        schema_exists = db.execute(
+            "SELECT 1 FROM pg_namespace WHERE nspname = %s", (DB_SCHEMA,)
+        ).fetchone()
+        if schema_exists is None:
+            db.execute(sql.SQL("CREATE SCHEMA IF NOT EXISTS {}").format(sql.Identifier(DB_SCHEMA)))
         db.execute(sql.SQL("""
             CREATE TABLE IF NOT EXISTS {} (
                 id UUID PRIMARY KEY,

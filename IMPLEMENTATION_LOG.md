@@ -1,5 +1,22 @@
 # Implementation log
 
+## 2026-11-19 — Scan DB owner handoff and startup privilege fix
+
+- User relayed BE owner details: existing PostgreSQL smgs_demo on EC2 loopback,
+  port 5432, BE user smgs; EC2 stopped and no external DB access/Scan role created.
+  Measured Azure outbound IPv4 172.198.161.72 over HTTPS; user screenshot confirmed
+  Public IP Assignment Static. Allowlist CIDR is 172.198.161.72/32.
+- Added deploy/azure/scan_database.sql and DB_HANDOFF_VI.md for separate role
+  smgs_scan owning only dedicated ai_3d_scan schema/table, without database CREATE
+  or admin role attributes. Password is set separately; no EC2 changes executed.
+- Isolated PostgreSQL 18.6 test discovered CREATE SCHEMA IF NOT EXISTS still
+  requires database CREATE. Fixed jobs.initialize to check pg_namespace first,
+  preserving local schema creation when absent. Updated image must be used with
+  pre-provisioned least-privilege schema. No HF code or reconstruction change.
+- 10/10 isolated local DB checks passed, including real Scan startup/job CRUD,
+  atomic claim and denial of BE-table access/other-schema creation. Test instance
+  stopped. Production EC2 network, password auth, TLS/tunnel remain pending.
+
 ## 2026-11-19 — Azure Scan/TTS deployment
 
 - Connected to user-started smgs-ai-server at 172.198.161.72, installed Docker

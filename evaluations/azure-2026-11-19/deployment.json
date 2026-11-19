@@ -15,7 +15,12 @@
   "automaticDeallocationConfigured": false,
   "images": {
     "tts": "sha256:d439bf2bfec35ceab56e9540a35eef52ff82ae197b834c2ab2917b31e8c66e33",
-    "scan": "sha256:65e6d8a031a2c4f55ddbce75f159cac849b226fa5dbb7b6072c431ff98533c8c",
-    "caddy": "sha256:4851e54a46b206517c574821bb5cc67f170d2156041e9fbc4c9193b45e84a75b"
-  }
+    "scan": "sha256:0c0ff440754e2927e8b36aa167b01f3ca4ea77e558ec68c37652ba075f837d67",
+    "caddy": "sha256:4851e54a46b206517c574821bb5cc67f170d2156041e9fbc4c9193b45e84a75b",
+    "scanBeforeDbStartupFix": "sha256:65e6d8a031a2c4f55ddbce75f159cac849b226fa5dbb7b6072c431ff98533c8c"
+  },
+  "outboundIpv4": "172.198.161.72",
+  "allowlistCidr": "172.198.161.72/32",
+  "publicIpAssignment": "Static",
+  "staticAssignmentEvidence": "User-supplied Azure Public IP Configuration screenshot 2026-11-19"
 }

@@ -18,6 +18,10 @@
 - TTS restart persistence passed: ready=true, first request HIT, WAV identical.
 - Proxy error logging was tested with a fake header; request metadata is removed.
 - No automatic deallocation schedule or managed-identity RBAC was installed.
+- DB owner handoff: `DB_HANDOFF_VI.md` and `scan_database.sql`. Outbound IPv4
+  measured from VM is 172.198.161.72; user portal screenshot confirms Static.
+  Allowlist only 172.198.161.72/32. DB remains inaccessible/unconfigured; no script
+  has been run on EC2 and no network rule was changed on AWS.
 
 VM smgs-ai-server, 4 vCPU/16 GB, Ubuntu 24.04 x86_64. This Compose does not
 deploy BE/FE/PostgreSQL/HF services. Scan stays behind a profile until the existing
