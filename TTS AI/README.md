@@ -101,6 +101,12 @@ Invoke-WebRequest `
 
 ## Cấu hình
 
+**Nhịp đọc 19/11/2026:** museum-v4 giữ dấu câu, thêm khoảng nghỉ câu/mệnh đề/đoạn.
+`TTS_SPEED_FACTOR=0.9`, `TTS_SILENCE_SCALE=1.0`, `TTS_SENTENCE_PAUSE_MS=320`,
+`TTS_CLAUSE_PAUSE_MS=140`, `TTS_PARAGRAPH_PAUSE_MS=450`. Speed request được nhân
+với speed factor; cache tự phân biệt cấu hình prosody. Không tự đổi nội dung nguồn.
+Xem [audio và giới hạn kiểm chứng](../evaluations/tts-2026-11-19/README.md).
+
 | Biến | Mặc định | Ý nghĩa |
 | --- | --- | --- |
 | Voice model | `vi_VN-vais1000-medium` | Voice Piper tiếng Việt cố định trong MVP; model được tải một lần vào volume |

@@ -13,7 +13,7 @@ import wave
 from fastapi.testclient import TestClient
 from app import main, model_assets
 from app.audio_cache import AudioCache
-from app.synthesizer import PiperSynthesizer, SpeechBusy, _to_pcm_wav
+from app.synthesizer import PiperSynthesizer, SpeechBusy, _to_pcm_wav, normalize_narration, narration_segments
 
 
 class CacheTests(unittest.TestCase):
@@ -47,6 +47,8 @@ class CacheTests(unittest.TestCase):
         synth = PiperSynthesizer.__new__(PiperSynthesizer)
         synth._voice, synth._model_identity = 'vi_VN-test', 'model-a'
         synth._cache, synth._queue_timeout, synth._generation_lock = self.cache, 0, Lock()
+        synth._speed_factor, synth._silence_scale, synth._paragraph_pause_ms = 0.9, 1.0, 450
+        synth._sentence_pause_ms, synth._clause_pause_ms = 320, 140
         synth._tts = SimpleNamespace(generate=Mock(return_value=SimpleNamespace(samples=[0.1] * 8, sample_rate=16000)))
         return synth
 
@@ -58,6 +60,48 @@ class CacheTests(unittest.TestCase):
         synth._model_identity = 'model-b'
         self.assertFalse(synth.generate('Bảo tàng', 1.0002)[1])
         self.assertEqual(synth._tts.generate.call_count, 3)
+
+    def test_paragraphs_and_punctuation_survive_and_do_not_collide_in_cache(self):
+        synth = self.synthesizer()
+        source = 'Khối lượng 3,5 kg; mã A.12.\r\n\r\nĐây là đoạn hai: còn nguyên dấu!'
+        expected = 'Khối lượng 3,5 kg; mã A.12.\n\nĐây là đoạn hai: còn nguyên dấu!'
+        self.assertEqual(normalize_narration(source), expected)
+        audio, hit = synth.generate(source, 1)
+        self.assertFalse(hit)
+        calls = synth._tts.generate.call_args_list
+        self.assertEqual([call.kwargs['text'] for call in calls],
+                         ['Khối lượng 3,5 kg;', 'mã A.12.', 'Đây là đoạn hai:', 'còn nguyên dấu!'])
+        self.assertTrue(all(abs(call.kwargs['config'].speed - 0.9) < 0.0001 for call in calls))
+        self.assertTrue(all(call.kwargs['config'].silence_scale == 1.0 for call in calls))
+        with wave.open(io.BytesIO(audio)) as wav:
+            self.assertEqual(wav.getnframes(), 32 + round(16000 * (0.140 + 0.450 + 0.140)))
+        # The old whitespace-flattened rendering must not collide with paragraph pacing.
+        synth.generate(source.replace('\r\n\r\n', ' '), 1)
+        self.assertEqual(synth._tts.generate.call_count, 8)
+
+    def test_punctuation_breaks_preserve_numbers_abbreviations_and_quotes(self):
+        text = 'TS. Nguyễn A. Bình đo 3,5 kg, mã A.12. "Quan sát nhé!" Tiếp theo: phần đế.\n\nĐoạn cuối.'
+        parts = list(narration_segments(text, 320, 140, 450))
+        self.assertEqual(parts, [('TS. Nguyễn A. Bình đo 3,5 kg,', 0), ('mã A.12.', 140),
+                                 ('"Quan sát nhé!"', 320), ('Tiếp theo:', 320), ('phần đế.', 140), ('Đoạn cuối.', 450)])
+        self.assertEqual(' '.join(part for part, _ in parts), text.replace('\n\n', ' '))
+
+    def test_prosody_configuration_changes_invalidate_audio_cache(self):
+        synth = self.synthesizer()
+        synth.generate('Nội dung đã duyệt.', 1)
+        self.assertTrue(synth.generate('Nội dung đã duyệt.', 1)[1])
+        for attribute, value in [('_speed_factor', 1.0), ('_silence_scale', 1.2), ('_paragraph_pause_ms', 800)]:
+            setattr(synth, attribute, value)
+            self.assertFalse(synth.generate('Nội dung đã duyệt.', 1)[1])
+
+    def test_mismatched_paragraph_sample_rate_is_not_cached(self):
+        synth = self.synthesizer()
+        synth._tts.generate.side_effect = [SimpleNamespace(samples=[0.1], sample_rate=16000),
+                                          SimpleNamespace(samples=[0.1], sample_rate=22050)]
+        with self.assertRaises(RuntimeError):
+            synth.generate('Đoạn một.\n\nĐoạn hai.', 1)
+        self.assertFalse(synth._generation_lock.locked())
+        self.assertEqual(list(self.cache.directory.glob('*.wav')), [])
 
     def test_busy_synthesis_does_not_block_cached_audio_and_failure_releases_slot(self):
         synth = self.synthesizer()
@@ -79,7 +123,8 @@ class ApiTests(unittest.TestCase):
     def setUp(self):
         self.engine = Mock()
         self.engine.generate.return_value = (_to_pcm_wav([0.1] * 8, 16000), False)
-        self.settings = SimpleNamespace(max_text_chars=12000, voice='vi_VN-vais1000-medium', service_api_key='')
+        self.settings = SimpleNamespace(max_text_chars=12000, voice='vi_VN-vais1000-medium', service_api_key='',
+                                        speed_factor=0.9, silence_scale=1.0)
         for target, value in [('ensure_model_assets', Mock()), ('get_synthesizer', Mock(return_value=self.engine)), ('get_settings', Mock(return_value=self.settings))]:
             patcher = patch.object(main, target, value)
             patcher.start(); self.addCleanup(patcher.stop)
@@ -92,6 +137,8 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(result.headers['content-type'], 'audio/wav')
         self.assertEqual(result.content[:4], b'RIFF')
         self.assertEqual(result.headers['x-tts-cache'], 'MISS')
+        self.assertEqual(result.headers['x-tts-prosody'], 'museum-v4')
+        self.assertEqual(result.headers['x-tts-effective-speed'], '0.9000')
         main.app.state.model_ready = False
         self.assertEqual(self.client.get('/ready').status_code, 503)
         self.assertEqual(self.client.get('/live').status_code, 200)

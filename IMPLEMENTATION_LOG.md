@@ -1,5 +1,19 @@
 # Implementation log
 
+## 2026-11-19 — TTS pacing and BE/HF integration audit
+
+- Added museum-v4 punctuation/paragraph pauses, explicit sherpa GenerationConfig,
+  speed factor 0.9 and prosody-aware cache invalidation. Real local Piper CPU:
+  15.483 s baseline vs 17.812 s revised; measured quiet runs 0.16 s vs 2.66 s.
+  4/4 audio checks and 13/13 unit/API checks passed. Earlier silence-only attempt
+  failed 2 checks; retained failed-v3.json. Human listening not approved; Azure
+  deployment and production BE playback remain pending.
+- BE public museum endpoints returned HTTP 200. User confirms DB on BE host;
+  local configs still target local DB. HF quiz/chat/tour consume BE request data,
+  not direct DB credentials. Found quiz/chat share ArtifactGuide options, requiring
+  separate quiz routing for two Spaces. Added manual CONNECT_BE_VI.md; no BE
+  code, production config, DB or existing HF deployments changed.
+
 ## 2026-11-18 — Expanded live personalized-tour verification
 
 - At user's request, ran `verify_live_tour.py` against the actual HF `smgs-ai-guide` app: **12 synthetic test cases, 64/64 checks passed**. This exercised real cloud Gradio queue + unchanged CPU tour algorithm, with no model fixture, GPU calls or database writes.

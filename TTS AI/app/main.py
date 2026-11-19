@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse, Response
 from app.config import get_settings
 from app.model_assets import ensure_model_assets
 from app.schemas import SpeechRequest
-from app.synthesizer import SpeechBusy, get_synthesizer
+from app.synthesizer import PROSODY_VERSION, SpeechBusy, get_synthesizer
 
 logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
@@ -67,6 +67,9 @@ def health() -> dict[str, object]:
         "voice": settings.voice,
         "model_ready": model_ready,
         "language": "vi-VN",
+        "prosody": PROSODY_VERSION,
+        "speed_factor": settings.speed_factor,
+        "silence_scale": settings.silence_scale,
     }
 
 
@@ -108,5 +111,7 @@ def create_speech(request: SpeechRequest) -> Response:
             "Cache-Control": "private, max-age=86400",
             "X-TTS-Cache": "HIT" if cache_hit else "MISS",
             "X-TTS-Voice": settings.voice,
+            "X-TTS-Prosody": PROSODY_VERSION,
+            "X-TTS-Effective-Speed": f"{request.speed * settings.speed_factor:.4f}",
         },
     )

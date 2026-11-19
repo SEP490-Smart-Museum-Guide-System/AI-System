@@ -1,8 +1,10 @@
 from functools import lru_cache
+from array import array
 import hashlib
 import io
 import logging
 import math
+import re
 import struct
 from threading import Lock
 import unicodedata
@@ -14,6 +16,43 @@ from app.config import get_settings
 from app.audio_cache import AudioCache
 
 LOGGER = logging.getLogger(__name__)
+PROSODY_VERSION = "museum-v4"
+
+
+def normalize_narration(text: str) -> str:
+    """Keep punctuation and blank-line paragraphs; fold layout-only whitespace."""
+    text = unicodedata.normalize("NFC", text).replace("\r\n", "\n").replace("\r", "\n")
+    paragraphs = [" ".join(part.split()) for part in re.split(r"\n\s*\n", text)]
+    return "\n\n".join(part for part in paragraphs if part)
+
+
+def narration_segments(text: str, sentence_ms: int, clause_ms: int, paragraph_ms: int):
+    """Retain spoken text, adding breaks only at unambiguous punctuation/paragraphs."""
+    abbreviations = {'ts', 'ths', 'gs', 'pgs', 'tp', 'p', 'q', 'st', 'mr', 'mrs', 'dr', 'v.v', 'v.d'}
+    pending_pause = 0
+    for paragraph in text.split('\n\n'):
+        start = 0
+        for match in re.finditer(r'''([,;:.!?…]+["”’»)]*)(\s+)''', paragraph):
+            punctuation = match.group(1).rstrip('"”’»)')
+            following = paragraph[match.end():]
+            if not following:
+                continue
+            if punctuation in {'.', ',', ':'} and following[0].isdigit():
+                continue  # Numbers, dates, decimal separators, or numbered labels.
+            if punctuation == '.':
+                token = paragraph[:match.start()].rsplit(' ', 1)[-1]
+                if token.casefold() in abbreviations or (len(token) == 1 and token.isalpha()):
+                    continue
+            pause = sentence_ms if any(char in punctuation for char in '.!?…') else clause_ms
+            if pause == 0:
+                continue
+            yield paragraph[start:match.start(2)], pending_pause
+            start = match.end()
+            pending_pause = pause
+        remainder = paragraph[start:]
+        if remainder:
+            yield remainder, pending_pause
+        pending_pause = paragraph_ms
 
 
 class SpeechBusy(RuntimeError):
@@ -34,7 +73,7 @@ class PiperSynthesizer:
             debug=False,
         )
         self._tts = sherpa_onnx.OfflineTts(
-            sherpa_onnx.OfflineTtsConfig(model=model)
+            sherpa_onnx.OfflineTtsConfig(model=model, max_num_sentences=1, silence_scale=settings.silence_scale)
         )
         self._voice = settings.voice
         # A replaced model must not reuse audio from the previous voice weights/tokens.
@@ -48,11 +87,18 @@ class PiperSynthesizer:
         self._cache = AudioCache(settings.cache_dir, settings.cache_max_bytes, settings.cache_max_files)
         self._queue_timeout = settings.queue_timeout
         self._generation_lock = Lock()
+        self._speed_factor = settings.speed_factor
+        self._silence_scale = settings.silence_scale
+        self._paragraph_pause_ms = settings.paragraph_pause_ms
+        self._sentence_pause_ms = settings.sentence_pause_ms
+        self._clause_pause_ms = settings.clause_pause_ms
 
     def generate(self, text: str, speed: float) -> tuple[bytes, bool]:
-        normalized_text = unicodedata.normalize("NFC", " ".join(text.split()))
+        normalized_text = normalize_narration(text)
+        # Prosody changes must not reuse the old, fast/compressed-pause WAV cache.
+        prosody = f"{PROSODY_VERSION}:{self._speed_factor.hex()}:{self._silence_scale.hex()}:{self._paragraph_pause_ms}:{self._sentence_pause_ms}:{self._clause_pause_ms}"
         cache_key = hashlib.sha256(
-            f"{self._voice}\0{self._model_identity}\0{float(speed).hex()}\0{normalized_text}".encode("utf-8")
+            f"{self._voice}\0{self._model_identity}\0{prosody}\0{float(speed).hex()}\0{normalized_text}".encode("utf-8")
         ).hexdigest()
         cached = self._cache.get(cache_key)
         if cached is not None:
@@ -64,15 +110,28 @@ class PiperSynthesizer:
             if cached is not None:
                 return cached, True
 
-            result = self._tts.generate(
-                text=normalized_text,
-                sid=0,
-                speed=speed,
-            )
-            if len(result.samples) == 0:
+            samples = array('f')
+            sample_rate = None
+            generation = sherpa_onnx.GenerationConfig()
+            generation.sid = 0
+            generation.speed = speed * self._speed_factor
+            # The Python (text, sid, speed) overload creates its own config and
+            # ignores OfflineTtsConfig.silence_scale in sherpa-onnx 1.13.8.
+            generation.silence_scale = self._silence_scale
+            for segment, pause_ms in narration_segments(normalized_text, self._sentence_pause_ms,
+                                                         self._clause_pause_ms, self._paragraph_pause_ms):
+                result = self._tts.generate(text=segment, config=generation)
+                if len(result.samples) == 0 or result.sample_rate <= 0:
+                    raise RuntimeError("Piper generated an empty audio result")
+                if sample_rate is not None:
+                    if sample_rate != result.sample_rate:
+                        raise RuntimeError("Piper returned inconsistent sample rates")
+                    samples.extend(array('f', [0.0]) * round(sample_rate * pause_ms / 1000))
+                sample_rate = result.sample_rate
+                samples.extend(result.samples)
+            if not samples or sample_rate is None:
                 raise RuntimeError("Piper generated an empty audio result")
-
-            wav_bytes = _to_pcm_wav(result.samples, result.sample_rate)
+            wav_bytes = _to_pcm_wav(samples, sample_rate)
             try:
                 self._cache.put(cache_key, wav_bytes)
             except OSError:

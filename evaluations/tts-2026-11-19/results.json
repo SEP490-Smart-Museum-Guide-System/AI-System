@@ -1,0 +1,137 @@
+{
+  "realPiperCpu": true,
+  "syntheticSource": true,
+  "humanListeningApproved": false,
+  "text": "Bình gốm này được dùng để đựng nước. Miệng bình loe rộng, thân bình có hoa văn khắc chìm. Chất liệu của bình là đất nung; kỹ thuật chế tác là bàn xoay.\n\nQuý khách hãy quan sát phần miệng bình. Những chi tiết này giúp chúng ta tìm hiểu cách sử dụng hiện vật. Đây là nội dung giả lập để kiểm thử giọng đọc, không phải hồ sơ bảo tàng thật.",
+  "cases": [
+    {
+      "name": "before-compressed-pauses",
+      "speed": 1.0,
+      "speedFactor": 1.0,
+      "silenceScale": 0.2,
+      "paragraphPauseMs": 0,
+      "sentencePauseMs": 0,
+      "clausePauseMs": 0,
+      "cacheHit": false,
+      "file": "before-compressed-pauses.wav",
+      "generationSeconds": 1.046,
+      "sampleRate": 22050,
+      "durationSeconds": 15.483,
+      "frames": 341400,
+      "peak": 0.7352,
+      "rms": 0.12056,
+      "quietRunsAtLeast100ms": [
+        {
+          "startSeconds": 13.98,
+          "durationSeconds": 0.16
+        }
+      ],
+      "quietSecondsInRuns": 0.16,
+      "cacheRoundTripIdentical": true
+    },
+    {
+      "name": "native-pauses",
+      "speed": 1.0,
+      "speedFactor": 1.0,
+      "silenceScale": 1.0,
+      "paragraphPauseMs": 0,
+      "sentencePauseMs": 0,
+      "clausePauseMs": 0,
+      "cacheHit": false,
+      "file": "native-pauses.wav",
+      "generationSeconds": 1.062,
+      "sampleRate": 22050,
+      "durationSeconds": 15.662,
+      "frames": 345344,
+      "peak": 0.7352,
+      "rms": 0.11987,
+      "quietRunsAtLeast100ms": [
+        {
+          "startSeconds": 2.56,
+          "durationSeconds": 0.22
+        },
+        {
+          "startSeconds": 8.32,
+          "durationSeconds": 0.1
+        },
+        {
+          "startSeconds": 14.16,
+          "durationSeconds": 0.16
+        }
+      ],
+      "quietSecondsInRuns": 0.48,
+      "cacheRoundTripIdentical": true
+    },
+    {
+      "name": "museum-v4",
+      "speed": 1.0,
+      "speedFactor": 0.9,
+      "silenceScale": 1.0,
+      "paragraphPauseMs": 450,
+      "sentencePauseMs": 320,
+      "clausePauseMs": 140,
+      "cacheHit": false,
+      "file": "museum-v4.wav",
+      "generationSeconds": 1.266,
+      "sampleRate": 22050,
+      "durationSeconds": 17.812,
+      "frames": 392751,
+      "peak": 0.7644,
+      "rms": 0.11353,
+      "quietRunsAtLeast100ms": [
+        {
+          "startSeconds": 1.72,
+          "durationSeconds": 0.36
+        },
+        {
+          "startSeconds": 2.94,
+          "durationSeconds": 0.34
+        },
+        {
+          "startSeconds": 4.66,
+          "durationSeconds": 0.32
+        },
+        {
+          "startSeconds": 6.38,
+          "durationSeconds": 0.18
+        },
+        {
+          "startSeconds": 8.06,
+          "durationSeconds": 0.48
+        },
+        {
+          "startSeconds": 10.32,
+          "durationSeconds": 0.32
+        },
+        {
+          "startSeconds": 13.5,
+          "durationSeconds": 0.38
+        },
+        {
+          "startSeconds": 16.24,
+          "durationSeconds": 0.28
+        }
+      ],
+      "quietSecondsInRuns": 2.66,
+      "cacheRoundTripIdentical": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "museum rendering longer than baseline",
+      "passed": true
+    },
+    {
+      "name": "museum pause duration increased",
+      "passed": true
+    },
+    {
+      "name": "all files non-silent mono PCM",
+      "passed": true
+    },
+    {
+      "name": "cache returns identical generated WAV",
+      "passed": true
+    }
+  ]
+}
