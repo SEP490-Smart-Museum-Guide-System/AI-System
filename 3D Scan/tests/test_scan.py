@@ -19,9 +19,12 @@ class InitializationTests(unittest.TestCase):
         connection.__exit__ = Mock(return_value=False)
         with patch.object(jobs, '_connect', return_value=connection):
             jobs.initialize()
-        statements = [call.args[0].as_string() for call in connection.execute.call_args_list]
+        statements = [call.args[0] if isinstance(call.args[0], str) else call.args[0].as_string()
+                      for call in connection.execute.call_args_list]
         self.assertEqual(len(statements), 4)
         self.assertIn("DEFAULT '{}'::jsonb", statements[1])
+        self.assertTrue(statements[0].startswith('SELECT 1 FROM pg_namespace'))
+        self.assertFalse(any('CREATE SCHEMA' in statement for statement in statements))
 
 
 class ApiTests(unittest.TestCase):

@@ -25,6 +25,7 @@ LOGGER = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
     if not SERVICE_API_KEY:
         raise RuntimeError("SCAN_SERVICE_API_KEY must be configured")
     await asyncio.to_thread(jobs.initialize)

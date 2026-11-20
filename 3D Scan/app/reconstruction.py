@@ -5,6 +5,7 @@ import os
 import re
 import subprocess
 import struct
+import time
 from pathlib import Path
 
 import trimesh
@@ -13,6 +14,8 @@ from . import jobs
 from .settings import COLMAP_COMMAND, COLMAP_CAMERA_MODEL, OPENMVS_BIN_DIR, OPENMVS_COMMANDS
 
 logger = logging.getLogger(__name__)
+COMMAND_TIMEOUT_SECONDS = 6 * 60 * 60
+COMMAND_HEARTBEAT_SECONDS = 20
 
 
 class ReconstructionFailure(RuntimeError):
@@ -42,26 +45,51 @@ def openmvs_available() -> bool:
 
 
 def _run(args: list[str], cwd: Path, label: str | None = None) -> None:
-    logger.info("Starting: %s", label or Path(args[0]).name)
-    try:
-        result = subprocess.run(args, cwd=cwd, capture_output=True, text=True,
-                                timeout=6 * 60 * 60, check=False)
-    except FileNotFoundError as exc:
-        raise ReconstructionFailure(
-            f"Thiếu công cụ dựng 3D '{args[0]}'. Cài COLMAP và OpenMVS CPU rồi cấu hình PATH/OPENMVS_BIN_DIR."
-        ) from exc
+    step = label or Path(args[0]).name
     log_dir = cwd / "logs"
     log_dir.mkdir(exist_ok=True)
-    log_name = re.sub(r"[^A-Za-z0-9_-]+", "_", label or Path(args[0]).name)
-    (log_dir / f"{log_name}.log").write_text(
-        f"COMMAND: {args!r}\nEXIT: {result.returncode}\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}",
-        encoding="utf-8",
-    )
-    if result.returncode:
-        step = label or Path(args[0]).name
-        logger.error("3D command %s failed (%s): %s", step, result.returncode,
-                     (result.stderr or result.stdout or "no output")[-3000:])
-        raise ReconstructionFailure(f"Bước dựng 3D {step} thất bại (exit code {result.returncode}).")
+    log_name = re.sub(r"[^A-Za-z0-9_-]+", "_", step)
+    log_path = log_dir / f"{log_name}.log"
+    logger.info("Starting: %s; log=%s", step, log_path)
+    # Native commands can run for minutes. Stream directly to disk so logs are
+    # visible before completion and large output does not accumulate in RAM.
+    with log_path.open('w', encoding='utf-8') as output:
+        output.write(f"COMMAND: {args!r}\nSTATUS: RUNNING\nOUTPUT:\n")
+        output.flush()
+        try:
+            child = subprocess.Popen(args, cwd=cwd, stdout=output, stderr=subprocess.STDOUT)
+        except FileNotFoundError as exc:
+            output.write('STATUS: TOOL_MISSING\n')
+            raise ReconstructionFailure(
+                f"Thiếu công cụ dựng 3D '{args[0]}'. Cài COLMAP và OpenMVS CPU rồi cấu hình PATH/OPENMVS_BIN_DIR."
+            ) from exc
+        started = time.monotonic()
+        try:
+            while True:
+                remaining = COMMAND_TIMEOUT_SECONDS - (time.monotonic() - started)
+                if remaining <= 0:
+                    child.kill()
+                    child.wait()
+                    output.write('\nSTATUS: TIMEOUT\n')
+                    raise ReconstructionFailure(f"Bước dựng 3D {step} vượt giới hạn thời gian.")
+                try:
+                    child.wait(timeout=min(COMMAND_HEARTBEAT_SECONDS, remaining))
+                    break
+                except subprocess.TimeoutExpired:
+                    logger.info("Still running: %s; elapsed=%ds; logBytes=%d", step,
+                                time.monotonic() - started, log_path.stat().st_size)
+        finally:
+            if child.poll() is None:
+                child.kill()
+                child.wait()
+        output.write(f'\nEXIT: {child.returncode}\n')
+    if child.returncode:
+        with log_path.open('rb') as output:
+            output.seek(max(0, log_path.stat().st_size - 3000))
+            tail = output.read().decode('utf-8', errors='replace')
+        logger.error("3D command %s failed (%s): %s", step, child.returncode, tail)
+        raise ReconstructionFailure(f"Bước dựng 3D {step} thất bại (exit code {child.returncode}).")
+    logger.info("Completed: %s; elapsed=%ds", step, time.monotonic() - started)
 
 
 def _validate_surface_glb(output: Path) -> None:
@@ -204,6 +232,7 @@ def process(job_id: str, job_dir: Path, *, on_update=None, sparse_model=None,
 
         # COLMAP performs only CPU SfM here. Its CUDA-only PatchMatch dense stage is disabled.
         if sparse_model is None:
+            update(job_id, progress=10)
             _run([COLMAP_COMMAND, "automatic_reconstructor", "--workspace_path", str(workspace),
                   "--image_path", str(images_dir), "--use_gpu", "0", "--num_threads", "4",
                   "--dense", "0", "--single_camera", "1", "--camera_model", COLMAP_CAMERA_MODEL], job_dir, "COLMAP SfM")

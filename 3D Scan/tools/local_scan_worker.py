@@ -24,7 +24,7 @@ def write_status(root, **changes):
     print(f"[{state.get('status')}] {state.get('progress', 0)}% {state.get('error', '')}", flush=True)
 
 
-def prepare_priors(root, report):
+def prepare_priors(root, report, on_progress=None):
     """Match source-image features and triangulate with fixed, audited camera priors."""
     audit = root / 'camera-audit'
     database = root / 'features.db'
@@ -36,6 +36,8 @@ def prepare_priors(root, report):
                    ','.join(str(K[k]) for k in ('fx', 'fy', 'cx', 'cy')),
                    '--SiftExtraction.use_gpu', '0', '--SiftExtraction.num_threads', '4'],
                   root, 'COLMAP CPU features')
+    if on_progress:
+        on_progress(progress=20)
     with sqlite3.connect(database) as connection:
         records = connection.execute('SELECT name, image_id, camera_id FROM images').fetchall()
     ids = {name: (image_id, camera_id) for name, image_id, camera_id in records}
@@ -70,6 +72,8 @@ def prepare_priors(root, report):
                    '--match_list_path', str(pair_file), '--match_type', 'pairs',
                    '--SiftMatching.use_gpu', '0', '--SiftMatching.num_threads', '4'],
                   root, 'COLMAP CPU neighboring matches')
+    if on_progress:
+        on_progress(progress=28)
     sparse = root / 'fixed-sparse'
     sparse.mkdir()
     pipeline._run(['colmap', 'point_triangulator', '--database_path', str(database),
@@ -92,7 +96,7 @@ def run(source, root, prepare_only=False, on_update=None):
             on_update(**allowed)
     config = json.loads((root / 'config.json').read_text(encoding='utf-8'))
     mode = config['mode']
-    report_status(status='PROCESSING', progress=0, mode=mode,
+    report_status(status='PROCESSING', progress=5, mode=mode,
                  warning=('Benchmark: camera calibration uses the reference OBJ; output geometry '
                           'and atlas are reconstructed from images.' if mode == 'benchmark' else
                           'Cameras are estimated from photos. Missing or occluded surfaces may remain.'))
@@ -108,9 +112,11 @@ def run(source, root, prepare_only=False, on_update=None):
             shutil.copyfile(path, images / name)
         sparse = None
         if mode == 'benchmark':
+            report_status(progress=10)
             report = audit_cameras(source, root / 'camera-audit')
             if not prepare_only:
-                sparse = prepare_priors(root, report)
+                report_status(progress=15)
+                sparse = prepare_priors(root, report, on_progress=report_status)
         if prepare_only:
             report_status(status='CHECKED', progress=0,
                          note='Input validation/calibration only. No model generated.')
