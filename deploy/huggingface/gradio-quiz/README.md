@@ -68,8 +68,14 @@ default 5) and returns the whole set. This new endpoint is not yet called by the
 existing BE/FE; those still aggregate single-question responses.
 For legacy single-item calls, the prior-question count rotates the assigned fact;
 the API does not infer the evidence used by arbitrary historic questions.
-Narration is not implemented here. Direct Gradio API: `/tao_quiz`, with inputs
-name, source, difficulty, excluded JSON array and count.
+`POST /api/v1/studio/drafts` also accepts `mode=narration`, plus `audience`
+and `tone`, using the same service key. It returns `title`, `narrationText`,
+and `evidenceQuotes` as required by BE. Quotes must occur in the source;
+invented numeric facts are rejected. This generates a draft only; audio is
+produced by the separate Azure TTS service through BE.
+Direct Gradio APIs: `/tao_quiz`, with inputs name, source, difficulty,
+excluded JSON array and count; `/soan_thuyet_minh`, with inputs name, source,
+audience and tone.
 
 Startup uses `demo.launch(ssr_mode=False)` so ZeroGPU's launch hook reports the
 decorated function, with one listener on the configured Gradio port. REST routes
@@ -78,3 +84,8 @@ are registered via `app_kwargs`; no second Uvicorn/Node server is started.
 ZeroGPU is quota-limited shared compute. Backend bridge requests use anonymous
 quota; readiness does not promise GPU availability, response time or production
 uptime. This Space does not scan 3D or train models.
+
+The REST bridge forwards HF's `x-ip-token` only to its own loopback Gradio
+queue, retaining the caller's quota context. This does not grant unlimited GPU
+access. A single question or narration requests 45 seconds; larger quiz batches
+request 90 seconds. Inference and retry budgets finish before the allocation.

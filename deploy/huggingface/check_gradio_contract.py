@@ -48,6 +48,12 @@ def run(bundle, port):
         def generate_json(self, prompt, validator, **kwargs):
             from app.engine import ChatFailure
             payload = json.loads(prompt.rsplit('<|im_start|>user\n', 1)[1].split('<|im_end|>')[0])
+            if kwargs.get('prefix') == '{"title":':
+                candidate = {'title': 'Bình gốm', 'narrationText': payload['SOURCE'],
+                             'evidenceQuotes': [fixture['evidenceQuote']]}
+                if self.wrong_evidence:
+                    candidate['evidenceQuotes'] = ['Trích dẫn này không có trong tư liệu.']
+                return validator(json.dumps(candidate, ensure_ascii=False))
             excluded = payload['EXCLUDED']
             if self.fail_once:
                 self.fail_once = False
@@ -99,7 +105,17 @@ def run(bundle, port):
             route = '/api/v1/studio/drafts'
             headers = {'X-Service-Key': os.environ['AI_CHAT_SERVICE_KEY']}
             check('missing service key', client.post(route, json=payload).status_code, 401)
-            check('narration unsupported', client.post(route, headers=headers, json={**payload, 'mode': 'narration'}).status_code, 422)
+            narration_payload = {**payload, 'mode': 'narration', 'audience': 'children', 'tone': 'academic'}
+            check('narration requires key', client.post(route, json=narration_payload).status_code, 401)
+            narration = client.post(route, headers=headers, json=narration_payload)
+            check('narration REST enters real Gradio queue', narration.status_code, 200)
+            check('narration schema matches BE', sorted(narration.json()), ['evidenceQuotes', 'narrationText', 'title'])
+            check('narration preserves source evidence', narration.json().get('evidenceQuotes'), [fixture['evidenceQuote']])
+            entry.ENGINE.wrong_evidence = True
+            invalid_narration = client.post(route, headers=headers, json=narration_payload)
+            check('narration without source evidence rejected', invalid_narration.status_code, 502)
+            entry.ENGINE.wrong_evidence = False
+            check('unknown studio mode rejected', client.post(route, headers=headers, json={**payload, 'mode': 'unknown'}).status_code, 422)
             check('short source', client.post(route, headers=headers, json={**payload, 'sourceText': 'short'}).status_code, 422)
             check('invalid difficulty', client.post(route, headers=headers, json={**payload, 'difficulty': 'invalid'}).status_code, 422)
             check('too many exclusions', client.post(route, headers=headers, json={**payload, 'excludeQuestions': ['x'] * 6}).status_code, 422)

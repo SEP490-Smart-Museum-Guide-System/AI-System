@@ -3,11 +3,23 @@ import json
 import os
 import threading
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, StoppingCriteriaList
 from app.engine import ChatFailure
 
 MODEL_ID = 'Qwen/Qwen2.5-1.5B-Instruct'
 REVISION = '989aa7980e4cf806f80c7fef2b1adb7bc71aa306'
+
+
+class JsonComplete(StoppingCriteria):
+    def __init__(self, tokenizer, prompt_length, prefix):
+        self.tokenizer, self.prompt_length, self.prefix = tokenizer, prompt_length, prefix
+
+    def __call__(self, input_ids, scores, **kwargs):
+        text = self.prefix + self.tokenizer.decode(input_ids[0, self.prompt_length:], skip_special_tokens=True).strip()
+        try:
+            return isinstance(json.loads(text), dict)
+        except ValueError:
+            return False
 
 
 class TorchQuizEngine:
@@ -32,8 +44,9 @@ class TorchQuizEngine:
             if seed is not None: torch.manual_seed(seed)
             output = self.model.generate(**inputs, do_sample=sampling,
                 temperature=temperature if sampling else None, top_p=0.9 if sampling else None,
-                top_k=40 if sampling else None, max_new_tokens=min(max_new_tokens or 350, 350),
-                max_time=min(deadline_seconds or 80, 80), pad_token_id=self.tokenizer.eos_token_id)
+                top_k=40 if sampling else None, max_new_tokens=min(max_new_tokens or 350, 640),
+                max_time=min(deadline_seconds or 40, 40), pad_token_id=self.tokenizer.eos_token_id,
+                stopping_criteria=StoppingCriteriaList([JsonComplete(self.tokenizer, length, prefix)]))
         text = prefix + self.tokenizer.decode(output[0, length:], skip_special_tokens=True).strip()
         # The shared SMGS validator rejects incomplete JSON, fabricated numbers and unsupported answers.
         return validator(text)

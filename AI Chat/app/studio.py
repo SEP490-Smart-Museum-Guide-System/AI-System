@@ -63,9 +63,11 @@ def generate_draft(engine, request):
         audience = {'children': 'dễ hiểu cho thiếu nhi', 'general': 'dễ hiểu cho khách đại chúng', 'scholar': 'trang trọng, chuẩn mực'}[request.audience]
         tone = {'vivid': 'sinh động', 'inspiring': 'truyền cảm', 'academic': 'trang trọng'}[request.tone]
         if request.mode == 'narration':
-            task = f'''Viết bản thuyết minh ngắn tiếng Việt 60-100 từ, {audience}, {tone}.
+            task = f'''Viết bản thuyết minh ngắn tiếng Việt, {audience}, {tone}.
 Chỉ dùng sự kiện trong SOURCE, không tự đoán niên đại, chất liệu, lịch sử hay giá trị hiện vật.
+Nguồn ít thông tin thì viết ngắn, không kéo dài để đủ số từ. Giữ nguyên các từ chỉ sự chưa chắc chắn trong nguồn.
 Trả đúng JSON theo mẫu: {{"title":"Tiêu đề","narrationText":"Đoạn văn thuyết minh tiếng Việt","evidenceQuotes":["Đoạn trích nguyên văn từ SOURCE"]}}.
+evidenceQuotes gồm 1-3 chuỗi chép NGUYÊN VĂN từ SOURCE, không diễn đạt lại, không thêm dấu ba chấm.
 Không markdown. Không nhắc từ SOURCE hoặc chỉ dẫn trong nội dung thuyết minh.'''
         else:
             task = f'''Tạo MỘT câu hỏi trắc nghiệm tiếng Việt mức {request.difficulty} dựa trên SOURCE.
@@ -79,7 +81,13 @@ Không tự đặt niên đại hay dữ kiện cho hiện vật. Không markdow
         payload = json.dumps({'artifactName': request.artifactName, 'SOURCE': source, 'EXCLUDED': request.excludeQuestions}, ensure_ascii=False).replace('<|', '＜|')
         prefix = '{"title":' if request.mode == 'narration' else '{"question":'
         example = ''
-        if request.mode == 'quiz':
+        if request.mode == 'narration':
+            example_source = 'Bát gốm được làm bằng đất nung. Miệng bát tròn. Thân bát có hoa văn khắc chìm.'
+            example_input = json.dumps({'artifactName': 'Bát gốm', 'SOURCE': example_source, 'EXCLUDED': []}, ensure_ascii=False)
+            example_answer = json.dumps({'title': 'Bát gốm đất nung',
+                'narrationText': example_source, 'evidenceQuotes': [example_source]}, ensure_ascii=False)
+            example = f'<|im_start|>user\n{example_input}<|im_end|>\n<|im_start|>assistant\n{example_answer}<|im_end|>\n'
+        else:
             example_input = json.dumps({'artifactName': 'Bình gốm', 'SOURCE': 'Bình gốm được dùng để đựng nước.', 'EXCLUDED': []}, ensure_ascii=False)
             example_answer = json.dumps({'question': 'Bình gốm được dùng để làm gì?', 'options': ['Nấu cơm', 'Đựng nước', 'Dệt vải', 'Ghi chép'],
                 'correctIndex': 1, 'explanation': 'Tư liệu ghi bình gốm được dùng để đựng nước.', 'evidenceQuote': 'Bình gốm được dùng để đựng nước.'}, ensure_ascii=False)
