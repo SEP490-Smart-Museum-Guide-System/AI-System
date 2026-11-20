@@ -1,0 +1,28 @@
+{
+  "origin": "https://scan.172-198-161-72.sslip.io",
+  "publicTlsCertificateVerified": true,
+  "scope": "Public API readiness/auth/DB read",
+  "beIntegrationTested": false,
+  "fullPhotogrammetryJobTested": false,
+  "scanJobCreated": false,
+  "ready": {
+    "status": "ok",
+    "service": "3d-scan",
+    "colmap_available": true,
+    "openmvs_cpu_available": true,
+    "worker_ready": true,
+    "database_ready": true
+  },
+  "checks": {
+    "ready200": true,
+    "databaseReady": true,
+    "workerReady": true,
+    "colmapAvailable": true,
+    "openMvsAvailable": true,
+    "missingKeyRejectedBeforeUploadParsing": true,
+    "authenticatedInvalidUploadRejected": true,
+    "authenticatedArtifactList200": true,
+    "missingJob404": true,
+    "modelDownloadRequiresKey": true
+  }
+}

@@ -4,10 +4,11 @@
   "publicIp": "172.198.161.72",
   "runningServices": [
     "tts",
+    "scan",
     "proxy"
   ],
   "databaseLocation": "BE server, user confirmed",
-  "scanDatabaseConfigured": false,
+  "scanDatabaseConfigured": true,
   "scanCloudReconstructionTested": false,
   "ttsOrigin": "https://tts.172-198-161-72.sslip.io",
   "ttsPublicHttpsVerified": true,
@@ -22,5 +23,11 @@
   "outboundIpv4": "172.198.161.72",
   "allowlistCidr": "172.198.161.72/32",
   "publicIpAssignment": "Static",
-  "staticAssignmentEvidence": "User-supplied Azure Public IP Configuration screenshot 2026-11-19"
+  "staticAssignmentEvidence": "User-supplied Azure Public IP Configuration screenshot 2026-11-19",
+  "lastVerifiedDate": "2026-11-20",
+  "scanOrigin": "https://scan.172-198-161-72.sslip.io",
+  "scanDatabaseTlsMode": "verify-full",
+  "scanDatabaseTlsVersion": "TLSv1.3",
+  "scanPublicHttpsVerified": true,
+  "scanBeIntegrationTested": false
 }

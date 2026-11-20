@@ -1,5 +1,11 @@
 # Thông tin gửi team BE để nối Scan — 19/11/2026
 
+**Cập nhật 20/11:** đã nhận cấu hình DB từ team BE, gộp riêng mà giữ nguyên service
+keys. Azure kết nối smgs_demo bằng smgs_scan qua TLS 1.3/verify-full thành công;
+thử insert/read/update đã rollback. API Scan đã chạy và /ready HTTPS trả 200.
+Các mục chọn đường kết nối/chưa cấu hình bên dưới là lịch sử bàn giao ban đầu.
+Mật khẩu chỉ có trong file env riêng được gitignore; không nằm trong tài liệu này.
+
 ## Đã đo từ VM Azure
 
 - VM: smgs-ai-server.

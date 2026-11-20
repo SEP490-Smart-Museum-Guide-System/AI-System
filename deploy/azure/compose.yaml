@@ -51,8 +51,9 @@ services:
       AI_SYSTEM_DB_NAME: ${AI_SYSTEM_DB_NAME:-}
       AI_SYSTEM_DB_USER: ${AI_SYSTEM_DB_USER:-}
       AI_SYSTEM_DB_PASSWORD: ${AI_SYSTEM_DB_PASSWORD:-}
-      PGSSLMODE: ${PGSSLMODE:-require}
-      SCAN_DB_SCHEMA: ai_3d_scan
+      PGSSLMODE: ${PGSSLMODE:-verify-full}
+      PGSSLROOTCERT: ${PGSSLROOTCERT:-/etc/ssl/certs/ca-certificates.crt}
+      SCAN_DB_SCHEMA: ${SCAN_DB_SCHEMA:-ai_3d_scan}
       SCAN_DATA_DIR: /data
       SCAN_MAX_IMAGES: '180'
       SCAN_MAX_TOTAL_BYTES: '524288000'

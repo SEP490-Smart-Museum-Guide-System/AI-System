@@ -1,0 +1,39 @@
+{
+  "checkedAtUtc": "2026-11-20T07:42:32.794943+00:00",
+  "beBaseUrl": "https://smgs-52-62-165-39.sslip.io",
+  "beRequestsAuthenticated": false,
+  "directBeDatabaseReadAttempted": false,
+  "realBeDataSentToHf": false,
+  "hfModelInferenceTested": false,
+  "catalog": [
+    {
+      "resource": "museums",
+      "status": 200,
+      "itemsReturned": 0,
+      "totalCount": 0
+    },
+    {
+      "resource": "artifacts",
+      "status": 200,
+      "itemsReturned": 0,
+      "totalCount": 0
+    }
+  ],
+  "hfReadiness": [
+    {
+      "space": "smgs-ai-quiz",
+      "status": 200,
+      "modelReady": true
+    },
+    {
+      "space": "smgs-ai-guide",
+      "status": 200,
+      "modelReady": true
+    }
+  ],
+  "notVerified": [
+    "BE database may contain nonpublic records or BE may point to another database; public empty catalog does not prove physical DB empty.",
+    "No published artifact ID or authenticated test account available.",
+    "HF inference on real BE records and BE-to-HF JWT/service-key integration remain untested."
+  ]
+}

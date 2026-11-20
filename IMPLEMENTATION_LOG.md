@@ -1,5 +1,22 @@
 # Implementation log
 
+## 2026-11-20 — Scan production DB TLS connection and API startup
+
+- Merged DB-only settings supplied by user into VM's private .env.azure without
+  changing either Scan or TTS service key. Added explicit PGSSLROOTCERT passthrough
+  and verify-full default to Scan Compose. Sensitive transfer files were removed.
+- Azure container connected to BE's smgs_demo PostgreSQL as smgs_scan using
+  TLSv1.3. Eight preflight checks passed; synthetic job insert/read/update was
+  rolled back, leaving no test job. No BE tables or AWS firewall rules changed.
+- Started Scan with existing image and persistent data volume; Scan, TTS and
+  Caddy healthy. Both public /ready endpoints returned 200. Scan reports COLMAP,
+  all OpenMVS CPU tools, worker and database ready.
+- Added missing artifact-list route to Caddy and passed ten public HTTPS checks
+  for readiness/auth/invalid upload/missing job/model download/list DB read.
+  Actual BE Scan configuration is only in ignored .env.be-scan, not logs/Git.
+- Full image reconstruction and production BE/JWT workflow remain untested.
+  HF Spaces were not changed. No automatic deallocation schedule was installed.
+
 ## 2026-11-19 — Scan DB owner handoff and startup privilege fix
 
 - User relayed BE owner details: existing PostgreSQL smgs_demo on EC2 loopback,

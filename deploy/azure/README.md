@@ -1,5 +1,23 @@
 # Azure: Scan CPU + TTS only
 
+## Verified 20/11/2026 — Scan connected
+
+- Both TTS and Scan are running and healthy. Scan public readiness:
+  https://scan.172-198-161-72.sslip.io/ready returned 200, database_ready=true.
+- Existing BE PostgreSQL smgs_demo connected as separate smgs_scan role with
+  TLS 1.3 and PGSSLMODE=verify-full. PGSSLROOTCERT is explicitly passed to the
+  container using its system CA bundle. No TLS verification bypass was used.
+- Eight Azure-to-DB checks passed; insert/read/update test used a transaction
+  rollback and left no test job. Ten public HTTPS readiness/auth/DB-read checks
+  passed, including BE's artifact-list route through Caddy.
+- .env.be-scan contains the actual two-line BE configuration with the existing
+  Scan service key, on VM and local workspace, ignored by Git. BE must load this
+  file into its own process/container environment and recreate/restart to apply.
+- Full image-upload/photogrammetry reconstruction and production BE integration
+  have not been tested in this deployment. No model or museum record was created.
+- EC2/PostgreSQL must remain available for Scan jobs. TTS does not use that DB.
+  The 19/11 notes below are historical and describe the earlier pending state.
+
 ## Verified 19/11/2026
 
 - VM SSH, Docker Engine/Compose installed; only TTS and Caddy containers running.
@@ -58,10 +76,10 @@ AiScan__BaseUrl=https://scan.172-198-161-72.sslip.io/
 AiScan__ServiceKey=<same SCAN_SERVICE_API_KEY on VM>
 ```
 
-Do not enable BE Scan before successful DB/readiness and reconstruction tests.
-The hostnames above are deployment configuration, not proof services are live.
-`PGSSLMODE=require` encrypts DB traffic without authenticating the DB certificate;
-use verify-full with a trusted CA or an authenticated private tunnel as appropriate.
+DB/readiness/auth are verified; test a permitted real image set through BE before
+claiming the full reconstruction workflow works end to end.
+Use verify-full with the trusted CA bundle specified by PGSSLROOTCERT. Future
+private-tunnel configurations require separate review of container connectivity.
 Confirm DB firewall/listen settings with the BE owner; never open DB globally.
 
 Stopping a container does not stop VM compute billing. Use Azure Stop and confirm
