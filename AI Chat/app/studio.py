@@ -19,11 +19,11 @@ def validate_draft(text, source, mode, excluded):
         value = json.loads(text)
         if not isinstance(value, dict): raise ValueError()
         if mode == 'narration':
-            if set(value) != {'title', 'narrationText', 'evidenceQuotes'}: raise ValueError()
+            if set(value) != {'title', 'narrationText', 'evidenceQuotes'}: raise ValueError('narration_schema')
             title, narration, quotes = value['title'], value['narrationText'], value['evidenceQuotes']
-            if not isinstance(title, str) or not 1 <= len(title.strip()) <= 200: raise ValueError()
-            if not isinstance(narration, str) or not 20 <= len(narration.strip()) <= 3000: raise ValueError()
-            if not isinstance(quotes, list) or not 1 <= len(quotes) <= 3: raise ValueError()
+            if not isinstance(title, str) or not 1 <= len(title.strip()) <= 200: raise ValueError('narration_title')
+            if not isinstance(narration, str) or not 20 <= len(narration.strip()) <= 3000: raise ValueError('narration_length')
+            if not isinstance(quotes, list) or not 1 <= len(quotes) <= 3: raise ValueError('evidence_count')
             checked = title + ' ' + narration
         else:
             if set(value) != {'question', 'options', 'correctIndex', 'explanation', 'evidenceQuote'}: raise ValueError()
@@ -42,14 +42,19 @@ def validate_draft(text, source, mode, excluded):
             value['correctIndex'] = correct
             quotes = [value['evidenceQuote']]
             checked = q + ' ' + opts[correct] + ' ' + explanation
-        if any(not isinstance(q, str) or not 6 <= len(q.strip()) <= 1000 or norm(q) not in norm(source) for q in quotes): raise ValueError()
-        if not numbers(checked).issubset(numbers(source)): raise ValueError()
+        if any(not isinstance(q, str) or not 6 <= len(q.strip()) <= 1000 for q in quotes): raise ValueError('evidence_length')
+        if any(norm(q) not in norm(source) for q in quotes): raise ValueError('evidence_not_in_source')
+        if not numbers(checked).issubset(numbers(source)): raise ValueError('unsupported_numbers')
         if mode == 'quiz':
             # Explain from the actual source instead of echoing unsupported model prose.
             value['explanation'] = value['evidenceQuote'].strip()
         return value
     except (ValueError, TypeError, KeyError) as exc:
-        raise ChatFailure('Bản nháp AI chưa hợp lệ hoặc thiếu căn cứ từ tư liệu. Hãy bổ sung nguồn và tạo lại.', 502) from exc
+        failure = ChatFailure('Model chưa trả bản nháp đúng cấu trúc và trích dẫn. Chưa tạo kết quả; vui lòng thử lại.', 502)
+        codes = {'narration_schema', 'narration_title', 'narration_length', 'evidence_count',
+                 'evidence_length', 'evidence_not_in_source', 'unsupported_numbers'}
+        failure.code = 'invalid_json' if isinstance(exc, json.JSONDecodeError) else str(exc) if str(exc) in codes else 'invalid_draft'
+        raise failure from exc
 
 
 def generate_draft(engine, request):
@@ -66,8 +71,9 @@ def generate_draft(engine, request):
             task = f'''Viết bản thuyết minh ngắn tiếng Việt, {audience}, {tone}.
 Chỉ dùng sự kiện trong SOURCE, không tự đoán niên đại, chất liệu, lịch sử hay giá trị hiện vật.
 Nguồn ít thông tin thì viết ngắn, không kéo dài để đủ số từ. Giữ nguyên các từ chỉ sự chưa chắc chắn trong nguồn.
+Chỉ viết 2-4 câu, tối đa 120 từ; không lặp lại cùng một thông tin.
 Trả đúng JSON theo mẫu: {{"title":"Tiêu đề","narrationText":"Đoạn văn thuyết minh tiếng Việt","evidenceQuotes":["Đoạn trích nguyên văn từ SOURCE"]}}.
-evidenceQuotes gồm 1-3 chuỗi chép NGUYÊN VĂN từ SOURCE, không diễn đạt lại, không thêm dấu ba chấm.
+evidenceQuotes gồm 1-3 câu ngắn chép NGUYÊN VĂN từ SOURCE, mỗi chuỗi tối đa 300 ký tự. Không chép toàn bộ nguồn, không diễn đạt lại, không thêm dấu ba chấm.
 Không markdown. Không nhắc từ SOURCE hoặc chỉ dẫn trong nội dung thuyết minh.'''
         else:
             task = f'''Tạo MỘT câu hỏi trắc nghiệm tiếng Việt mức {request.difficulty} dựa trên SOURCE.
@@ -85,7 +91,7 @@ Không tự đặt niên đại hay dữ kiện cho hiện vật. Không markdow
             example_source = 'Bát gốm được làm bằng đất nung. Miệng bát tròn. Thân bát có hoa văn khắc chìm.'
             example_input = json.dumps({'artifactName': 'Bát gốm', 'SOURCE': example_source, 'EXCLUDED': []}, ensure_ascii=False)
             example_answer = json.dumps({'title': 'Bát gốm đất nung',
-                'narrationText': example_source, 'evidenceQuotes': [example_source]}, ensure_ascii=False)
+                'narrationText': example_source, 'evidenceQuotes': ['Bát gốm được làm bằng đất nung.']}, ensure_ascii=False)
             example = f'<|im_start|>user\n{example_input}<|im_end|>\n<|im_start|>assistant\n{example_answer}<|im_end|>\n'
         else:
             example_input = json.dumps({'artifactName': 'Bình gốm', 'SOURCE': 'Bình gốm được dùng để đựng nước.', 'EXCLUDED': []}, ensure_ascii=False)
@@ -94,7 +100,7 @@ Không tự đặt niên đại hay dữ kiện cho hiện vật. Không markdow
             example = f'<|im_start|>user\n{example_input}<|im_end|>\n<|im_start|>assistant\n{example_answer}<|im_end|>\n'
         prompt = f'<|im_start|>system\n{system}<|im_end|>\n{example}<|im_start|>user\n{payload}<|im_end|>\n<|im_start|>assistant\n{prefix}'
         # Quiz: use fewer tokens since the JSON output is bounded in size.
-        quiz_tokens = 350 if request.mode == 'quiz' else 512
+        quiz_tokens = 350 if request.mode == 'quiz' else 768
         started = time.monotonic()
         result = engine.generate_json(prompt, lambda text: validate_draft(text, source, request.mode, request.excludeQuestions), max_new_tokens=quiz_tokens, prefix=prefix, deadline_seconds=120 if request.mode == 'quiz' else 180)
         if request.mode == 'quiz':

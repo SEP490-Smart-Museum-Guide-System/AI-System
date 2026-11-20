@@ -2,12 +2,14 @@
 import json
 import os
 import threading
+import logging
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, StoppingCriteriaList
 from app.engine import ChatFailure
 
 MODEL_ID = 'Qwen/Qwen2.5-1.5B-Instruct'
 REVISION = '989aa7980e4cf806f80c7fef2b1adb7bc71aa306'
+LOGGER = logging.getLogger(__name__)
 
 
 class JsonComplete(StoppingCriteria):
@@ -44,9 +46,18 @@ class TorchQuizEngine:
             if seed is not None: torch.manual_seed(seed)
             output = self.model.generate(**inputs, do_sample=sampling,
                 temperature=temperature if sampling else None, top_p=0.9 if sampling else None,
-                top_k=40 if sampling else None, max_new_tokens=min(max_new_tokens or 350, 640),
+                top_k=40 if sampling else None, max_new_tokens=min(max_new_tokens or 350, 1024),
                 max_time=min(deadline_seconds or 40, 40), pad_token_id=self.tokenizer.eos_token_id,
                 stopping_criteria=StoppingCriteriaList([JsonComplete(self.tokenizer, length, prefix)]))
         text = prefix + self.tokenizer.decode(output[0, length:], skip_special_tokens=True).strip()
         # The shared SMGS validator rejects incomplete JSON, fabricated numbers and unsupported answers.
-        return validator(text)
+        try:
+            return validator(text)
+        except ChatFailure as error:
+            generated = output.shape[1] - length
+            code = getattr(error, 'code', 'invalid_draft')
+            if code == 'invalid_json' and generated >= min(max_new_tokens or 350, 1024):
+                code = 'output_token_limit'
+                error.code = code
+            LOGGER.warning('Draft rejected code=%s generatedTokens=%d outputChars=%d', code, generated, len(text))
+            raise

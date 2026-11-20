@@ -7,3 +7,5 @@ tokenizers==0.22.1
 huggingface-hub==1.16.0
 safetensors==0.6.2
 urllib3==2.8.0
+numpy==2.2.6
+onnxruntime==1.23.2

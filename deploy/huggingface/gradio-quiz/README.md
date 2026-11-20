@@ -89,3 +89,15 @@ The REST bridge forwards HF's `x-ip-token` only to its own loopback Gradio
 queue, retaining the caller's quota context. This does not grant unlimited GPU
 access. A single question or narration requests 45 seconds; larger quiz batches
 request 90 seconds. Inference and retry budgets finish before the allocation.
+
+If HF explicitly reports GPU quota exhaustion or a GPU duration limit, REST
+requests run the same Qwen2.5-1.5B model as ONNX INT4 on the Space's existing
+CPU. This does not allocate a paid GPU or change hardware. The pinned CPU model
+loads lazily; the first request includes its download/startup time. CPU inference
+is slower, with one active request and bounded generation time. A success has
+`X-AI-Runtime: onnx-cpu`. Real model and citation validation are still required;
+there is no static-content fallback. Other infrastructure/model errors are not
+hidden or automatically retried. Readiness reports whether CPU has loaded.
+Authenticated server calls may set `X-AI-Runtime-Preference: cpu` to select CPU
+explicitly for a reproducible check or when avoiding GPU quota is preferred.
+The normal BE request uses automatic GPU/CPU selection and requires no change.

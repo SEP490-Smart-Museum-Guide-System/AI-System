@@ -1,19 +1,22 @@
 """Gradio ZeroGPU quiz/narration studio + authenticated REST bridge for BE."""
 import json
+import asyncio
 import os
 import secrets
 from typing import Literal
 import spaces  # Must initialize ZeroGPU before loading the PyTorch model.
 import gradio as gr
-import httpx
-from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi import FastAPI, Header, HTTPException, Request, Response
 from pydantic import BaseModel, ConfigDict, Field
 from app.engine import ChatFailure
 from app.studio import generate_draft
 from pytorch_engine import TorchQuizEngine
 from quiz_set import generate_quiz_set
+from hf_queue import queued_result
+from cpu_studio import CpuStudio
 
 ENGINE = TorchQuizEngine()  # CUDA placement at module scope, per ZeroGPU guidance.
+CPU_STUDIO = CpuStudio()
 KEY = os.environ.get('AI_CHAT_SERVICE_KEY', '')
 DIFFICULTIES = ['easy', 'medium', 'hard']
 PORT = int(os.environ.get('GRADIO_SERVER_PORT', os.environ.get('PORT', '7860')))
@@ -60,7 +63,8 @@ def gpu_narration(payload):
         request = QuizPayload.model_validate(payload)
         return {'ok': True, 'result': generate_draft(ENGINE, request)}
     except ChatFailure as error:
-        return {'ok': False, 'error': {'status': error.status, 'detail': str(error)}}
+        return {'ok': False, 'error': {'status': error.status, 'detail': str(error),
+                                      'code': getattr(error, 'code', 'MODEL_DRAFT_REJECTED')}}
 
 
 def submit_narration(name, source, audience='general', tone='vivid'):
@@ -103,6 +107,7 @@ api = FastAPI(title='SMGS Gradio quiz bridge')
 def ready():
     return {'status': 'ok', 'model_ready': True, 'model': 'Qwen2.5-1.5B-Instruct / PyTorch',
         'device': ENGINE.device, 'studio_modes': ['quiz', 'narration'],
+        'cpu_fallback_enabled': True, 'cpu_model_loaded': CPU_STUDIO.ready,
         'note': 'Readiness does not guarantee available ZeroGPU quota.'}
 
 
@@ -128,79 +133,63 @@ async def queued_quiz(body, x_service_key, count, ip_token=''):
     if body.mode != 'quiz': raise HTTPException(422, 'Space này chỉ triển khai mode quiz.')
     try: name, source, difficulty, excluded = checked(body.artifactName, body.sourceText, body.difficulty, json.dumps(body.excludeQuestions))
     except ValueError as error: raise HTTPException(422, str(error)) from error
-    # Enter through Gradio's queue so ZeroGPU gets the proper Gradio execution context.
-    # This bridge uses anonymous HF quota; it does not confer unlimited backend GPU access.
-    base = f'http://127.0.0.1:{PORT}'
-    try:
-        async with httpx.AsyncClient(base_url=base, timeout=210, trust_env=False,
-                headers={'x-ip-token': ip_token} if ip_token else {}) as client:
-            event = await client.post('/gradio_api/call/tao_quiz', json={'data': [name, source, difficulty, json.dumps(excluded,ensure_ascii=False), count]})
-            event.raise_for_status(); identifier = event.json()['event_id']
-            async with client.stream('GET', '/gradio_api/call/tao_quiz/' + identifier) as result:
-                result.raise_for_status(); kind = ''
-                async for line in result.aiter_lines():
-                    if line.startswith('event: '): kind = line[7:]
-                    elif line.startswith('data: ') and kind == 'complete':
-                        value = json.loads(line[6:])
-                        if not isinstance(value, list) or len(value) != 1 or not isinstance(value[0], dict): break
-                        return value[0]
-                    elif line.startswith('data: ') and kind == 'error':
-                        raise HTTPException(503, 'ZeroGPU chưa tạo được quiz: kiểm tra quota/hàng đợi và log Space.')
-    except httpx.TimeoutException as error: raise HTTPException(504, 'Space phản hồi quá thời gian.') from error
-    except (httpx.HTTPError, ValueError, KeyError) as error: raise HTTPException(502, 'Gradio chưa trả được kết quả hợp lệ.') from error
-    raise HTTPException(502, 'Chưa nhận được quiz hoàn chỉnh từ Gradio.')
+    return await queued_result(PORT, 'tao_quiz', [name, source, difficulty, json.dumps(excluded, ensure_ascii=False), count], ip_token, timeout=210)
 
 
 async def queued_narration(body, x_service_key, ip_token=''):
     if not KEY: raise HTTPException(503, 'Chưa cấu hình AI_CHAT_SERVICE_KEY trong Secrets.')
     if not secrets.compare_digest(x_service_key.encode(), KEY.encode()):
         raise HTTPException(401, 'Service key không hợp lệ.')
-    # Use the same Gradio queue context required by ZeroGPU, rather than calling
-    # a decorated GPU function directly from a FastAPI thread.
-    try:
-        async with httpx.AsyncClient(base_url=f'http://127.0.0.1:{PORT}', timeout=180, trust_env=False,
-                headers={'x-ip-token': ip_token} if ip_token else {}) as client:
-            event = await client.post('/gradio_api/call/soan_thuyet_minh', json={'data': [
-                body.artifactName, body.sourceText, body.audience, body.tone]})
-            event.raise_for_status()
-            identifier = event.json()['event_id']
-            async with client.stream('GET', '/gradio_api/call/soan_thuyet_minh/' + identifier) as response:
-                response.raise_for_status()
-                kind = ''
-                async for line in response.aiter_lines():
-                    if line.startswith('event: '): kind = line[7:]
-                    elif line.startswith('data: ') and kind == 'complete':
-                        values = json.loads(line[6:])
-                        if not isinstance(values, list) or len(values) != 1 or not isinstance(values[0], dict): break
-                        result = values[0]
-                        if result.get('ok') is True:
-                            return result['result']
-                        error = result.get('error', {})
-                        raise HTTPException(error.get('status', 503), error.get('detail', 'Chưa tạo được thuyết minh.'))
-                    elif line.startswith('data: ') and kind == 'error':
-                        raise HTTPException(503, 'ZeroGPU chưa tạo được thuyết minh: kiểm tra quota/hàng đợi Space.')
-    except httpx.TimeoutException as error:
-        raise HTTPException(504, 'Space phản hồi quá thời gian.') from error
-    except (httpx.HTTPError, ValueError, KeyError) as error:
-        raise HTTPException(502, 'Gradio chưa trả được thuyết minh hợp lệ.') from error
-    raise HTTPException(502, 'Chưa nhận được thuyết minh hoàn chỉnh từ Gradio.')
+    result = await queued_result(PORT, 'soan_thuyet_minh', [body.artifactName, body.sourceText, body.audience, body.tone], ip_token)
+    if result.get('ok') is True:
+        return result['result']
+    error = result.get('error', {})
+    raise HTTPException(error.get('status', 503), error.get('detail', 'Chưa tạo được thuyết minh.'),
+                        headers={'X-AI-Error-Code': error.get('code', 'MODEL_DRAFT_REJECTED')})
 
 
 @api.post('/api/v1/studio/drafts')
-async def rest_quiz(body: QuizPayload, request: Request, x_service_key: str = Header(default='')):
-    if body.mode == 'narration':
-        return await queued_narration(body, x_service_key, request.headers.get('x-ip-token', ''))
+async def rest_quiz(body: QuizPayload, request: Request, response: Response, x_service_key: str = Header(default='')):
+    if not KEY or not secrets.compare_digest(x_service_key.encode(), KEY.encode()):
+        raise HTTPException(401, 'Service key không hợp lệ.')
+    if request.headers.get('x-ai-runtime-preference') == 'cpu':
+        return await cpu_draft(body, response)
+    try:
+        if body.mode == 'narration':
+            return await queued_narration(body, x_service_key, request.headers.get('x-ip-token', ''))
+        result = await queued_quiz(body, x_service_key, 1, request.headers.get('x-ip-token', ''))
+        if result.get('generatedCount') != 1 or not result.get('complete'):
+            raise HTTPException(502, 'Chưa nhận được một câu hỏi hợp lệ.')
+        return result['questions'][0]
+    except HTTPException as error:
+        if (error.headers or {}).get('X-AI-Error-Code') not in {'HF_GPU_QUOTA', 'HF_GPU_DURATION'}:
+            raise
+    return await cpu_draft(body, response)
     # Existing BE/FE requests one item at a time with prior questions excluded.
     # Preserve that contract rather than unexpectedly returning an array here.
-    result = await queued_quiz(body, x_service_key, 1, request.headers.get('x-ip-token', ''))
-    if result.get('generatedCount') != 1 or not result.get('complete'):
-        raise HTTPException(502, 'Chưa nhận được một câu hỏi hợp lệ.')
-    return result['questions'][0]
+
+async def cpu_draft(body, response, count=None):
+    try:
+        result = await asyncio.to_thread(CPU_STUDIO.generate, body, count)
+    except ChatFailure as error:
+        raise HTTPException(error.status, str(error),
+                            headers={'X-AI-Error-Code': getattr(error, 'code', 'CPU_STUDIO_FAILED')}) from error
+    response.headers['X-AI-Runtime'] = 'onnx-cpu'
+    return result
 
 
 @api.post('/api/v1/studio/quiz-sets')
-async def rest_quiz_set(body: QuizSetPayload, request: Request, x_service_key: str = Header(default='')):
-    return await queued_quiz(body, x_service_key, body.count, request.headers.get('x-ip-token', ''))
+async def rest_quiz_set(body: QuizSetPayload, request: Request, response: Response, x_service_key: str = Header(default='')):
+    if not KEY or not secrets.compare_digest(x_service_key.encode(), KEY.encode()):
+        raise HTTPException(401, 'Service key không hợp lệ.')
+    if request.headers.get('x-ai-runtime-preference') == 'cpu':
+        return await cpu_draft(body, response, body.count)
+    try:
+        return await queued_quiz(body, x_service_key, body.count, request.headers.get('x-ip-token', ''))
+    except HTTPException as error:
+        if (error.headers or {}).get('X-AI-Error-Code') not in {'HF_GPU_QUOTA', 'HF_GPU_DURATION'}:
+            raise
+    return await cpu_draft(body, response, body.count)
 
 
 def launch(*, prevent_thread_lock=False):

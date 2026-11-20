@@ -20,7 +20,7 @@ def prepare(destination, sdk='docker', service='quiz'):
         raise ValueError('Unsupported service')
     elif sdk == 'gradio':
         folder=ROOT/'deploy/huggingface/gradio-quiz'
-        files={name:folder/name for name in ['app.py','pytorch_engine.py','quiz_set.py','grounded_quiz.py','quiz_quality.py','requirements.txt','README.md']}
+        files={name:folder/name for name in ['app.py','pytorch_engine.py','quiz_set.py','grounded_quiz.py','quiz_quality.py','hf_queue.py','cpu_studio.py','requirements.txt','README.md']}
         app_files=[ROOT/'AI Chat/app'/name for name in ['__init__.py','engine.py','studio.py']]
     elif sdk == 'docker':
         files = {

@@ -78,6 +78,8 @@ def run(bundle, port):
     spec = importlib.util.spec_from_file_location('space_entry', bundle / 'app.py')
     entry = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(entry)
+    from cpu_studio import CpuStudio
+    entry.CPU_STUDIO = CpuStudio(loader=FixtureEngine)
     # Exercise the actual SDK hook used by ZeroGPU, without claiming GPU access.
     from spaces.zero.gradio import one_launch
     hook_calls = []
@@ -105,6 +107,8 @@ def run(bundle, port):
             route = '/api/v1/studio/drafts'
             headers = {'X-Service-Key': os.environ['AI_CHAT_SERVICE_KEY']}
             check('missing service key', client.post(route, json=payload).status_code, 401)
+            check('missing key cannot initialize CPU fallback', entry.CPU_STUDIO.ready, False)
+            check('forced CPU cannot bypass auth', client.post(route, headers={'X-AI-Runtime-Preference': 'cpu'}, json=payload).status_code, 401)
             narration_payload = {**payload, 'mode': 'narration', 'audience': 'children', 'tone': 'academic'}
             check('narration requires key', client.post(route, json=narration_payload).status_code, 401)
             narration = client.post(route, headers=headers, json=narration_payload)
@@ -125,7 +129,18 @@ def run(bundle, port):
             check('raw quiz schema preserved',sorted(result.json()),sorted(fixture))
             check('raw quiz correct answer grounded',result.json()['options'][result.json()['correctIndex']].casefold(),'đựng nước')
             duplicate = client.post(route, headers=headers, json={**payload, 'excludeQuestions': [fixture['question']]})
-            check('duplicate fixture quiz rejected', duplicate.status_code, 503)
+            check('duplicate fixture quiz rejected', duplicate.status_code, 502)
+            entry.ENGINE.fail_after = 0
+            quota = client.post(route, headers=headers, json=payload)
+            check('GPU quota uses real CPU adapter fixture', quota.status_code, 200)
+            check('CPU fallback runtime is explicit', quota.headers.get('X-AI-Runtime'), 'onnx-cpu')
+            check('CPU fallback result is still grounded', quota.json().get('evidenceQuote'), fixture['evidenceQuote'])
+            from hf_queue import queue_failure
+            check('queue distinguishes GPU quota from model rejection', queue_failure('GPU quota exhausted').headers['X-AI-Error-Code'], 'HF_GPU_QUOTA')
+            entry.ENGINE.fail_after = None
+            cpu_narration = client.post(route, headers={**headers, 'X-AI-Runtime-Preference': 'cpu'}, json=narration_payload)
+            check('explicit CPU narration is real validated output', cpu_narration.status_code, 200)
+            check('explicit CPU runtime header', cpu_narration.headers.get('X-AI-Runtime'), 'onnx-cpu')
             batch_route = '/api/v1/studio/quiz-sets'
             batch_payload = {**payload, 'sourceText': full_source}
             check('batch requires service key', client.post(batch_route, json=batch_payload).status_code, 401)
