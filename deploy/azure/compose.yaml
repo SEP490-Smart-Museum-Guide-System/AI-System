@@ -74,6 +74,43 @@ services:
       retries: 3
       start_period: 30s
 
+  vision:
+    profiles: [vision]
+    image: smgs-vision:azure
+    build: '../../AI Vision'
+    restart: unless-stopped
+    ports: ['127.0.0.1:8001:8001']
+    environment:
+      AI_SERVICE_API_KEY: ${VISION_SERVICE_API_KEY:-}
+      AI_SYSTEM_DB_HOST: ${VISION_DB_HOST:-unconfigured.invalid}
+      AI_SYSTEM_DB_PORT: ${VISION_DB_PORT:-5432}
+      AI_SYSTEM_DB_NAME: ${VISION_DB_NAME:-smgs_demo}
+      AI_SYSTEM_DB_USER: ${VISION_DB_USER:-smgs_vision}
+      AI_SYSTEM_DB_PASSWORD: ${VISION_DB_PASSWORD:-}
+      PGSSLMODE: ${VISION_DB_SSLMODE:-verify-full}
+      PGSSLROOTCERT: /etc/ssl/certs/ca-certificates.crt
+      AI_VISION_DB_SCHEMA: ai_vision
+      MODEL_CACHE_DIR: /models
+      MODEL_NUM_THREADS: '1'
+      CLIP_ONNX_REPO_ID: infinilabs/pizza-clip-base-v1
+      CLIP_ONNX_REVISION: f71041903f3a04f7a883b90f0126eeb4ab44fa7c
+      CLIP_ONNX_FILENAME: clip-vit-base-patch32-vision.onnx
+    volumes: ['vision-models:/models']
+    read_only: true
+    tmpfs: ['/tmp:size=128m,mode=1777']
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    mem_limit: 2g
+    cpus: 1.0
+    pids_limit: 128
+    logging: *logs
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/ready', timeout=8)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 180s
+
   proxy:
     image: caddy:2
     restart: unless-stopped
@@ -97,5 +134,6 @@ volumes:
   tts-models:
   tts-audio:
   scan-data:
+  vision-models:
   caddy-data:
   caddy-config:

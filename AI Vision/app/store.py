@@ -33,9 +33,10 @@ class ReferenceStore:
 
     def initialize(self) -> None:
         with _connect() as connection:
-            connection.execute(
-                sql.SQL("CREATE SCHEMA IF NOT EXISTS {} ").format(sql.Identifier(settings.DB_SCHEMA))
-            )
+            # A pre-provisioned service schema needs no database-wide CREATE.
+            exists = connection.execute("SELECT 1 FROM pg_namespace WHERE nspname = %s", (settings.DB_SCHEMA,)).fetchone()
+            if exists is None:
+                connection.execute(sql.SQL("CREATE SCHEMA IF NOT EXISTS {} ").format(sql.Identifier(settings.DB_SCHEMA)))
             connection.execute(sql.SQL("""
                 CREATE TABLE IF NOT EXISTS {} (
                     id BIGSERIAL PRIMARY KEY,

@@ -34,3 +34,16 @@
         respond 404
     }
 }
+
+vision.172-198-161-72.sslip.io {
+    request_body {
+        max_size 12MB
+    }
+    @api path /api/v1/references /api/v1/references/* /api/v1/recognitions /ready /health /live
+    handle @api {
+        reverse_proxy vision:8001
+    }
+    handle {
+        respond 404
+    }
+}
