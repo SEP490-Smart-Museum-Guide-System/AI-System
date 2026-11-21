@@ -26,12 +26,21 @@
     request_body {
         max_size 520MB
     }
-    @api path /api/v1/scans /api/v1/scans/* /api/v1/artifacts/*/scans /ready /health /live
-    handle @api {
-        reverse_proxy scan:8002
+    @status {
+        method GET
+        path_regexp scan_status ^/api/v1/(scans/[0-9a-fA-F-]+|artifacts/[0-9]+/scans)$
     }
-    handle {
-        respond 404
+    @api path /api/v1/scans /api/v1/scans/* /api/v1/artifacts/*/scans /ready /health /live
+    route {
+        handle @status {
+            reverse_proxy scan-status:8003
+        }
+        handle @api {
+            reverse_proxy scan:8002
+        }
+        handle {
+            respond 404
+        }
     }
 }
 

@@ -48,6 +48,38 @@ Bản sửa 04/11/2026 giới hạn thêm `SCAN_MAX_IMAGE_PIXELS` (20 triệu pi
 
 Worker claim `QUEUED → PROCESSING` bằng một UPDATE có điều kiện để tránh nhận trùng. Startup không còn reset hàng loạt `PROCESSING` thành `QUEUED`, tránh cướp job đang chạy ở worker khác. Sau crash, job `PROCESSING` cần operator xác minh toàn bộ worker đã dừng trước khi phục hồi; chưa có lease/heartbeat hoặc tự phục hồi an toàn. Với storage local, vẫn chỉ triển khai một instance. Thay đổi này không biến BackgroundTasks thành hàng đợi phân tán production.
 
+### Hủy tác vụ (21/11/2026)
+
+`POST /api/v1/scans/{job_id}/cancel` yêu cầu service key và chỉ chuyển
+`QUEUED`, `PROCESSING`, `FINALIZING` sang `CANCELLED`. Gọi lại job đã hủy
+trả cùng trạng thái; job đã dựng xong trả 409 để dùng thao tác Bỏ kết quả.
+Ảnh, log và model hiện đang lưu của hiện vật được giữ nguyên. Worker cập nhật
+muộn không được ghi đè trạng thái đã hủy hoặc công bố GLB của job đã hủy.
+
+Mỗi job API chạy trong một process group riêng trên Azure/Linux. Watchdog kiểm
+tra yêu cầu hủy trong DB mỗi giây và dừng cả worker lẫn COLMAP/OpenMVS con;
+API dọn các process còn sót trong group. File `worker.log` giữ chẩn đoán.
+Job QUEUED đã hủy không được claim sau khi slot trống hoặc VM khởi động lại.
+Không có cơ chế tự chạy tiếp phần dựng dở sau khi VM bị tắt đột ngột.
+
+BE cung cấp `POST /api/artifacts/{artifactId}/scans/{jobId}/cancel`, kiểm tra
+Museum Staff/Admin được quản lý hiện vật và job thực sự thuộc hiện vật đó.
+Web dùng JWT của nhân viên, hiện hộp xác nhận và giữ trạng thái đang chạy nếu
+máy chủ từ chối hủy. Ngừng tải ảnh chỉ ngắt upload, sau đó phải kiểm tra job đã
+nhận; thao tác này khác Hủy dựng 3D đã được máy chủ nhận.
+
+### Tiến độ theo giai đoạn
+
+GET trạng thái trả thêm `activity`: `stage`, `title`, `phase`, `percent`,
+`completed`, `total`, `detail`, `lastActivityAt`. Các bộ đếm được đọc từ log
+COLMAP/OpenMVS giới hạn 192 KiB cuối file. Khớp ảnh đếm nhóm đã hoàn tất,
+không tính nhóm mới bắt đầu. Tối ưu camera không có tổng số vòng cố định nên
+`percent=null`; Web hiển thị thanh đang xử lý và tên giai đoạn.
+Phần trăm trong `activity` chỉ áp dụng cho giai đoạn được ghi rõ, không phải
+ước lượng thời gian còn lại hay phần trăm toàn job. Trường `progress` cũ vẫn
+giữ các mốc pipeline để tương thích. Khi BE/AI cũ chưa trả `activity`, Web dùng
+trạng thái đang xử lý thay vì giữ một phần trăm mốc như 10% trên thanh chính.
+
 ## API
 
 `SCAN_COLMAP_CAMERA_MODEL` mặc định `SIMPLE_RADIAL` cho bộ ảnh chụp cùng camera. Có thể đặt `PINHOLE` cho bộ ảnh render/camera đã hiệu chỉnh không có lens distortion; đây là cấu hình server, không đổi contract API. Worker kiểm tra SIMPLE_RADIAL để từ chối calibration có radial mapping bị gập trước khi undistort. 40/40 ảnh đăng ký hoặc reprojection error thấp chưa bảo đảm calibration đúng. Phép kiểm tra radial này chưa bao phủ các camera model khác.

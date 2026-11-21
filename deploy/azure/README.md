@@ -108,7 +108,13 @@ model/cache and Scan input/jobs/GLB across container recreation. Do not use down
 HTTPS proxy uses separate root hosts for TTS and Scan, compatible with BE URL
 validation. Azure NSG must permit TCP 80/443 for ACME/public API; only proxy is
 public. Python API ports 8000/8002 bind loopback. No access logging of request
-bodies or service keys. Scan CPU cap 3, TTS 1; Scan worker concurrency remains 1.
+bodies or service keys. Scan CPU cap 3.5, TTS 1; Scan worker concurrency remains 1.
+
+On 21/11 the running Scan container CPU quota was raised from 3 to 3.5 using
+`docker update --cpus 3.5`, preserving the running job and its native process.
+Two-second samples showed 6.02 CPU seconds before and 7.00 afterward. This
+confirms extra CPU allocation, not a measured reduction in total reconstruction
+time. The existing VM remains 4 vCPU; no VM size change was made.
 
 BE settings after HTTPS/readiness verification:
 

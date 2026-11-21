@@ -148,7 +148,7 @@ def run(source, root, prepare_only=False, on_update=None):
         report_status(status='REVIEW_REQUIRED', progress=100)
         return 0
     except BaseException as error:
-        if isinstance(error, KeyboardInterrupt):
+        if isinstance(error, (KeyboardInterrupt, SystemExit)):
             raise
         logging.exception('Local scan failed')
         report_status(status='FAILED', model_path='', error=str(error)[:800])

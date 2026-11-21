@@ -17,6 +17,7 @@ from fastapi.responses import JSONResponse
 import psycopg
 
 from . import jobs
+from .activity import activity
 from .reconstruction import openmvs_available
 from .settings import COLMAP_COMMAND, DATA_DIR, MIN_IMAGES, MAX_IMAGE_BYTES, MAX_IMAGES, MAX_METADATA_BYTES, MAX_TOTAL_BYTES, SERVICE_API_KEY
 from .validation import validate_image
@@ -106,8 +107,9 @@ async def _execute_job(job_id: str, job_dir: Path) -> None:
                 cwd=Path(__file__).resolve().parents[1], stdout=output, stderr=asyncio.subprocess.STDOUT,
                 start_new_session=os.name == 'posix')
             code = await child.wait()
-            if code:
-                await asyncio.to_thread(jobs.update, job_id, status='FAILED', error='Worker lỗi. Kiểm tra log service.')
+            record = await asyncio.to_thread(jobs.get, job_id)
+            if record and record['status'] in {'PROCESSING', 'FINALIZING'}:
+                await asyncio.to_thread(jobs.update, job_id, status='FAILED', error='Worker đã dừng trước khi hoàn tất. Bộ ảnh và log được giữ lại.')
     finally:
         if child is not None:
             await _stop_process_group(child)
@@ -229,6 +231,7 @@ def get_scan(job_id: uuid.UUID, x_service_key: str | None = Header(default=None)
                          if record.get("model_type") == "sparse_point_cloud" else None),
         "error": record["error"], "createdAt": record["created_at"], "updatedAt": record.get("updated_at"),
         "mode": record.get("capture_metadata", {}).get("mode", "photos"),
+        "activity": activity(DATA_DIR / 'scan-jobs' / job_id, record['status'], record['progress']),
     }
 
 

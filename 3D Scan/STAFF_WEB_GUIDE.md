@@ -53,7 +53,9 @@ Có thể chọn GLB local để xem thử trước khi upload. **Bỏ bản xem
 
 AI chạy trong image Linux có sẵn COLMAP/OpenMVS CPU; server không cần CUDA. BE đặt `AiScan__BaseUrl`, `AiScan__ServiceKey` trùng `SCAN_SERVICE_API_KEY`. Dùng DNS nội bộ nếu BE/AI cùng Docker network. Reverse proxy cần cho phép multipart ít nhất 550 MiB; BE đã đặt giới hạn riêng endpoint. Không mở public cổng AI có khóa cho trình duyệt.
 
-Hiện có một worker/instance, queue trong DB và background task. Chưa có lease/heartbeat, tự phục hồi job PROCESSING sau crash, cancel, quota người dùng, dọn ảnh/log định kỳ hoặc benchmark tải đồng thời. Lưu volume `/data` bền vững. Đây là luồng demo một server; cần bổ sung các mục trên trước vận hành nhiều khách.
+Hiện có một worker/instance, queue trong DB và background task. Nút **Hủy dựng 3D** chuyển tác vụ đang chờ/đang dựng sang CANCELLED, dừng process group riêng của job trên Azure/Linux và giữ bộ ảnh/log. **Đóng bảng tiến trình** chỉ đóng giao diện, job vẫn tiếp tục. Job FAILED/CANCELLED không được hiển thị như vẫn đang dựng. Cần deploy cả AI Scan, BE gateway và Web để sử dụng thao tác hủy.
+
+Chưa có lease/heartbeat, tự phục hồi job PROCESSING sau crash, quota người dùng, dọn ảnh/log định kỳ hoặc benchmark tải đồng thời. Sau khi VM bị tắt đột ngột, operator phải xác minh job có còn process chạy trước khi sửa trạng thái; không reset hàng loạt PROCESSING. Lưu volume `/data` bền vững. Đây là luồng demo một server.
 
 ## Kiểm chứng
 

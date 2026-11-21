@@ -31,7 +31,8 @@ def run(job_id, root):
         # Unwind _run's finally so its native child is reaped before exiting.
         raise SystemExit(0)
     signal.signal(signal.SIGTERM, terminate)
-    if jobs.get(job_id)['status'] == 'CANCELLED':
+    record = jobs.get(job_id)
+    if not record or record['status'] != 'PROCESSING':
         return
     stopped = threading.Event()
     watcher = threading.Thread(target=watch_cancellation, args=(job_id, stopped), daemon=True)

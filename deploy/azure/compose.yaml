@@ -64,11 +64,45 @@ services:
     cap_drop: [ALL]
     security_opt: ['no-new-privileges:true']
     mem_limit: 11g
-    cpus: 3.0
+    cpus: 3.5
     pids_limit: 512
     logging: *logs
     healthcheck:
       test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8002/ready', timeout=8)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  scan-status:
+    profiles: [scan]
+    image: smgs-scan:status
+    build: '../../3D Scan'
+    command: [/opt/venv/bin/uvicorn, app.read_api:app, --host, 0.0.0.0, --port, '8003', --workers, '1', --no-access-log]
+    restart: unless-stopped
+    ports: ['127.0.0.1:8003:8003']
+    environment:
+      SCAN_SERVICE_API_KEY: ${SCAN_SERVICE_API_KEY:?Set SCAN_SERVICE_API_KEY in .env.azure}
+      AI_SYSTEM_DB_HOST: ${AI_SYSTEM_DB_HOST:-unconfigured.invalid}
+      AI_SYSTEM_DB_PORT: ${AI_SYSTEM_DB_PORT:-5432}
+      AI_SYSTEM_DB_NAME: ${AI_SYSTEM_DB_NAME:-}
+      AI_SYSTEM_DB_USER: ${AI_SYSTEM_DB_USER:-}
+      AI_SYSTEM_DB_PASSWORD: ${AI_SYSTEM_DB_PASSWORD:-}
+      PGSSLMODE: ${PGSSLMODE:-verify-full}
+      PGSSLROOTCERT: ${PGSSLROOTCERT:-/etc/ssl/certs/ca-certificates.crt}
+      SCAN_DB_SCHEMA: ${SCAN_DB_SCHEMA:-ai_3d_scan}
+      SCAN_DATA_DIR: /data
+    volumes: ['scan-data:/data:ro']
+    read_only: true
+    tmpfs: ['/tmp:size=32m,mode=1777']
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    mem_limit: 384m
+    cpus: 0.25
+    pids_limit: 64
+    logging: *logs
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8003/ready', timeout=8)"]
       interval: 30s
       timeout: 10s
       retries: 3
