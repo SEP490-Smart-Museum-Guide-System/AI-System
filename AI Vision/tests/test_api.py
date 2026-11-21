@@ -50,6 +50,17 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(response['artifactId'], 7)
         self.assertEqual(len(response['candidates']), 1)
 
+    def test_backend_scope_filters_candidates_before_ranking_and_margin(self):
+        response = self.client.post('/api/v1/recognitions', headers=self.headers,
+            data={'artifact_ids': '[2]'}, files={'image': ('photo.png', b'fixture', 'image/png')})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual([v['artifactId'] for v in response.json()['candidates']], [2])
+        self.assertEqual(response.json()['margin'], 1.0)
+        for value in ['[true]', '[-1]', '{}', 'not json']:
+            result = self.client.post('/api/v1/recognitions', headers=self.headers,
+                data={'artifact_ids': value}, files={'image': ('photo.png', b'fixture', 'image/png')})
+            self.assertEqual(result.status_code, 422)
+
     def test_corrupt_vectors_are_skipped_and_all_invalid_is_unavailable(self):
         corrupt = [row(1, [float('nan'), 0]), row(2, [0, 0]), {'id': 3, 'artifact_id': 3, 'dimensions': 2, 'embedding': b'bad'}]
         self.store.list_embeddings.return_value = corrupt + [row(4, [1, 0])]

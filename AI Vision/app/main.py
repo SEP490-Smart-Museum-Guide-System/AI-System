@@ -1,10 +1,11 @@
 from contextlib import asynccontextmanager
+import json
 import logging
 import secrets
 
 import numpy as np
 import psycopg
-from fastapi import Depends, FastAPI, File, Header, HTTPException, Query, UploadFile
+from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, Query, UploadFile
 from fastapi.responses import JSONResponse
 
 from app import settings
@@ -124,7 +125,19 @@ def delete_references(artifact_id: int) -> dict[str, int]:
 def recognize(
     image: UploadFile = File(...),
     top_k: int = Query(default=3, ge=1, le=10),
+    artifact_ids: str | None = Form(default=None),
 ) -> dict[str, object]:
+    allowed = None
+    if artifact_ids is not None:
+        try:
+            if len(artifact_ids) > 65536:
+                raise ValueError()
+            values = json.loads(artifact_ids)
+            if not isinstance(values, list) or len(values) > 5000 or any(type(v) is not int or v <= 0 for v in values):
+                raise ValueError()
+            allowed = set(values)
+        except (ValueError, TypeError):
+            raise HTTPException(422, detail='Danh sách hiện vật được phép không hợp lệ.')
     content = read_image(image)
     try:
         encoder = get_encoder()
@@ -138,6 +151,8 @@ def recognize(
 
     best_by_artifact: dict[int, float] = {}
     for reference in references:
+        if allowed is not None and int(reference['artifact_id']) not in allowed:
+            continue
         if int(reference["dimensions"]) != query_embedding.size:
             LOGGER.warning("Ignoring reference %s with incompatible embedding size", reference["id"])
             continue

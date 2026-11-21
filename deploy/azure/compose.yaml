@@ -91,6 +91,7 @@ services:
       PGSSLROOTCERT: /etc/ssl/certs/ca-certificates.crt
       AI_VISION_DB_SCHEMA: ai_vision
       MODEL_CACHE_DIR: /models
+      MODEL_LOCAL_DIR: /models/pinned/f71041903f3a04f7a883b90f0126eeb4ab44fa7c
       MODEL_NUM_THREADS: '1'
       CLIP_ONNX_REPO_ID: infinilabs/pizza-clip-base-v1
       CLIP_ONNX_REVISION: f71041903f3a04f7a883b90f0126eeb4ab44fa7c

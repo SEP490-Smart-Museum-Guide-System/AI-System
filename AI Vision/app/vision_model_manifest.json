@@ -1,0 +1,16 @@
+{
+  "repo": "infinilabs/pizza-clip-base-v1",
+  "revision": "f71041903f3a04f7a883b90f0126eeb4ab44fa7c",
+  "files": [
+    {
+      "name": "clip-vit-base-patch32-vision.onnx",
+      "sha256": "0b2eb032ff5b9ab32224cee5913b3afa84db8cd1bb4209d07853a1c73f9096fa",
+      "bytes": 1186395
+    },
+    {
+      "name": "clip-vit-base-patch32-vision.onnx.data",
+      "sha256": "005ea46d805c9a3bde11be7a00e1350ea5c30dc0bcf1e5dd4607bcf3d76dce9b",
+      "bytes": 351404032
+    }
+  ]
+}

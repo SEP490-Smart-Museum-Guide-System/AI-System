@@ -1,5 +1,7 @@
 from functools import lru_cache
 import io
+import json
+import hashlib
 import os
 from pathlib import Path
 from threading import Lock
@@ -23,12 +25,27 @@ class EncoderUnavailable(RuntimeError):
 class ImageEncoder:
     def __init__(self) -> None:
         settings.MODEL_CACHE_DIR.mkdir(parents=True, exist_ok=True)
-        snapshot = Path(snapshot_download(
-            repo_id=settings.MODEL_REPO_ID,
-            revision=settings.MODEL_REVISION,
-            cache_dir=str(settings.MODEL_CACHE_DIR),
-            allow_patterns=[f"{settings.MODEL_FILENAME}*"],
-        ))
+        if settings.MODEL_LOCAL_DIR:
+            snapshot = Path(settings.MODEL_LOCAL_DIR)
+            manifest = json.loads(Path(__file__).with_name('vision_model_manifest.json').read_text())
+            if (manifest['repo'] != settings.MODEL_REPO_ID or manifest['revision'] != settings.MODEL_REVISION
+                    or snapshot.name != settings.MODEL_REVISION):
+                raise RuntimeError('Local model does not match the pinned model revision')
+            for item in manifest['files']:
+                path = snapshot / item['name']
+                digest = hashlib.sha256()
+                with path.open('rb') as source:
+                    for chunk in iter(lambda: source.read(1024 * 1024), b''):
+                        digest.update(chunk)
+                if digest.hexdigest() != item['sha256']:
+                    raise RuntimeError('Local model integrity check failed')
+        else:
+            snapshot = Path(snapshot_download(
+                repo_id=settings.MODEL_REPO_ID,
+                revision=settings.MODEL_REVISION,
+                cache_dir=str(settings.MODEL_CACHE_DIR),
+                allow_patterns=[f"{settings.MODEL_FILENAME}*"],
+            ))
         model_path = snapshot / settings.MODEL_FILENAME
         if not model_path.is_file():
             raise RuntimeError("ONNX image encoder was not found in the configured model repository")
