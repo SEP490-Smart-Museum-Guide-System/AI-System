@@ -111,12 +111,12 @@ class ApiTests(unittest.TestCase):
     def test_model_requires_safe_job_output_and_glb_extension(self):
         output = self.root / 'scan-jobs' / self.job / 'output'; output.mkdir(parents=True)
         inside = output / 'model.glb'; inside.write_bytes(b'glTF-fixture')
-        with patch.object(main.jobs, 'get', return_value={'model_path': str(inside)}):
+        with patch.object(main.jobs, 'get', return_value={'status': 'REVIEW_REQUIRED', 'model_path': str(inside)}):
             result = self.client.get(f'/api/v1/scans/{self.job}/model', headers=self.headers)
             self.assertEqual(result.status_code, 200)
             self.assertEqual(result.headers['content-type'], 'model/gltf-binary')
         outside = self.root / 'secret.glb'; outside.write_bytes(b'secret')
-        with patch.object(main.jobs, 'get', return_value={'model_path': str(outside)}):
+        with patch.object(main.jobs, 'get', return_value={'status': 'REVIEW_REQUIRED', 'model_path': str(outside)}):
             self.assertEqual(self.client.get(f'/api/v1/scans/{self.job}/model', headers=self.headers).status_code, 404)
 
     def test_only_reviewed_jobs_can_approve(self):
@@ -136,10 +136,10 @@ class WorkerTests(unittest.TestCase):
             self.assertIn('OpenMVS CPU', update.call_args.kwargs['error'])
 
     def test_job_not_claimed_is_never_processed(self):
-        with patch.object(main.jobs, 'claim', return_value=False), patch.object(main, 'process') as process:
+        with patch.object(main.jobs, 'claim', return_value=False), patch.object(main, '_execute_job', new_callable=AsyncMock) as process:
             asyncio.run(main._run_job(str(uuid4()), Path('unused')))
             process.assert_not_called()
-        with patch.object(main.jobs, 'claim', return_value=True), patch.object(main, 'process') as process:
+        with patch.object(main.jobs, 'claim', return_value=True), patch.object(main, '_execute_job', new_callable=AsyncMock) as process:
             asyncio.run(main._run_job(str(uuid4()), Path('unused')))
             process.assert_called_once()
 

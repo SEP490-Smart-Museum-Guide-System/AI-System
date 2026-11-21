@@ -97,7 +97,8 @@ def update(job_id: str, *, status: str | None = None, progress: int | None = Non
             assignments.append(sql.SQL("{} = %s").format(sql.Identifier(key)))
             values.append(value)
     values.append(UUID(job_id))
-    query = sql.SQL("UPDATE {} SET {} WHERE id = %s").format(
+    # A late worker callback must never resurrect a cancelled/finished job.
+    query = sql.SQL("UPDATE {} SET {} WHERE id = %s AND status IN ('QUEUED','PROCESSING','FINALIZING')").format(
         _table(), sql.SQL(", ").join(assignments)
     )
     with _connect() as db:
@@ -135,3 +136,11 @@ def for_artifact(artifact_id: int):
 def discard(job_id: str) -> bool:
     with _connect() as db:
         return db.execute(sql.SQL("UPDATE {} SET status='DISCARDED', updated_at=%s WHERE id=%s AND status IN ('REVIEW_REQUIRED','FAILED') RETURNING id").format(_table()), (_now(), UUID(job_id))).fetchone() is not None
+
+
+def cancel(job_id: str) -> bool:
+    with _connect() as db:
+        return db.execute(sql.SQL(
+            "UPDATE {} SET status='CANCELLED', error=%s, updated_at=%s "
+            "WHERE id=%s AND status IN ('QUEUED','PROCESSING','FINALIZING') RETURNING id"
+        ).format(_table()), ('Đã hủy tác vụ dựng 3D. Bộ ảnh và log được giữ lại.', _now(), UUID(job_id))).fetchone() is not None

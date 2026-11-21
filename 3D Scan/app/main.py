@@ -1,9 +1,12 @@
 import asyncio
 import json
 import logging
+import os
 import re
 import secrets
 import shutil
+import signal
+import sys
 import uuid
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -14,12 +17,13 @@ from fastapi.responses import JSONResponse
 import psycopg
 
 from . import jobs
-from .reconstruction import openmvs_available, process
+from .reconstruction import openmvs_available
 from .settings import COLMAP_COMMAND, DATA_DIR, MIN_IMAGES, MAX_IMAGE_BYTES, MAX_IMAGES, MAX_METADATA_BYTES, MAX_TOTAL_BYTES, SERVICE_API_KEY
 from .validation import validate_image
 
 _job_slots = asyncio.Semaphore(1)
 _recovery_tasks: set[asyncio.Task] = set()
+_worker_stopped: dict[str, asyncio.Event] = {}
 LOGGER = logging.getLogger(__name__)
 
 
@@ -67,16 +71,55 @@ async def authenticate_before_upload(request, call_next):
     return await call_next(request)
 
 
+async def _stop_process_group(child) -> None:
+    if os.name == 'posix':
+        try:
+            os.killpg(child.pid, signal.SIGTERM)
+        except ProcessLookupError:
+            await child.wait()
+            return
+    elif child.returncode is None:
+        child.terminate()
+    try:
+        await asyncio.wait_for(child.wait(), timeout=5)
+    except asyncio.TimeoutError:
+        pass
+    # Also reap descendants that ignored TERM after their parent exited.
+    if os.name == 'posix':
+        try:
+            os.killpg(child.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+    elif child.returncode is None:
+        child.kill()
+    await child.wait()
+
+
+async def _execute_job(job_id: str, job_dir: Path) -> None:
+    stopped = asyncio.Event()
+    _worker_stopped[job_id] = stopped
+    child = None
+    try:
+        with (job_dir / 'worker.log').open('ab', buffering=0) as output:
+            child = await asyncio.create_subprocess_exec(
+                sys.executable, '-u', '-m', 'app.job_runner', job_id, str(job_dir),
+                cwd=Path(__file__).resolve().parents[1], stdout=output, stderr=asyncio.subprocess.STDOUT,
+                start_new_session=os.name == 'posix')
+            code = await child.wait()
+            if code:
+                await asyncio.to_thread(jobs.update, job_id, status='FAILED', error='Worker lỗi. Kiểm tra log service.')
+    finally:
+        if child is not None:
+            await _stop_process_group(child)
+        stopped.set()
+        _worker_stopped.pop(job_id, None)
+
+
 async def _run_job(job_id: str, job_dir: Path) -> None:
     async with _job_slots:
         try:
             if await asyncio.to_thread(jobs.claim, job_id):
-                if (job_dir / 'config.json').is_file():
-                    from tools.local_scan_worker import run
-                    await asyncio.to_thread(run, job_dir / 'dataset', job_dir,
-                                            on_update=lambda **changes: jobs.update(job_id, **changes))
-                else:
-                    await asyncio.to_thread(process, job_id, job_dir)
+                await _execute_job(job_id, job_dir)
         except Exception:
             LOGGER.exception("Scan worker failed for job %s", job_id)
             await asyncio.to_thread(jobs.update, job_id, status='FAILED', error='Worker lỗi. Kiểm tra log service.')
@@ -184,7 +227,7 @@ def get_scan(job_id: uuid.UUID, x_service_key: str | None = Header(default=None)
         "modelType": record.get("model_type"),
         "modelWarning": ("Bản xem trước là đám mây điểm thưa, chưa phải bề mặt mesh kín."
                          if record.get("model_type") == "sparse_point_cloud" else None),
-        "error": record["error"], "createdAt": record["created_at"],
+        "error": record["error"], "createdAt": record["created_at"], "updatedAt": record.get("updated_at"),
         "mode": record.get("capture_metadata", {}).get("mode", "photos"),
     }
 
@@ -230,12 +273,30 @@ def discard_scan(job_id: uuid.UUID, x_service_key: str | None = Header(default=N
     return {'scanJobId': str(job_id), 'status': 'DISCARDED'}
 
 
+@app.post('/api/v1/scans/{job_id}/cancel')
+async def cancel_scan(job_id: uuid.UUID, x_service_key: str | None = Header(default=None)):
+    _authorize(x_service_key)
+    identifier = str(job_id)
+    record = await asyncio.to_thread(jobs.get, identifier)
+    if record is None:
+        raise HTTPException(404, 'Không tìm thấy scan job.')
+    if record['status'] != 'CANCELLED' and not await asyncio.to_thread(jobs.cancel, identifier):
+        raise HTTPException(409, 'Chỉ hủy được tác vụ đang xếp hàng hoặc đang dựng. Kết quả đã xong có thể dùng Bỏ kết quả.')
+    stopped = _worker_stopped.get(identifier)
+    if stopped is not None:
+        try:
+            await asyncio.wait_for(stopped.wait(), timeout=10)
+        except asyncio.TimeoutError:
+            pass
+    return await asyncio.to_thread(get_scan, job_id, x_service_key)
+
+
 @app.get("/api/v1/scans/{job_id}/model")
 def get_model(job_id: uuid.UUID, x_service_key: str | None = Header(default=None)):
     _authorize(x_service_key)
     job_id = str(job_id)
     record = jobs.get(job_id)
-    if not record or not record["model_path"]:
+    if not record or record.get('status') not in {'REVIEW_REQUIRED', 'COMPLETED'} or not record["model_path"]:
         raise HTTPException(404, detail="Model chưa sẵn sàng.")
     path = Path(record["model_path"]).resolve()
     allowed_root = (DATA_DIR / "scan-jobs" / job_id / "output").resolve()
