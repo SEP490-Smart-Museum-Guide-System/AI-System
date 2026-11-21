@@ -1,4 +1,48 @@
-# Azure: Scan CPU + TTS only
+# Azure: Scan CPU, TTS and Vision
+
+## Verified 21/11/2026 — Vision running; BE rollout pending
+
+- Vision is running on the existing VM at
+  https://vision.172-198-161-72.sslip.io/ready (HTTP 200, model_ready=true).
+- Existing PostgreSQL `smgs_demo` connects as `smgs_vision`, schema `ai_vision`,
+  TLS 1.3 with certificate/hostname verification. This role cannot create a
+  database or create schemas in the database. Scan credentials are separate.
+- CLIP ViT-B/32 ONNX is pinned to
+  `f71041903f3a04f7a883b90f0126eeb4ab44fa7c`; the offline image includes the
+  graph and external weights, verified against `app/vision_model_manifest.json`.
+  Model embeddings are 512-dimensional. A synthetic image encode took 0.113s
+  in the isolated Azure smoke test; this is not end-to-end latency or accuracy.
+- Real model + DB index/read/recognition checks passed in a rolled-back
+  transaction. No test reference was persisted. Authenticated invalid images
+  return 415; requests without the service key return 401 before parsing uploads.
+- The reference index is empty. Hosting/readiness does not imply that real
+  museum artifacts can already be recognized. Staff must add reference images.
+- Production BE integration is pending. Private `.env.be-vision` contains only
+  `AiVision__BaseUrl` and `AiVision__ServiceKey` for the BE operator; do not paste
+  the key into chat or configure it as a VITE/Flutter variable.
+- Deploy the BE `ArtifactVisionController` and named `artifact-vision` client.
+  Web/mobile use user JWTs via `/api/vision/health`, `/api/vision/recognitions`
+  and `/api/artifacts/{id}/vision/references`. Reference mutations require
+  staff/admin assignment; recognition searches only active published artifacts.
+  Deploy those client changes after the BE gateway is available.
+
+Vision uses a separate private `.env.vision` (template `.env.vision.example`).
+On the VM, run only the requested service:
+
+```sh
+cd /home/azureuser/smgs-ai/deploy/azure
+sudo docker compose --env-file .env.azure --env-file .env.vision --profile vision up -d --no-deps --no-build vision
+```
+
+The installed image is `smgs-vision:azure`. Its build used an offline bundle of
+Linux wheels and the verified pinned model because PyPI timed out during Azure
+builds. Deployment staging is `/home/azureuser/vision-deploy-20261121`; the local
+bundle is in `D:\SEP409\tmp\vision-deploy-20261121`. No secrets are in the bundle.
+`VISION_MODEL_LOCAL_DIR` points to `/models/pinned/<revision>` for that image.
+For a standard source rebuild without bundled weights, leave this setting empty
+to use the normal pinned Hugging Face cache download. Keep `vision-models` volume.
+
+The older dated sections below describe earlier deployment states.
 
 ## Verified 20/11/2026 — Scan connected
 

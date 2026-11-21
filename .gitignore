@@ -2,6 +2,7 @@
 .env.*
 !.env.example
 !deploy/azure/.env.azure.example
+!deploy/azure/.env.vision.example
 deploy/azure/*verification.json
 deploy/azure/*.wav
 __pycache__/
