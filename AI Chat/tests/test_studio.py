@@ -3,7 +3,7 @@ import unittest
 import threading
 from types import SimpleNamespace
 from app.engine import ChatFailure
-from app.studio import generate_draft, validate_draft
+from app.studio import generate_draft, validate_draft, narration_quality, narration_result, narration_source
 
 
 class DraftTests(unittest.TestCase):
@@ -48,3 +48,57 @@ class DraftTests(unittest.TestCase):
         engine = Engine({'answer': 'Xí nghiệp thiết bị lạnh', 'supported': True})
         with self.assertRaises(ChatFailure): generate_draft(engine, request)
         self.assertFalse(engine.lock.locked())
+
+    def test_narration_rewrites_instead_of_accepting_copied_notes(self):
+        source = 'Miệng bình loe rộng. ' * 25
+        for text, code in [(source, 'narration_copied_source'), ('Miệng bình loe rộng.', 'narration_too_short'),
+                           ('Chất liệu: chưa rõ. Hình dáng: miệng loe. ' + 'Mời quan sát hiện vật. ' * 25, 'narration_still_notes')]:
+            with self.subTest(code=code), self.assertRaises(ChatFailure) as caught:
+                narration_quality({'narrationText': text}, source)
+            self.assertEqual(caught.exception.code, code)
+
+    def test_rejected_copy_is_retried_once_with_correction_and_lock_released(self):
+        source = 'Bình gốm được dùng để đựng nước.'
+        # Labelled model fixture: tests retry/validation, not model writing quality.
+        rewritten = ('Mời quý khách dừng lại trước chiếc bình và cùng tìm hiểu thông tin về công dụng của hiện vật. '
+                     'Theo tư liệu, đây là một chiếc bình gốm dùng để chứa nước. '
+                     'Hãy dành một chút thời gian quan sát hiện vật trước khi tiếp tục hành trình tham quan. '
+                     'Khi nhìn lại chiếc bình, quý khách hãy ghi nhớ công dụng đựng nước được giới thiệu trong tư liệu.')
+        class Engine:
+            draft_budget_seconds = 30
+            def __init__(self, always_copy=False):
+                self.lock = threading.Lock(); self.calls = []; self.always_copy = always_copy
+            def generate_json(inner, prompt, validator, **options):
+                inner.calls.append((prompt, options))
+                text = source if inner.always_copy or len(inner.calls) == 1 else rewritten
+                return validator(text)
+        request = SimpleNamespace(sourceText=source, mode='narration', audience='general', tone='vivid',
+                                  artifactName='Bình gốm', excludeQuestions=[])
+        engine = Engine()
+        self.assertEqual(generate_draft(engine, request)['narrationText'], rewritten)
+        self.assertEqual(len(engine.calls), 2)
+        self.assertIn('Revise the narration', engine.calls[1][0])
+        self.assertLessEqual(engine.calls[1][1]['deadline_seconds'], engine.calls[0][1]['deadline_seconds'])
+        self.assertFalse(engine.lock.locked())
+        engine = Engine(always_copy=True)
+        with self.assertRaises(ChatFailure): generate_draft(engine, request)
+        self.assertEqual(len(engine.calls), 2)
+        self.assertFalse(engine.lock.locked())
+
+    def test_narration_metadata_uses_only_literal_source_spans(self):
+        source = 'Miệng bình loe rộng. ' * 25
+        prose = ('Mời quý khách quan sát hiện vật ở trước mặt. ' + 'Hãy nhìn kỹ phần miệng bình đang loe rộng. ' * 12)
+        result = narration_result(prose, source, 'Bình gốm')
+        self.assertEqual(result['title'], 'Bình gốm')
+        self.assertEqual(result['narrationText'], prose.strip())
+        self.assertEqual(result['evidenceQuotes'], ['Miệng bình loe rộng.'])
+        with self.assertRaises(ChatFailure): narration_result(prose + ' Năm 1900.', source, 'Bình gốm')
+        with self.assertRaises(ChatFailure): narration_result('{"narrationText":"notes"}', source, 'Bình gốm')
+
+    def test_software_metadata_is_not_spoken_but_uncertain_facts_are_preserved(self):
+        facts = 'Chất liệu có lẽ là đất nung. Công dụng có thể là đựng nước.'
+        cleaned = narration_source(facts + ' Đây là tư liệu giả lập để kiểm thử phần mềm.')
+        self.assertIn('có lẽ', cleaned)
+        self.assertIn('có thể', cleaned)
+        self.assertNotIn('phần mềm', cleaned)
+        with self.assertRaises(ChatFailure): narration_source('Đây là tư liệu giả lập để kiểm thử phần mềm.')

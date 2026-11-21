@@ -38,7 +38,7 @@ def run(bundle, port):
 
     class FixtureEngine:
         device = 'cpu-fixture'
-        def __init__(self):
+        def __init__(self, **kwargs):
             self.lock = threading.Lock()
             self.force_duplicate = False
             self.fail_after = None
@@ -47,13 +47,20 @@ def run(bundle, port):
             self.targets = []
         def generate_json(self, prompt, validator, **kwargs):
             from app.engine import ChatFailure
-            payload = json.loads(prompt.rsplit('<|im_start|>user\n', 1)[1].split('<|im_end|>')[0])
-            if kwargs.get('prefix') == '{"title":':
-                candidate = {'title': 'Bình gốm', 'narrationText': payload['SOURCE'],
-                             'evidenceQuotes': [fixture['evidenceQuote']]}
+            payload = json.JSONDecoder().raw_decode(prompt.rsplit('<|im_start|>user\n', 1)[1].split('<|im_end|>')[0])[0]
+            if kwargs.get('prefix', '').startswith(('Mời ', 'Theo tư liệu,', 'Chúng ta cùng', 'Trước khi ')):
+                # Labelled writing fixture, not an inference-quality claim.
+                narration = ('Mời quý khách dừng lại trước chiếc bình và cùng tìm hiểu thông tin về công dụng của hiện vật. '
+                    'Theo tư liệu, đây là một chiếc bình gốm dùng để chứa nước. '
+                    'Hãy dành một chút thời gian quan sát hiện vật trước khi tiếp tục hành trình tham quan. '
+                    'Khi nhìn lại chiếc bình, quý khách hãy ghi nhớ công dụng đựng nước được giới thiệu trong tư liệu. '
+                    'Đây là điểm chính mà phần giới thiệu muốn gửi tới quý khách khi quan sát hiện vật này.')
                 if self.wrong_evidence:
-                    candidate['evidenceQuotes'] = ['Trích dẫn này không có trong tư liệu.']
-                return validator(json.dumps(candidate, ensure_ascii=False))
+                    narration += ' Hiện vật có từ năm 1900.'
+                else:
+                    # Distinct fixture paragraphs for the bounded three-part flow.
+                    narration += [' Hãy bắt đầu quan sát.',' Hãy nhìn kỹ hiện vật.',' Cảm ơn quý khách.'][len(payload.get('alreadyWritten', []))]
+                return validator(narration)
             excluded = payload['EXCLUDED']
             if self.fail_once:
                 self.fail_once = False
@@ -74,6 +81,8 @@ def run(bundle, port):
 
     replacement = types.ModuleType('pytorch_engine')
     replacement.TorchQuizEngine = FixtureEngine
+    replacement.NARRATION_MODEL_ID = 'labelled-narration-model-fixture'
+    replacement.NARRATION_REVISION = 'fixture'
     sys.modules['pytorch_engine'] = replacement
     spec = importlib.util.spec_from_file_location('space_entry', bundle / 'app.py')
     entry = importlib.util.module_from_spec(spec)
@@ -114,11 +123,11 @@ def run(bundle, port):
             narration = client.post(route, headers=headers, json=narration_payload)
             check('narration REST enters real Gradio queue', narration.status_code, 200)
             check('narration schema matches BE', sorted(narration.json()), ['evidenceQuotes', 'narrationText', 'title'])
-            check('narration preserves source evidence', narration.json().get('evidenceQuotes'), [fixture['evidenceQuote']])
-            entry.ENGINE.wrong_evidence = True
+            check('narration evidence comes only from source', all(q in narration_payload['sourceText'] for q in narration.json().get('evidenceQuotes', [])), True)
+            entry.NARRATION_ENGINE.wrong_evidence = True
             invalid_narration = client.post(route, headers=headers, json=narration_payload)
-            check('narration without source evidence rejected', invalid_narration.status_code, 502)
-            entry.ENGINE.wrong_evidence = False
+            check('narration with invented numeric facts rejected', invalid_narration.status_code, 502)
+            entry.NARRATION_ENGINE.wrong_evidence = False
             check('unknown studio mode rejected', client.post(route, headers=headers, json={**payload, 'mode': 'unknown'}).status_code, 422)
             check('short source', client.post(route, headers=headers, json={**payload, 'sourceText': 'short'}).status_code, 422)
             check('invalid difficulty', client.post(route, headers=headers, json={**payload, 'difficulty': 'invalid'}).status_code, 422)

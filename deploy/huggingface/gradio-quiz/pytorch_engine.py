@@ -9,6 +9,8 @@ from app.engine import ChatFailure
 
 MODEL_ID = 'Qwen/Qwen2.5-1.5B-Instruct'
 REVISION = '989aa7980e4cf806f80c7fef2b1adb7bc71aa306'
+NARRATION_MODEL_ID = 'Qwen/Qwen3-4B-Instruct-2507'
+NARRATION_REVISION = 'cdbee75f17c01a7cc42f958dc650907174af0554'
 LOGGER = logging.getLogger(__name__)
 
 
@@ -25,17 +27,18 @@ class JsonComplete(StoppingCriteria):
 
 
 class TorchQuizEngine:
-    def __init__(self):
+    draft_budget_seconds = 40
+    def __init__(self, model_id=MODEL_ID, revision=REVISION):
         self.device = os.environ.get('SMGS_DEVICE', 'cuda' if os.environ.get('SPACE_ID') else 'cpu')
         if self.device not in {'cuda', 'cpu'}: raise ValueError('Unsupported SMGS_DEVICE')
         torch.set_num_threads(2)
-        self.tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, revision=REVISION, trust_remote_code=False)
-        self.model = AutoModelForCausalLM.from_pretrained(MODEL_ID, revision=REVISION, trust_remote_code=False,
+        self.tokenizer = AutoTokenizer.from_pretrained(model_id, revision=revision, trust_remote_code=False)
+        self.model = AutoModelForCausalLM.from_pretrained(model_id, revision=revision, trust_remote_code=False,
             dtype=torch.float16 if self.device == 'cuda' else torch.float32).to(self.device).eval()
         self.lock = threading.Lock()
 
     def generate_json(self, prompt, validator, *, max_new_tokens=None, prefix='', deadline_seconds=None,
-            temperature=0.0, seed=None):
+            temperature=0.0, seed=None, min_new_tokens=0, repetition_penalty=1):
         inputs = self.tokenizer(prompt, return_tensors='pt', add_special_tokens=False)
         length = inputs['input_ids'].shape[1]
         if length > 2048: raise ChatFailure('Tư liệu quá dài. Hãy chọn một đoạn ngắn hơn.', 422)
@@ -46,7 +49,9 @@ class TorchQuizEngine:
             if seed is not None: torch.manual_seed(seed)
             output = self.model.generate(**inputs, do_sample=sampling,
                 temperature=temperature if sampling else None, top_p=0.9 if sampling else None,
-                top_k=40 if sampling else None, max_new_tokens=min(max_new_tokens or 350, 1024),
+                top_k=40 if sampling else None, max_new_tokens=min(max_new_tokens or 350, 1280),
+                min_new_tokens=min(min_new_tokens, min(max_new_tokens or 350, 1280)),
+                repetition_penalty=repetition_penalty,
                 max_time=min(deadline_seconds or 40, 40), pad_token_id=self.tokenizer.eos_token_id,
                 stopping_criteria=StoppingCriteriaList([JsonComplete(self.tokenizer, length, prefix)]))
         text = prefix + self.tokenizer.decode(output[0, length:], skip_special_tokens=True).strip()
@@ -56,7 +61,7 @@ class TorchQuizEngine:
         except ChatFailure as error:
             generated = output.shape[1] - length
             code = getattr(error, 'code', 'invalid_draft')
-            if code == 'invalid_json' and generated >= min(max_new_tokens or 350, 1024):
+            if code == 'invalid_json' and generated >= min(max_new_tokens or 350, 1280):
                 code = 'output_token_limit'
                 error.code = code
             LOGGER.warning('Draft rejected code=%s generatedTokens=%d outputChars=%d', code, generated, len(text))

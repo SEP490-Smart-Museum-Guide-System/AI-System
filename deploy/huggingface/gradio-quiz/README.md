@@ -73,6 +73,22 @@ and `tone`, using the same service key. It returns `title`, `narrationText`,
 and `evidenceQuotes` as required by BE. Quotes must occur in the source;
 invented numeric facts are rejected. This generates a draft only; audio is
 produced by the separate Azure TTS service through BE.
+Narration rewrites notes into connected visitor-facing prose with an opening,
+guided observation and a closing (normally 120–180 Vietnamese words for a short
+source). Audience/tone affect the instructions. Added transitions must not invent
+facts or turn tentative descriptions into certainty. Copied/very short output is
+rejected and gets one correction attempt within the existing inference budget.
+The model writes prose without a stock narration example. The adapter retains the
+supplied artifact name as title and attaches up to three literal source excerpts,
+ranked by overlap with the prose. This avoids JSON/citation-count generation errors;
+the BE response schema is unchanged. Overlap is not semantic verification.
+These checks do not prove historical accuracy; curator review is still required.
+Narration uses Qwen3-4B-Instruct-2507 with a separate prose prompt/decoder;
+quiz retains Qwen2.5-1.5B. Both GPU and ONNX revisions are pinned in their adapters.
+The Qwen3 ONNX export includes two external weight shards, downloaded lazily with
+the graph. Its first CPU request can take longer while downloading/loading.
+Quiz/chat defaults are unchanged. Total inference time remains bounded, including
+one correction. No minimum token floor forces a model to invent filler.
 Direct Gradio APIs: `/tao_quiz`, with inputs name, source, difficulty,
 excluded JSON array and count; `/soan_thuyet_minh`, with inputs name, source,
 audience and tone.
@@ -91,7 +107,7 @@ access. A single question or narration requests 45 seconds; larger quiz batches
 request 90 seconds. Inference and retry budgets finish before the allocation.
 
 If HF explicitly reports GPU quota exhaustion or a GPU duration limit, REST
-requests run the same Qwen2.5-1.5B model as ONNX INT4 on the Space's existing
+requests run the mode's pinned model as ONNX INT4 on the Space's existing
 CPU. This does not allocate a paid GPU or change hardware. The pinned CPU model
 loads lazily; the first request includes its download/startup time. CPU inference
 is slower, with one active request and bounded generation time. A success has

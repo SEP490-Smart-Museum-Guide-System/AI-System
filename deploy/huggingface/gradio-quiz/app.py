@@ -10,12 +10,13 @@ from fastapi import FastAPI, Header, HTTPException, Request, Response
 from pydantic import BaseModel, ConfigDict, Field
 from app.engine import ChatFailure
 from app.studio import generate_draft
-from pytorch_engine import TorchQuizEngine
+from pytorch_engine import TorchQuizEngine, NARRATION_MODEL_ID, NARRATION_REVISION
 from quiz_set import generate_quiz_set
 from hf_queue import queued_result
 from cpu_studio import CpuStudio
 
 ENGINE = TorchQuizEngine()  # CUDA placement at module scope, per ZeroGPU guidance.
+NARRATION_ENGINE = TorchQuizEngine(model_id=NARRATION_MODEL_ID, revision=NARRATION_REVISION)
 CPU_STUDIO = CpuStudio()
 KEY = os.environ.get('AI_CHAT_SERVICE_KEY', '')
 DIFFICULTIES = ['easy', 'medium', 'hard']
@@ -61,7 +62,7 @@ def submit(name, source, difficulty, excluded_json='[]', count=5):
 def gpu_narration(payload):
     try:
         request = QuizPayload.model_validate(payload)
-        return {'ok': True, 'result': generate_draft(ENGINE, request)}
+        return {'ok': True, 'result': generate_draft(NARRATION_ENGINE, request)}
     except ChatFailure as error:
         return {'ok': False, 'error': {'status': error.status, 'detail': str(error),
                                       'code': getattr(error, 'code', 'MODEL_DRAFT_REJECTED')}}
@@ -108,6 +109,7 @@ def ready():
     return {'status': 'ok', 'model_ready': True, 'model': 'Qwen2.5-1.5B-Instruct / PyTorch',
         'device': ENGINE.device, 'studio_modes': ['quiz', 'narration'],
         'cpu_fallback_enabled': True, 'cpu_model_loaded': CPU_STUDIO.ready,
+        'narration_model': NARRATION_MODEL_ID,
         'note': 'Readiness does not guarantee available ZeroGPU quota.'}
 
 
