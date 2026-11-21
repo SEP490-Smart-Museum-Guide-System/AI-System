@@ -9,18 +9,31 @@ def activity(root: Path, status: str, progress: int = 0) -> dict:
                   percent=None, completed=None, total=None, lastActivityAt=None,
                   detail='Máy chủ đang xử lý giai đoạn này. Tiến độ toàn tác vụ được cập nhật theo mốc.')
     if status in {'REVIEW_REQUIRED', 'COMPLETED'}:
-        return {**result, 'stage': 'complete', 'title': 'Đã dựng xong mô hình', 'phase': 5, 'percent': 100, 'detail': ''}
+        result.update(stage='complete', title='Đã dựng xong mô hình', phase=5, percent=100, detail='')
     if status in {'FAILED', 'CANCELLED', 'DISCARDED'}:
         return {**result, 'stage': 'stopped', 'title': 'Tác vụ đã dừng', 'phase': 0, 'detail': ''}
     if status == 'QUEUED':
         return {**result, 'stage': 'queued', 'title': 'Đang xếp hàng', 'phase': 0, 'detail': 'Đang chờ worker nhận bộ ảnh.'}
     if status == 'FINALIZING':
-        return {**result, 'stage': 'export', 'title': 'Kiểm định và đóng gói GLB', 'phase': 4}
+        result.update(stage='export', title='Kiểm định và đóng gói GLB', phase=4)
     logs = []
     for directory in (root/'logs', root/'openmvs', root/'openmvs/logs', root/'openmvs/patchmatch', root/'openmvs/patchmatch/logs'):
         if directory.is_dir():
             logs.extend(p for p in directory.glob('*.log') if p.is_file())
     if not logs:
+        return result
+    # Keep photo work visible after the engine advances to mesh/texture.
+    native_depth_logs = [p for p in logs if 'densifypointcloud' in p.name.lower()]
+    if native_depth_logs:
+        try:
+            depth_log = max(native_depth_logs, key=lambda p: p.stat().st_mtime)
+            if depth_log.stat().st_size <= 196608:
+                values = re.findall(r'Depth-map for image\s+(\d+)\s+estimated', depth_log.read_text(encoding='utf8', errors='replace'))
+                if values:
+                    result.update(depthImages=len(set(values)), depthOperations=len(values))
+        except OSError:
+            pass
+    if status in {'REVIEW_REQUIRED', 'COMPLETED', 'FINALIZING'}:
         return result
     try:
         latest = max(logs, key=lambda p: p.stat().st_mtime)

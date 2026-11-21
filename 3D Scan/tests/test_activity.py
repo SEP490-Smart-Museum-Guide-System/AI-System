@@ -47,3 +47,7 @@ class ActivityTests(unittest.TestCase):
             self.assertEqual(result['operations'], 3)
             self.assertIsNone(result['total'])
             self.assertIsNone(result['percent'])
+            (root/'openmvs/RefineMesh-run.log').write_text('Processed iterations 4 (18.18%, 55s)...')
+            result = activity(root, 'PROCESSING', 70)
+            self.assertEqual((result['depthImages'], result['depthOperations']), (2, 3))
+            self.assertEqual(activity(root, 'REVIEW_REQUIRED', 100)['depthImages'], 2)

@@ -1,5 +1,39 @@
 # Azure: Scan CPU, TTS and Vision
 
+## Verified 21/11/2026 — live Scan activity and cancellation
+
+- The interrupted artifact-2 job `9b41b7a1-114a-4c35-8fb6-fe5a99dd43ab`
+  was conditionally marked FAILED after verifying no native worker existed.
+  Its input photos, partial files and logs were retained; no bulk status reset.
+- The next job `b0519c24-ac66-4755-9398-f8eccdb24555` was kept running at the
+  user's request and reached REVIEW_REQUIRED 100%. Its GLB is 6,768,124 bytes;
+  all 180 input images survived the subsequent guarded Scan-only replacement.
+  It remains a draft for review; no model was saved into the BE catalog.
+- Live activity reports 180 distinct photos and 540 completed depth operations.
+  Repeated refinement passes must not be described as new distinct photos.
+- `scan-status` serves only authenticated GET status/list routes. It has no
+  worker lifespan, uses `/data` read-only, 384 MiB / 0.25 CPU, and lets status
+  parsing deploy independently of a busy native worker. Caddy routes only
+  matching GET paths to it; uploads/model/cancel requests go to `scan`.
+- The guarded worker update ran only after the job reached review and all
+  queued/processing jobs and native processes were absent. Real Linux process
+  cancellation, rollback-only DB cancellation/idempotency/late-write protection,
+  public 401/409 protection and readiness checks passed. No test job remained.
+- Frontend main release `783d440` displays stage counters, refinement operations
+  and an indeterminate bar when no native denominator exists. Vercel's public
+  bundle was checked for the live counter and exclusion of the mock UI fixture.
+- The AWS BE cancellation route changed from 404 to 401 during the rollout,
+  confirming the authenticated route is now present. Staff assignment and
+  cross-artifact cancellation were checked locally with the BE test harness;
+  no real user's production job was cancelled. Existing AiScan configuration
+  is sufficient.
+
+For a fresh deployment, build/start both `scan` and `scan-status` before enabling
+the Caddy status route. Preserve `scan-data`; do not recreate a busy Scan worker.
+The verified release bundle, guard and check reports are staged at
+`/home/azureuser/scan-cancel-20261121` on the VM and
+`D:\SEP409\tmp\scan-cancel-20261121` locally.
+
 ## Verified 21/11/2026 — Vision running; BE rollout pending
 
 - Vision is running on the existing VM at

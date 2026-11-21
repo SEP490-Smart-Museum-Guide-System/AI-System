@@ -11,6 +11,7 @@ from pathlib import Path
 import trimesh
 
 from . import jobs
+from .orientation import normalize_capture_orientation
 from .settings import COLMAP_COMMAND, COLMAP_CAMERA_MODEL, OPENMVS_BIN_DIR, OPENMVS_COMMANDS
 
 logger = logging.getLogger(__name__)
@@ -317,6 +318,12 @@ def process(job_id: str, job_dir: Path, *, on_update=None, sparse_model=None,
 
         model_path = output_dir / "model.glb"
         _embed_glb_textures(model_path)
+        try:
+            orientation = normalize_capture_orientation(model_path, undistorted / 'sparse' / 'images.bin')
+        except (ValueError, OSError) as error:
+            orientation = {'applied': False, 'reason': str(error), 'requiresReview': True}
+            logger.warning('Could not establish upright orientation for job %s: %s', job_id, error)
+        (job_dir / 'orientation.json').write_text(json.dumps(orientation, indent=2), encoding='utf8')
         _validate_surface_glb(model_path)
         update(job_id, status="REVIEW_REQUIRED", progress=100,
                     model_path=str(model_path.resolve()), model_type="mesh")
