@@ -231,6 +231,8 @@ def get_scan(job_id: uuid.UUID, x_service_key: str | None = Header(default=None)
                          if record.get("model_type") == "sparse_point_cloud" else None),
         "error": record["error"], "createdAt": record["created_at"], "updatedAt": record.get("updated_at"),
         "mode": record.get("capture_metadata", {}).get("mode", "photos"),
+        "quality": record.get("capture_metadata", {}).get("quality", "detailed"),
+        "captureOrder": record.get("capture_metadata", {}).get("capture_order", "unordered"),
         "activity": activity(DATA_DIR / 'scan-jobs' / job_id, record['status'], record['progress']),
     }
 
@@ -239,6 +241,7 @@ def get_scan(job_id: uuid.UUID, x_service_key: str | None = Header(default=None)
 def create_dataset(background_tasks: BackgroundTasks, artifact_id: int = Form(..., gt=0),
                    images: list[UploadFile] = File(...), mode: str = Form('auto'),
                    metadata: UploadFile | None = File(None), reference_obj: UploadFile | None = File(None),
+                   quality: str = Form('balanced'), capture_order: str = Form('unordered'),
                    x_service_key: str | None = Header(default=None)):
     from .dataset_upload import save_dataset
     _authorize(x_service_key)
@@ -248,8 +251,8 @@ def create_dataset(background_tasks: BackgroundTasks, artifact_id: int = Form(..
     directory = DATA_DIR / 'scan-jobs' / job_id
     directory.mkdir(parents=True)
     try:
-        config = save_dataset(directory, images, metadata, reference_obj, mode)
-        jobs.create(job_id, artifact_id, len(images), {'mode': config['mode'], 'source': 'staff-web'})
+        config = save_dataset(directory, images, metadata, reference_obj, mode, quality, capture_order)
+        jobs.create(job_id, artifact_id, len(images), {key: config[key] for key in ('mode', 'quality', 'capture_order')} | {'source': 'staff-web'})
     except Exception:
         if directory.resolve().parent == (DATA_DIR / 'scan-jobs').resolve():
             shutil.rmtree(directory)
@@ -259,7 +262,8 @@ def create_dataset(background_tasks: BackgroundTasks, artifact_id: int = Form(..
             if upload is not None:
                 upload.file.close()
     background_tasks.add_task(_run_job, job_id, directory)
-    return {'scanJobId': job_id, 'artifactId': artifact_id, 'status': 'QUEUED', 'mode': config['mode']}
+    return {'scanJobId': job_id, 'artifactId': artifact_id, 'status': 'QUEUED', 'mode': config['mode'],
+            'quality': config['quality'], 'captureOrder': config['capture_order']}
 
 
 @app.get('/api/v1/artifacts/{artifact_id}/scans')

@@ -6,9 +6,14 @@ import re
 from fastapi import HTTPException
 from .settings import MAX_IMAGE_BYTES, MAX_TOTAL_BYTES
 from .validation import validate_image
+from .performance import settings
 
 
-def save_dataset(root, images, metadata, reference_obj, mode):
+def save_dataset(root, images, metadata, reference_obj, mode, quality='balanced', capture_order='unordered'):
+    try:
+        settings(quality, capture_order)
+    except ValueError as error:
+        raise HTTPException(422, 'Chất lượng hoặc thứ tự ảnh không hợp lệ.') from error
     if mode not in {'auto', 'photos', 'benchmark'}:
         raise HTTPException(422, 'Chế độ scan không hợp lệ.')
     if not 5 <= len(images) <= 200:
@@ -61,6 +66,7 @@ def save_dataset(root, images, metadata, reference_obj, mode):
                 raise ValueError('Missing camera metadata')
         except (ValueError, UnicodeError) as error:
             raise HTTPException(422, 'metadata.json không đúng định dạng LR3D.') from error
-    config = dict(mode=selected, images=['images/' + name for name in names], image_count=len(names))
+    config = dict(mode=selected, images=['images/' + name for name in names], image_count=len(names),
+                  quality=quality, capture_order=capture_order)
     (root / 'config.json').write_text(json.dumps(config), encoding='utf-8')
     return config

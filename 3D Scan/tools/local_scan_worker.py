@@ -96,6 +96,8 @@ def run(source, root, prepare_only=False, on_update=None):
             on_update(**allowed)
     config = json.loads((root / 'config.json').read_text(encoding='utf-8'))
     mode = config['mode']
+    quality = config.get('quality', 'detailed')
+    capture_order = config.get('capture_order', 'unordered')
     report_status(status='PROCESSING', progress=5, mode=mode,
                  warning=('Benchmark: camera calibration uses the reference OBJ; output geometry '
                           'and atlas are reconstructed from images.' if mode == 'benchmark' else
@@ -127,7 +129,8 @@ def run(source, root, prepare_only=False, on_update=None):
             report_status(**changes)
         pipeline.process(root.name, root,
                          on_update=update_local,
-                         sparse_model=sparse, dense_method='patchmatch', resolution_level=0)
+                         sparse_model=sparse, dense_method='patchmatch', quality=quality,
+                         capture_order=capture_order)
         state = json.loads((root / 'status.json').read_text(encoding='utf-8'))
         if state['status'] != 'FINALIZING':
             return 1
@@ -141,6 +144,7 @@ def run(source, root, prepare_only=False, on_update=None):
         ):
             raise ValueError('Output has no image texture. Model is not accepted as textured reconstruction.')
         provenance = dict(mode=mode, image_count=len(config['images']),
+                          reconstruction_quality=quality, capture_order=capture_order,
                           reference_used_for_calibration=mode == 'benchmark',
                           reference_geometry_copied=False, synthetic_fill=False,
                           quality='Needs visual review; completeness is not guaranteed.')

@@ -6,13 +6,27 @@ import test_scan
 
 class DatasetApiTests(unittest.TestCase):
     setUp = test_scan.ApiTests.setUp
-    def dataset(self, reference=False, mode='auto', content=None):
+    def dataset(self, reference=False, mode='auto', content=None, **options):
         files = [('images', (f'sample_CAM1_1.{i:04d}.png', content or self.png, 'image/png')) for i in range(5)]
         if reference:
             files += [('metadata', ('metadata.json', json.dumps({'frames': [], 'object_center_world': {}}))),
                       ('reference_obj', ('source.obj', b'v 0 0 0'))]
         return self.client.post('/api/v1/scans/dataset', headers=self.headers,
-                                data={'artifact_id': '7', 'mode': mode}, files=files)
+                                data={'artifact_id': '7', 'mode': mode, **options}, files=files)
+
+    def test_quality_and_order_survive_upload_and_invalid_options_never_queue(self):
+        with patch('app.main.jobs.create') as create:
+            response = self.dataset(quality='preview', capture_order='ordered')
+            self.assertEqual(response.status_code, 202, response.text)
+            root = self.root/'scan-jobs'/response.json()['scanJobId']
+            config = json.loads((root/'config.json').read_text())
+            self.assertEqual((config['quality'], config['capture_order']), ('preview', 'ordered'))
+            self.assertEqual(create.call_args.args[3]['quality'], 'preview')
+            self.assertEqual(response.json()['captureOrder'], 'ordered')
+            create.reset_mock()
+            for options in ({'quality': 'invalid'}, {'capture_order': 'invalid'}):
+                self.assertEqual(self.dataset(**options).status_code, 422)
+            create.assert_not_called()
 
     def test_dataset_preserves_benchmark_mapping_and_persists_mode(self):
         with patch.object(self.run_job, 'return_value', None), patch('app.main.jobs.create') as create:

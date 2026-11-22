@@ -102,6 +102,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('folder', nargs='?', help='Folder of one object; quoted Windows paths supported')
     parser.add_argument('--mode', choices=['auto', 'photos', 'benchmark'], default='auto')
+    parser.add_argument('--quality', choices=['detailed', 'balanced', 'preview'], default='detailed', help='CPU depth/mesh budget; detailed preserves previous CLI behavior')
+    parser.add_argument('--ordered-capture', action='store_true', help='Image filename order follows capture loops; reduce candidate matching pairs')
     parser.add_argument('--check', action='store_true', help='List input/mode only; do not start Docker or reconstruction')
     parser.add_argument('--prepare-only', action='store_true', help='Validate images and benchmark calibration; no reconstruction')
     parser.add_argument('--no-serve', action='store_true', help='Exit after worker, without local preview server')
@@ -114,6 +116,9 @@ def main():
         setup_runtime(args.image, args.rebuild)
         return 0
     source, config = inspect_folder(folder_path(args.folder or input('Folder anh: ')), args.mode)
+    config.update(quality=args.quality, capture_order='ordered' if args.ordered_capture else 'unordered')
+    if args.ordered_capture:
+        config['images'].sort(key=lambda name: [int(p) if p.isdigit() else p.casefold() for p in re.split(r'(\d+)', name)])
     print(f"Folder: {source}\nImages: {config['image_count']} ({config['total_bytes'] / 1048576:.1f} MiB)\nMode: {config['mode']}", flush=True)
     if config['mode'] == 'benchmark':
         print('BENCHMARK: reference OBJ is used for camera calibration only, NOT as output geometry.', flush=True)

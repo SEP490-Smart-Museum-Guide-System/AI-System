@@ -72,7 +72,11 @@ def normalize_capture_orientation(model: Path, images: Path) -> dict:
         raise ValueError('Invalid GLB JSON chunk')
     document = json.loads(raw[20:20+length])
     asset = document.setdefault('asset', {})
+    if not isinstance(asset, dict):
+        raise ValueError('Invalid GLB asset')
     extras = asset.setdefault('extras', {})
+    if not isinstance(extras, dict):
+        raise ValueError('Unsupported asset extras')
     if MARKER in extras:
         return {**extras[MARKER], 'alreadyApplied': True}
     if asset.get('generator') != 'OpenMVS':
@@ -82,6 +86,8 @@ def normalize_capture_orientation(model: Path, images: Path) -> dict:
         raise ValueError('GLB has no scene')
     for scene in scenes:
         for index in scene.get('nodes', []):
+            if not isinstance(index, int) or not 0 <= index < len(nodes):
+                raise ValueError('Invalid scene root')
             root = nodes[index]
             if any(key in root for key in ('matrix', 'rotation', 'translation', 'scale')):
                 raise ValueError('Exporter already transforms scene roots; manual orientation required')

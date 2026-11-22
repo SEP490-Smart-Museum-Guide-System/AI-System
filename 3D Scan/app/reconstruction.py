@@ -12,6 +12,7 @@ import trimesh
 
 from . import jobs
 from .orientation import normalize_capture_orientation
+from .performance import ordered_pairs, settings as performance_settings
 from .settings import COLMAP_COMMAND, COLMAP_CAMERA_MODEL, OPENMVS_BIN_DIR, OPENMVS_COMMANDS
 
 logger = logging.getLogger(__name__)
@@ -83,7 +84,7 @@ def _run(args: list[str], cwd: Path, label: str | None = None) -> None:
             if child.poll() is None:
                 child.kill()
                 child.wait()
-        output.write(f'\nEXIT: {child.returncode}\n')
+        output.write(f'\nEXIT: {child.returncode}\nELAPSED_SECONDS: {time.monotonic() - started:.3f}\n')
     if child.returncode:
         with log_path.open('rb') as output:
             output.seek(max(0, log_path.stat().st_size - 3000))
@@ -212,16 +213,63 @@ def _validate_camera_calibration(model_dir: Path) -> None:
             )
 
 
+def _ordered_sfm(images_dir: Path, workspace: Path, job_dir: Path, audit: dict) -> list[Path]:
+    """Bound matching work for explicitly ordered photos; reuse features on fallback."""
+    database = workspace / 'database.db'
+    names = sorted(p.name for p in images_dir.iterdir() if p.is_file())
+    pairs = ordered_pairs(names)
+    pair_file = workspace / 'ordered-pairs.txt'
+    pair_file.write_text(''.join(f'{a} {b}\n' for a, b in pairs), encoding='utf8')
+    audit.update(matching='ordered', candidate_pairs=len(pairs),
+                 exhaustive_pairs=len(names) * (len(names)-1) // 2, exhaustive_fallback=False)
+    _run([COLMAP_COMMAND, 'feature_extractor', '--database_path', str(database),
+          '--image_path', str(images_dir), '--ImageReader.single_camera', '1',
+          '--ImageReader.camera_model', COLMAP_CAMERA_MODEL,
+          '--SiftExtraction.use_gpu', '0', '--SiftExtraction.num_threads', '4'], job_dir, 'COLMAP CPU features')
+
+    def map_into(name):
+        output = workspace / name
+        output.mkdir()
+        _run([COLMAP_COMMAND, 'mapper', '--database_path', str(database),
+              '--image_path', str(images_dir), '--output_path', str(output),
+              '--Mapper.num_threads', '4'], job_dir, f'COLMAP {name} camera mapping')
+        return [p.parent for p in output.glob('*/images.bin')]
+
+    try:
+        _run([COLMAP_COMMAND, 'matches_importer', '--database_path', str(database),
+              '--match_list_path', str(pair_file), '--match_type', 'pairs',
+              '--SiftMatching.use_gpu', '0', '--SiftMatching.num_threads', '4'], job_dir, 'COLMAP ordered matches')
+        models = map_into('ordered-sparse')
+        if max((_registered_image_count(p) for p in models), default=0) >= max(5, math.ceil(.8 * len(names))):
+            return models
+        audit['fallback_reason'] = 'insufficient_registered_images'
+    except ReconstructionFailure:
+        audit['fallback_reason'] = 'ordered_matching_or_mapping_failed'
+    # Never accept a poorly connected reconstruction simply to finish faster.
+    # Exhaustive matching keeps the already extracted features and valid matches.
+    audit['exhaustive_fallback'] = True
+    logger.warning('Ordered matching insufficient; retrying exhaustive matching')
+    _run([COLMAP_COMMAND, 'exhaustive_matcher', '--database_path', str(database),
+          '--SiftMatching.use_gpu', '0', '--SiftMatching.num_threads', '4'], job_dir, 'COLMAP exhaustive fallback matches')
+    return map_into('fallback-sparse')
+
+
 def process(job_id: str, job_dir: Path, *, on_update=None, sparse_model=None,
-            dense_method="sgm", resolution_level=1) -> None:
+            dense_method="sgm", resolution_level=1, quality=None, capture_order='unordered') -> None:
     # Local CLI supplies a JSON status writer; the API continues using PostgreSQL.
     update = on_update if on_update is not None else jobs.update
     images_dir = job_dir / "input"
     workspace = job_dir / "colmap"
     mvs_dir = job_dir / "openmvs"
     output_dir = job_dir / "output"
+    audit = {}
 
     try:
+        options = performance_settings(quality if quality is not None else 'detailed', capture_order)
+        # Preserve direct callers' legacy resolution setting unless a preset was requested.
+        if quality is not None:
+            resolution_level = options['resolution_level']
+        audit.update(options, resolution_level=resolution_level)
         if not openmvs_available():
             raise ReconstructionFailure(
                 "Worker thiếu OpenMVS CPU (InterfaceCOLMAP, DensifyPointCloud, ReconstructMesh, "
@@ -234,11 +282,16 @@ def process(job_id: str, job_dir: Path, *, on_update=None, sparse_model=None,
         # COLMAP performs only CPU SfM here. Its CUDA-only PatchMatch dense stage is disabled.
         if sparse_model is None:
             update(job_id, progress=10)
-            _run([COLMAP_COMMAND, "automatic_reconstructor", "--workspace_path", str(workspace),
-                  "--image_path", str(images_dir), "--use_gpu", "0", "--num_threads", "4",
-                  "--dense", "0", "--single_camera", "1", "--camera_model", COLMAP_CAMERA_MODEL], job_dir, "COLMAP SfM")
-            models = [path.parent for path in workspace.glob("sparse/*/images.bin")]
+            if capture_order == 'ordered':
+                models = _ordered_sfm(images_dir, workspace, job_dir, audit)
+            else:
+                audit['matching'] = 'automatic'
+                _run([COLMAP_COMMAND, "automatic_reconstructor", "--workspace_path", str(workspace),
+                      "--image_path", str(images_dir), "--use_gpu", "0", "--num_threads", "4",
+                      "--dense", "0", "--single_camera", "1", "--camera_model", COLMAP_CAMERA_MODEL], job_dir, "COLMAP SfM")
+                models = [path.parent for path in workspace.glob("sparse/*/images.bin")]
         else:
+            audit['matching'] = 'audited_camera_priors'
             models = [Path(sparse_model)]
         update(job_id, progress=35)
         if not models:
@@ -268,7 +321,8 @@ def process(job_id: str, job_dir: Path, *, on_update=None, sparse_model=None,
               "--image-folder", str(undistorted / "images")], mvs_dir, "OpenMVS COLMAP import")
         if dense_method not in {"sgm", "patchmatch"} or resolution_level not in {0, 1, 2}:
             raise ReconstructionFailure("Invalid local dense reconstruction options")
-        dense_args = (["--resolution-level", str(resolution_level)] if dense_method == "patchmatch" else [])
+        dense_args = (["--resolution-level", str(resolution_level),
+                       "--min-resolution", str(options['min_resolution'])] if dense_method == "patchmatch" else [])
         _run([_tool("DensifyPointCloud"), str(scene), "--fusion-mode", "0" if dense_method == "patchmatch" else "-2",
               *dense_args, "--tower-mode", "0", "--max-threads", "4"], mvs_dir,
              "OpenMVS CPU PatchMatch densification" if dense_method == "patchmatch" else "OpenMVS CPU SGM densification")
@@ -290,7 +344,8 @@ def process(job_id: str, job_dir: Path, *, on_update=None, sparse_model=None,
                   "--image-folder", str(undistorted / "images")], reconstruction_dir,
                  "OpenMVS COLMAP re-import for CPU PatchMatch")
             _run([_tool("DensifyPointCloud"), str(patchmatch_scene), "--fusion-mode", "0",
-                  "--resolution-level", str(resolution_level), "--tower-mode", "0", "--max-threads", "4"], reconstruction_dir,
+                  "--resolution-level", str(resolution_level), "--min-resolution", str(options['min_resolution']),
+                  "--tower-mode", "0", "--max-threads", "4"], reconstruction_dir,
                  "OpenMVS CPU PatchMatch fallback")
             dense_scene = reconstruction_dir / "scene_dense.mvs"
             dense_cloud = reconstruction_dir / "scene_dense.ply"
@@ -305,12 +360,14 @@ def process(job_id: str, job_dir: Path, *, on_update=None, sparse_model=None,
         _run([_tool("ReconstructMesh"), str(dense_scene), "-p", str(dense_cloud),
               "--close-holes", "0", "--max-threads", "4"], reconstruction_dir, "OpenMVS mesh reconstruction")
         mesh = reconstruction_dir / "scene_dense_mesh.ply"
-        _run([_tool("RefineMesh"), str(dense_scene), "-m", str(mesh),
-              "--close-holes", "0", "--decimate", "1", "--max-threads", "4"], reconstruction_dir, "OpenMVS mesh refinement")
-        refined_mesh = reconstruction_dir / "scene_dense_refine.ply"
+        refined_mesh = mesh
+        if options['refine']:
+            _run([_tool("RefineMesh"), str(dense_scene), "-m", str(mesh),
+                  "--close-holes", "0", "--decimate", "1", "--max-threads", "4"], reconstruction_dir, "OpenMVS mesh refinement")
+            refined_mesh = reconstruction_dir / "scene_dense_refine.ply"
         _run([_tool("TextureMesh"), str(dense_scene), "-m", str(refined_mesh),
               "-o", str(output_dir / "model.glb"), "--export-type", "glb",
-              "--resolution-level", "0", "--min-resolution", "640", "--max-texture-size", "4096",
+              "--resolution-level", "0", "--min-resolution", "640", "--max-texture-size", str(options['texture_size']),
               "--virtual-face-images", "3", "--cost-smoothness-ratio", "0.5",
               "--global-seam-leveling", "0", "--local-seam-leveling", "0",
               "--max-threads", "4"], reconstruction_dir, "OpenMVS texture mapping")
@@ -333,3 +390,6 @@ def process(job_id: str, job_dir: Path, *, on_update=None, sparse_model=None,
         logger.exception("3D reconstruction failed for job %s", job_id)
         safe_message = str(exc) if isinstance(exc, ReconstructionFailure) else "Không thể tạo mesh GLB. Kiểm tra log worker."
         update(job_id, status="FAILED", model_path="", model_type="", error=safe_message[:300])
+    finally:
+        if audit:
+            (job_dir / 'performance.json').write_text(json.dumps(audit, indent=2), encoding='utf8')
