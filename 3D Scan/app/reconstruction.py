@@ -255,10 +255,10 @@ def _ordered_sfm(images_dir: Path, workspace: Path, job_dir: Path, audit: dict) 
 
 
 def process(job_id: str, job_dir: Path, *, on_update=None, sparse_model=None,
-            dense_method="sgm", resolution_level=1, quality=None, capture_order='unordered') -> None:
+            dense_method="sgm", resolution_level=1, quality=None, capture_order='unordered', images_dir=None) -> None:
     # Local CLI supplies a JSON status writer; the API continues using PostgreSQL.
     update = on_update if on_update is not None else jobs.update
-    images_dir = job_dir / "input"
+    images_dir = images_dir if images_dir is not None else job_dir / "input"
     workspace = job_dir / "colmap"
     mvs_dir = job_dir / "openmvs"
     output_dir = job_dir / "output"

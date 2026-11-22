@@ -41,6 +41,7 @@ def save_dataset(root, images, metadata, reference_obj, mode, quality='balanced'
         if size == 0:
             raise HTTPException(422, 'Tệp không được rỗng.')
     names = []
+    validated_sizes = {}
     for index, image in enumerate(images, 1):
         original = (image.filename or '').replace('\\', '/').rsplit('/', 1)[-1]
         suffix = Path(original).suffix.lower()
@@ -57,6 +58,7 @@ def save_dataset(root, images, metadata, reference_obj, mode, quality='balanced'
         except ValueError as error:
             raise HTTPException(415, str(error)) from error
         names.append(name)
+        validated_sizes[name] = (folder / name).stat().st_size
     if selected == 'benchmark':
         save(metadata, source / 'metadata.json', 2 * 1024 * 1024)
         save(reference_obj, source / 'reference.obj', 64 * 1024 * 1024)
@@ -67,6 +69,6 @@ def save_dataset(root, images, metadata, reference_obj, mode, quality='balanced'
         except (ValueError, UnicodeError) as error:
             raise HTTPException(422, 'metadata.json không đúng định dạng LR3D.') from error
     config = dict(mode=selected, images=['images/' + name for name in names], image_count=len(names),
-                  quality=quality, capture_order=capture_order)
+                  quality=quality, capture_order=capture_order, validated_sizes=validated_sizes)
     (root / 'config.json').write_text(json.dumps(config), encoding='utf-8')
     return config

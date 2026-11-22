@@ -40,7 +40,7 @@ def run(job_id, root):
     try:
         if (root / 'config.json').is_file():
             from tools.local_scan_worker import run as run_dataset
-            run_dataset(root / 'dataset', root,
+            run_dataset(root / 'dataset', root, managed_upload=True,
                         on_update=lambda **changes: jobs.update(job_id, **changes))
         else:
             process(job_id, root)

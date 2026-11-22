@@ -24,11 +24,11 @@ def write_status(root, **changes):
     print(f"[{state.get('status')}] {state.get('progress', 0)}% {state.get('error', '')}", flush=True)
 
 
-def prepare_priors(root, report, on_progress=None):
+def prepare_priors(root, report, on_progress=None, *, images=None):
     """Match source-image features and triangulate with fixed, audited camera priors."""
     audit = root / 'camera-audit'
     database = root / 'features.db'
-    images = root / 'input'
+    images = images if images is not None else root / 'input'
     K = report['selected']
     pipeline._run(['colmap', 'feature_extractor', '--database_path', str(database),
                    '--image_path', str(images), '--ImageReader.single_camera', '1',
@@ -87,7 +87,33 @@ def prepare_priors(root, report, on_progress=None):
     return sparse
 
 
-def run(source, root, prepare_only=False, on_update=None):
+def prepare_images(source, root, config, managed_upload):
+    # Only the job runner opts into the API-owned, already decoded dataset.
+    # The offline CLI and older jobs still perform full file validation.
+    sizes = config.get('validated_sizes')
+    if managed_upload and sizes is not None:
+        images = root / 'dataset' / 'images'
+        entries = list(images.iterdir())
+        if (images.resolve() != root.resolve() / 'dataset' / 'images'
+                or len(entries) != len(config['images'])
+                or set(config['images']) != {'images/' + p.name for p in entries}
+                or any(p.is_symlink() or not p.is_file() or p.stat().st_size != sizes.get(p.name) for p in entries)):
+            raise ValueError('Bộ ảnh trên máy chủ đã thay đổi sau khi tải lên.')
+        return images
+
+    images = root / 'input'
+    images.mkdir()
+    for index, relative in enumerate(config['images'], 1):
+        path = (source / relative).resolve()
+        if not path.is_relative_to(source.resolve()):
+            raise ValueError('Image path escapes source folder')
+        validate_image(path)
+        name = path.name if config['mode'] == 'benchmark' else f'image_{index:05d}{path.suffix.lower()}'
+        shutil.copyfile(path, images / name)
+    return images
+
+
+def run(source, root, prepare_only=False, on_update=None, *, managed_upload=False):
     def report_status(**changes):
         write_status(root, **changes)
         if on_update:
@@ -103,22 +129,14 @@ def run(source, root, prepare_only=False, on_update=None):
                           'and atlas are reconstructed from images.' if mode == 'benchmark' else
                           'Cameras are estimated from photos. Missing or occluded surfaces may remain.'))
     try:
-        images = root / 'input'
-        images.mkdir()
-        for index, relative in enumerate(config['images'], 1):
-            path = (source / relative).resolve()
-            if not path.is_relative_to(source.resolve()):
-                raise ValueError('Image path escapes source folder')
-            validate_image(path)
-            name = path.name if mode == 'benchmark' else f'image_{index:05d}{path.suffix.lower()}'
-            shutil.copyfile(path, images / name)
+        images = prepare_images(source, root, config, managed_upload)
         sparse = None
         if mode == 'benchmark':
             report_status(progress=10)
             report = audit_cameras(source, root / 'camera-audit')
             if not prepare_only:
                 report_status(progress=15)
-                sparse = prepare_priors(root, report, on_progress=report_status)
+                sparse = prepare_priors(root, report, on_progress=report_status, images=images)
         if prepare_only:
             report_status(status='CHECKED', progress=0,
                          note='Input validation/calibration only. No model generated.')
@@ -130,7 +148,7 @@ def run(source, root, prepare_only=False, on_update=None):
         pipeline.process(root.name, root,
                          on_update=update_local,
                          sparse_model=sparse, dense_method='patchmatch', quality=quality,
-                         capture_order=capture_order)
+                         capture_order=capture_order, images_dir=images)
         state = json.loads((root / 'status.json').read_text(encoding='utf-8'))
         if state['status'] != 'FINALIZING':
             return 1

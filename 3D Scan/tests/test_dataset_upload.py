@@ -2,6 +2,7 @@ import json
 from unittest.mock import patch
 import unittest
 import test_scan
+from tools.local_scan_worker import prepare_images
 
 
 class DatasetApiTests(unittest.TestCase):
@@ -38,6 +39,22 @@ class DatasetApiTests(unittest.TestCase):
         self.assertTrue((root / 'dataset' / config['images'][0]).is_file())
         self.assertEqual(create.call_args.args[3]['mode'], 'benchmark')
         self.run_job.assert_awaited_once()
+
+    def test_managed_photos_and_calibrated_dataset_use_exact_uploaded_files(self):
+        for benchmark in (False, True):
+            with self.subTest(benchmark=benchmark), patch('app.main.jobs.create'):
+                response = self.dataset(reference=benchmark)
+                root = self.root / 'scan-jobs' / response.json()['scanJobId']
+                config = json.loads((root / 'config.json').read_text())
+                source = root / 'dataset'
+                images = prepare_images(source, root, config, managed_upload=True)
+                self.assertEqual(images, source / 'images')
+                self.assertFalse((root / 'input').exists())
+                copied = prepare_images(source, root, config, managed_upload=False)
+                self.assertEqual(sorted(p.name for p in copied.iterdir()), sorted(p.name for p in images.iterdir()))
+                (source / config['images'][0]).write_bytes(b'truncated')
+                with self.assertRaises(ValueError):
+                    prepare_images(source, root, config, managed_upload=True)
 
     def test_bad_dataset_is_cleaned_and_not_scheduled(self):
         with patch('app.main.jobs.create') as create:
