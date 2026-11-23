@@ -61,6 +61,14 @@ def run(bundle, port):
                     # Distinct fixture paragraphs for the bounded three-part flow.
                     narration += [' Hãy bắt đầu quan sát.',' Hãy nhìn kỹ hiện vật.',' Cảm ơn quý khách.'][len(payload.get('alreadyWritten', []))]
                 return validator(narration)
+            if 'passage0' in payload:
+                return validator(json.dumps({'title': 'The Ceramic Vessel', 'passage0': 'The vessel was used to hold water.'}))
+            if 'option0' in payload:
+                translations = {'Đựng nước': 'Holding water', 'Dệt vải': 'Weaving cloth', 'Ghi chép': 'Writing',
+                                'Nấu cơm': 'Cooking rice', 'Thắp sáng': 'Lighting', 'Đựng thóc': 'Storing grain'}
+                return validator(json.dumps({key: translations.get(value, value) if key.startswith('option') else
+                    'What was the vessel used for?' if key == 'question' else 'The vessel held water.'
+                    for key, value in payload.items()}))
             excluded = payload['EXCLUDED']
             if self.fail_once:
                 self.fail_once = False
@@ -150,6 +158,12 @@ def run(bundle, port):
             cpu_narration = client.post(route, headers={**headers, 'X-AI-Runtime-Preference': 'cpu'}, json=narration_payload)
             check('explicit CPU narration is real validated output', cpu_narration.status_code, 200)
             check('explicit CPU runtime header', cpu_narration.headers.get('X-AI-Runtime'), 'onnx-cpu')
+            for preference in ({}, {'X-AI-Runtime-Preference': 'cpu'}):
+                for mode in ('narration', 'quiz'):
+                    english = client.post(route, headers={**headers, **preference}, json={**payload, 'languageCode': 'en', 'mode': mode})
+                    check(f'English {mode} via {preference or "queue"}', english.status_code, 200)
+                    field = 'narrationText' if mode == 'narration' else 'explanation'
+                    check(f'English {mode} content', 'water' in english.json().get(field, ''), True)
             batch_route = '/api/v1/studio/quiz-sets'
             batch_payload = {**payload, 'sourceText': full_source}
             check('batch requires service key', client.post(batch_route, json=batch_payload).status_code, 401)

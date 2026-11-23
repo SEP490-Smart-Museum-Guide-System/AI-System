@@ -73,7 +73,7 @@ class CpuStudio:
             if body.mode == 'narration':
                 return generate_draft(engine, body)
             result = generate_quiz_set(engine, body.artifactName, body.sourceText, body.difficulty,
-                                       body.excludeQuestions, count or 1, budget_seconds=170)
+                                       body.excludeQuestions, count or 1, language=getattr(body, 'languageCode', 'vi'), budget_seconds=170)
             if count is not None:
                 return result
             if result.get('generatedCount') != 1 or not result.get('complete'):

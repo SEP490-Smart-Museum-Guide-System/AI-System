@@ -36,22 +36,22 @@ def checked(name, source, difficulty, excluded_json='[]'):
     return name.strip(), source.strip(), difficulty, excluded
 
 
-@spaces.GPU(duration=lambda name, source, difficulty, excluded, count: 45 if count == 1 else 90)
-def gpu_quiz(name, source, difficulty, excluded, count):
+@spaces.GPU(duration=lambda name, source, difficulty, excluded, count, language='vi': 45 if count == 1 else 90)
+def gpu_quiz(name, source, difficulty, excluded, count, language='vi'):
     try:
         return generate_quiz_set(ENGINE, name, source, difficulty, excluded, count,
-                                 budget_seconds=40 if count == 1 else 85)
+                                 language=language, budget_seconds=40 if count == 1 else 85)
     except ChatFailure as error:
         # Convert inside the worker: ZeroGPU otherwise discards custom error text.
         raise gr.Error(str(error)) from error
 
 
-def submit(name, source, difficulty, excluded_json='[]', count=5):
+def submit(name, source, difficulty, excluded_json='[]', count=5, language='vi'):
     try:
         name, source, difficulty, excluded = checked(name, source, difficulty, excluded_json)
         if type(count) is not int or count not in (1, 3, 5):
             raise ValueError('Chọn bộ 1, 3 hoặc 5 câu hỏi.')
-        return gpu_quiz(name, source, difficulty, excluded, count)
+        return gpu_quiz(name, source, difficulty, excluded, count, language)
     except gr.Error:
         raise
     except (ValueError, ChatFailure) as error:
@@ -68,10 +68,10 @@ def gpu_narration(payload):
                                       'code': getattr(error, 'code', 'MODEL_DRAFT_REJECTED')}}
 
 
-def submit_narration(name, source, audience='general', tone='vivid'):
+def submit_narration(name, source, audience='general', tone='vivid', language='vi'):
     try:
         request = QuizPayload(artifactId=1, artifactName=name, sourceText=source,
-                              mode='narration', audience=audience, tone=tone)
+                              mode='narration', audience=audience, tone=tone, languageCode=language)
     except ValueError as error:
         raise gr.Error('Kiểm tra tên hiện vật, tư liệu và phong cách thuyết minh.') from error
     return gpu_narration(request.model_dump())
@@ -83,7 +83,8 @@ demo = gr.Interface(fn=submit,
             value='Bình gốm được dùng để đựng nước. Chất liệu là đất nung. Miệng bình loe rộng. Thân bình có hoa văn khắc chìm. Bình được làm bằng kỹ thuật bàn xoay. Đây là tư liệu giả lập để kiểm thử phần mềm, không phải hồ sơ hiện vật thật.'),
         gr.Dropdown(DIFFICULTIES, value='easy', label='Mức độ'),
         gr.Textbox(label='Câu hỏi đã có (JSON array, tùy chọn)', value='[]', max_length=6000),
-        gr.Dropdown([1, 3, 5], value=5, label='Số lượng câu hỏi')],
+        gr.Dropdown([1, 3, 5], value=5, label='Số lượng câu hỏi'),
+        gr.Dropdown(['vi', 'en'], value='vi', label='Ngôn ngữ bản nháp')],
     outputs=gr.JSON(label='Bộ quiz nháp — kiểm tra số câu, đáp án và nguồn trước khi lưu'),
     title='SMGS · Quiz và thuyết minh từ tư liệu hiện vật',
     description='Mặc định tạo bộ 5 câu trắc nghiệm tiếng Việt, mỗi câu theo một dữ kiện riêng. AI soạn câu hỏi; đáp án và trích dẫn bám nguồn. Với dữ kiện nhận diện được, lựa chọn nhiễu lấy từ danh sách tiếng Việt có kiểm soát. Kết quả cần người duyệt. Cả bộ dùng một lượt cấp GPU; nếu thiếu câu sẽ ghi complete=false. Chỉ dán tư liệu được phép công khai; ZeroGPU có quota và hàng đợi.',
@@ -96,9 +97,10 @@ with demo:
         narration_source = gr.Textbox(label='Tư liệu thuyết minh', lines=6, max_length=12000)
         narration_audience = gr.Dropdown(['children', 'general', 'scholar'], value='general', label='Đối tượng')
         narration_tone = gr.Dropdown(['vivid', 'inspiring', 'academic'], value='vivid', label='Phong cách')
+        narration_language = gr.Dropdown(['vi', 'en'], value='vi', label='Ngôn ngữ bản nháp')
         narration_result = gr.JSON(label='Bản nháp có trích dẫn — cần người duyệt')
         gr.Button('Soạn thuyết minh').click(submit_narration,
-            [narration_name, narration_source, narration_audience, narration_tone], narration_result,
+            [narration_name, narration_source, narration_audience, narration_tone, narration_language], narration_result,
             api_name='soan_thuyet_minh', concurrency_limit=1)
 demo.queue(max_size=8, default_concurrency_limit=1)
 api = FastAPI(title='SMGS Gradio quiz bridge')
@@ -114,6 +116,7 @@ def ready():
 
 
 class QuizPayload(BaseModel):
+    languageCode: Literal['vi', 'en'] = 'vi'
     model_config = ConfigDict(extra='forbid')
     artifactId: int = Field(gt=0)
     artifactName: str = Field(min_length=1, max_length=300)
@@ -135,14 +138,14 @@ async def queued_quiz(body, x_service_key, count, ip_token=''):
     if body.mode != 'quiz': raise HTTPException(422, 'Space này chỉ triển khai mode quiz.')
     try: name, source, difficulty, excluded = checked(body.artifactName, body.sourceText, body.difficulty, json.dumps(body.excludeQuestions))
     except ValueError as error: raise HTTPException(422, str(error)) from error
-    return await queued_result(PORT, 'tao_quiz', [name, source, difficulty, json.dumps(excluded, ensure_ascii=False), count], ip_token, timeout=210)
+    return await queued_result(PORT, 'tao_quiz', [name, source, difficulty, json.dumps(excluded, ensure_ascii=False), count, body.languageCode], ip_token, timeout=210)
 
 
 async def queued_narration(body, x_service_key, ip_token=''):
     if not KEY: raise HTTPException(503, 'Chưa cấu hình AI_CHAT_SERVICE_KEY trong Secrets.')
     if not secrets.compare_digest(x_service_key.encode(), KEY.encode()):
         raise HTTPException(401, 'Service key không hợp lệ.')
-    result = await queued_result(PORT, 'soan_thuyet_minh', [body.artifactName, body.sourceText, body.audience, body.tone], ip_token)
+    result = await queued_result(PORT, 'soan_thuyet_minh', [body.artifactName, body.sourceText, body.audience, body.tone, body.languageCode], ip_token)
     if result.get('ok') is True:
         return result['result']
     error = result.get('error', {})

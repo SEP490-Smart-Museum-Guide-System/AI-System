@@ -57,6 +57,7 @@ class Question(BaseModel):
 
 
 class DraftRequest(BaseModel):
+    languageCode: Literal['vi', 'en'] = 'vi'
     model_config = ConfigDict(extra='forbid')
     artifactId: int = Field(gt=0)
     artifactName: str = Field(min_length=1, max_length=1000)

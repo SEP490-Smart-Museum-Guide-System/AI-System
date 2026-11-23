@@ -2,8 +2,18 @@
 import time
 import logging
 from app.engine import ChatFailure
+from app.studio import english_question
 from grounded_quiz import evidence_passages, generate_grounded_question
-from quiz_quality import DiversityGuard, evidence_order
+from quiz_quality import DiversityGuard, evidence_order, facet, question_guidance
+
+
+ENGLISH_STEMS = {
+    'purpose': 'What was this object used for?',
+    'material': 'What material is the object made of?',
+    'technique': 'Which technique was used to make this object?',
+    'decoration': 'What kind of decoration does the object have?',
+    'shape': 'How is the object shaped?',
+}
 
 
 class DeadlineEngine:
@@ -19,9 +29,11 @@ class DeadlineEngine:
         return self.engine.generate_json(prompt, validator, **kwargs)
 
 
-def generate_quiz_set(engine, name, source, difficulty, excluded, count=5, *, budget_seconds=85, clock=time.monotonic):
+def generate_quiz_set(engine, name, source, difficulty, excluded, count=5, *, language='vi', budget_seconds=85, clock=time.monotonic):
     if type(count) is not int or count not in (1, 3, 5):
         raise ValueError('Chọn bộ 1, 3 hoặc 5 câu hỏi.')
+    if language not in ('vi', 'en'):
+        raise ValueError('Unsupported draft language')
     bounded = DeadlineEngine(engine, clock() + budget_seconds, clock)
     questions, warnings, used_evidence = [], [], []
     passages = evidence_passages(source)
@@ -40,8 +52,21 @@ def generate_quiz_set(engine, name, source, difficulty, excluded, count=5, *, bu
             try:
                 question, evidence_index = generate_grounded_question(bounded, name, source, difficulty,
                     previous, used_evidence, target_index, attempt, feedback)
+                localized = question
+                if language == 'en':
+                    if not bounded.lock.acquire(timeout=10):
+                        raise ChatFailure('Model đang bận. Vui lòng thử lại.', 503)
+                    try:
+                        quote = question['evidenceQuote']
+                        topic = facet(quote, name) if question_guidance(name, quote)['answer'] else None
+                        stem = ENGLISH_STEMS.get(topic)
+                        if topic == 'shape' and quote.lower().startswith('miệng'):
+                            stem = 'How is the mouth of the object shaped?'
+                        localized = english_question(bounded, question, previous, question_stem=stem)
+                    finally:
+                        bounded.lock.release()
                 guard.accept(question)
-                questions.append(question)
+                questions.append(localized)
                 used_evidence.append(evidence_index)
                 break
             except ChatFailure as error:

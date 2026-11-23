@@ -3,7 +3,7 @@ import unittest
 import threading
 from types import SimpleNamespace
 from app.engine import ChatFailure
-from app.studio import generate_draft, validate_draft, narration_quality, narration_result, narration_source
+from app.studio import english_narration, english_question, generate_draft, validate_draft, narration_quality, narration_result, narration_source
 
 
 class DraftTests(unittest.TestCase):
@@ -11,6 +11,27 @@ class DraftTests(unittest.TestCase):
     def quiz(self):
         return {'question': 'Máy nén khí có công suất bao nhiêu?', 'options': ['7,5hp', '10hp', '20hp', '30hp'],
                 'correctIndex': 0, 'explanation': 'Nhãn ghi công suất 7,5hp.', 'evidenceQuote': self.source}
+
+    def test_english_quiz_preserves_source_and_answer_slot(self):
+        draft = self.quiz()
+        fields = {'question': 'What is the rated power?', 'option0': '7.5hp', 'option1': '10hp',
+                  'option2': '20hp', 'option3': '30hp', 'explanation': 'The label states 7.5hp.'}
+        engine = SimpleNamespace(generate_json=lambda prompt, validate, **kwargs: validate(json.dumps(fields)))
+        result = english_question(engine, draft, [])
+        self.assertEqual(result['evidenceQuote'], self.source)
+        self.assertEqual(result['options'][result['correctIndex']], '7.5hp')
+        with self.assertRaises(ChatFailure):
+            english_question(engine, draft, [result['question']])
+
+    def test_english_narration_keeps_uncertainty_and_verbatim_evidence(self):
+        source = 'Chất liệu có thể là đất nung.'
+        fields = {'title': 'The Jar', 'passage0': 'The jar may be made of fired clay.'}
+        engine = SimpleNamespace(generate_json=lambda prompt, validate, **kwargs: validate(json.dumps(fields)))
+        request = SimpleNamespace(artifactName='Hũ', audience='general', tone='vivid')
+        self.assertEqual(english_narration(engine, request, source)['evidenceQuotes'], [source])
+        fields['passage0'] = 'The jar is made of fired clay.'
+        with self.assertRaises(ChatFailure):
+            english_narration(engine, request, source)
 
     def test_valid_draft_and_unique_correct_option(self):
         value = self.quiz()
