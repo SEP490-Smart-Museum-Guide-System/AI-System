@@ -60,8 +60,11 @@ class SpeechBusy(RuntimeError):
 
 
 class PiperSynthesizer:
-    def __init__(self) -> None:
-        settings = get_settings()
+    # Both voices share the same Azure CPU allocation.
+    _generation_lock = Lock()
+
+    def __init__(self, language: str = "vi") -> None:
+        settings = get_settings(language)
         vits = sherpa_onnx.OfflineTtsVitsModelConfig(
             model=str(settings.model_path),
             tokens=str(settings.tokens_path),
@@ -86,7 +89,6 @@ class PiperSynthesizer:
         self._model_identity = identity.hexdigest()
         self._cache = AudioCache(settings.cache_dir, settings.cache_max_bytes, settings.cache_max_files)
         self._queue_timeout = settings.queue_timeout
-        self._generation_lock = Lock()
         self._speed_factor = settings.speed_factor
         self._silence_scale = settings.silence_scale
         self._paragraph_pause_ms = settings.paragraph_pause_ms
@@ -157,7 +159,7 @@ def _to_pcm_wav(samples: object, sample_rate: int) -> bytes:
     return output.getvalue()
 
 
-@lru_cache(maxsize=1)
-def get_synthesizer() -> PiperSynthesizer:
+@lru_cache(maxsize=2)
+def get_synthesizer(language: str = "vi") -> PiperSynthesizer:
     LOGGER.info("Loading Piper voice model")
-    return PiperSynthesizer()
+    return PiperSynthesizer(language)

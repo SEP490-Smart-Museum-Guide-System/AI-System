@@ -12,7 +12,7 @@ from app.config import get_settings
 LOGGER = logging.getLogger(__name__)
 VOICE_ARCHIVE_URL = (
     "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/"
-    "vits-piper-vi_VN-vais1000-medium.tar.bz2"
+    "vits-piper-{voice}.tar.bz2"
 )
 ESPEAK_ARCHIVE_URL = (
     "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/"
@@ -57,13 +57,13 @@ def _download(url: str, target: Path) -> None:
             temporary.unlink(missing_ok=True)
 
 
-def ensure_model_assets() -> None:
-    settings = get_settings()
+def ensure_model_assets(language: str = "vi") -> None:
+    settings = get_settings(language)
     settings.model_dir.mkdir(parents=True, exist_ok=True)
 
     if not settings.model_path.is_file() or not settings.tokens_path.is_file():
-        archive_path = settings.model_dir / "piper-vietnamese.tar.bz2"
-        _download(VOICE_ARCHIVE_URL, archive_path)
+        archive_path = settings.model_dir / f"piper-{settings.voice}.tar.bz2"
+        _download(VOICE_ARCHIVE_URL.format(voice=settings.voice), archive_path)
         _safe_extract(archive_path, settings.model_dir)
         archive_path.unlink(missing_ok=True)
 

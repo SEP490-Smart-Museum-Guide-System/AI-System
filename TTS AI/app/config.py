@@ -5,10 +5,10 @@ from pathlib import Path
 
 
 @lru_cache
-def get_settings() -> "Settings":
+def get_settings(language: str = 'vi') -> "Settings":
     model_dir = Path(os.getenv("TTS_MODEL_DIR", "/models"))
     cache_dir = Path(os.getenv("TTS_CACHE_DIR", "/data/audio-cache"))
-    voice = "vi_VN-vais1000-medium"
+    voice = {'vi': 'vi_VN-vais1000-medium', 'en': 'en_US-lessac-medium'}[language]
     voice_dir = model_dir / f"vits-piper-{voice}"
 
     return Settings(

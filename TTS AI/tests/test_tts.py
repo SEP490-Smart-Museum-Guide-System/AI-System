@@ -143,8 +143,13 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(self.client.get('/ready').status_code, 503)
         self.assertEqual(self.client.get('/live').status_code, 200)
 
+    def test_english_preview_selects_english_engine(self):
+        response = self.client.post('/api/v1/speech', json={'text': 'Look at the vase.', 'language': 'en-US'})
+        self.assertEqual(response.status_code, 200)
+        main.get_synthesizer.assert_called_with('en')
+
     def test_invalid_requests_never_reach_engine(self):
-        for payload in [{'text': ' '}, {'text': 'x', 'language': 'en'}, {'text': 'x', 'speed': 3}, {'text': 'x', 'extra': True}]:
+        for payload in [{'text': ' '}, {'text': 'x', 'language': 'fr'}, {'text': 'x', 'speed': 3}, {'text': 'x', 'extra': True}]:
             self.assertEqual(self.client.post('/api/v1/speech', json=payload).status_code, 422)
         self.settings.max_text_chars = 2
         self.assertEqual(self.client.post('/api/v1/speech', json={'text': 'abc'}).status_code, 413)

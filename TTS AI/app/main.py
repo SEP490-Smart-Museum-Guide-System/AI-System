@@ -16,8 +16,9 @@ LOGGER = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    ensure_model_assets()
-    get_synthesizer()
+    for language in ("vi", "en"):
+        ensure_model_assets(language)
+        get_synthesizer(language)
     app.state.model_ready = True
     try:
         yield
@@ -26,7 +27,7 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(
-    title="SMGS Vietnamese TTS Service",
+    title="SMGS Museum TTS Service",
     description=(
         "Creates speech from museum narration text that has already been "
         "reviewed and published by museum staff. This service does not author content."
@@ -67,6 +68,7 @@ def health() -> dict[str, object]:
         "voice": settings.voice,
         "model_ready": model_ready,
         "language": "vi-VN",
+        "languages": ["vi-VN", "en-US"],
         "prosody": PROSODY_VERSION,
         "speed_factor": settings.speed_factor,
         "silence_scale": settings.silence_scale,
@@ -89,7 +91,8 @@ def create_speech(request: SpeechRequest) -> Response:
     if not text:
         raise HTTPException(status_code=422, detail="Nội dung thuyết minh không được để trống.")
 
-    settings = get_settings()
+    language = request.language.split("-")[0]
+    settings = get_settings(language)
     if len(text) > settings.max_text_chars:
         raise HTTPException(
             status_code=413,
@@ -97,7 +100,7 @@ def create_speech(request: SpeechRequest) -> Response:
         )
 
     try:
-        audio, cache_hit = get_synthesizer().generate(text, request.speed)
+        audio, cache_hit = get_synthesizer(language).generate(text, request.speed)
     except SpeechBusy as exc:
         raise HTTPException(503, detail=str(exc), headers={"Retry-After": "3"}) from exc
     except Exception as exc:
