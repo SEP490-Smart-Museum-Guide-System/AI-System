@@ -19,11 +19,61 @@ LOGGER = logging.getLogger(__name__)
 PROSODY_VERSION = "museum-v4"
 
 
-def normalize_narration(text: str) -> str:
-    """Keep punctuation and blank-line paragraphs; fold layout-only whitespace."""
+def normalize_narration(text: str, language: str = "vi") -> str:
+    """Normalize layout and expand common measurement units for the selected voice."""
     text = unicodedata.normalize("NFC", text).replace("\r\n", "\n").replace("\r", "\n")
     paragraphs = [" ".join(part.split()) for part in re.split(r"\n\s*\n", text)]
-    return "\n\n".join(part for part in paragraphs if part)
+    text = "\n\n".join(part for part in paragraphs if part)
+
+    vi_units = {
+        "km": "ki-lô-mét", "mm": "mi-li-mét", "cm": "xăng-ti-mét", "m": "mét",
+        "mg": "mi-li-gam", "kg": "ki-lô-gam", "g": "gam",
+        "ml": "mi-li-lít", "l": "lít",
+        "mm²": "mi-li-mét vuông", "cm²": "xăng-ti-mét vuông", "m²": "mét vuông",
+        "mm³": "mi-li-mét khối", "cm³": "xăng-ti-mét khối", "m³": "mét khối",
+    }
+    en_units = {
+        "km": "kilometer", "mm": "millimeter", "cm": "centimeter", "m": "meter",
+        "mg": "milligram", "kg": "kilogram", "g": "gram",
+        "ml": "milliliter", "l": "liter",
+        "mm²": "square millimeter", "cm²": "square centimeter", "m²": "square meter",
+        "mm³": "cubic millimeter", "cm³": "cubic centimeter", "m³": "cubic meter",
+    }
+    is_vietnamese = language.split("-")[0].lower() == "vi"
+    units = vi_units if is_vietnamese else en_units
+    unit_pattern = "|".join(re.escape(unit) for unit in sorted(units, key=len, reverse=True))
+
+    def expand_measurement(match: re.Match[str]) -> str:
+        number, unit = match.group("number"), match.group("unit").lower()
+        spoken_unit = units[unit]
+        if not is_vietnamese:
+            try:
+                if float(number.replace(",", ".")) != 1:
+                    spoken_unit += "s"
+            except ValueError:
+                spoken_unit += "s"
+        return f"{number} {spoken_unit}"
+
+    text = re.sub(
+        rf"(?P<number>\d+(?:[.,]\d+)?)\s*(?P<unit>{unit_pattern})(?![A-Za-zÀ-ỹ])",
+        expand_measurement,
+        text,
+        flags=re.IGNORECASE,
+    )
+    # Expand longer standalone abbreviations too; single-letter m/g/l are
+    # expanded only when attached to a number to avoid changing ordinary prose.
+    safe_units = {key: value for key, value in units.items() if len(key) > 1}
+    safe_pattern = "|".join(re.escape(unit) for unit in sorted(safe_units, key=len, reverse=True))
+    text = re.sub(
+        rf"(?<!\w)(?P<unit>{safe_pattern})(?!\w)",
+        lambda match: safe_units[match.group("unit").lower()],
+        text,
+        flags=re.IGNORECASE,
+    )
+    separator = "nhân" if is_vietnamese else "by"
+    text = re.sub(r"(?<=\d)\s*[x×]\s*(?=\d)", f" {separator} ", text, flags=re.IGNORECASE)
+
+    return text
 
 
 def narration_segments(text: str, sentence_ms: int, clause_ms: int, paragraph_ms: int):
@@ -79,6 +129,7 @@ class PiperSynthesizer:
             sherpa_onnx.OfflineTtsConfig(model=model, max_num_sentences=1, silence_scale=settings.silence_scale)
         )
         self._voice = settings.voice
+        self._language = language
         # A replaced model must not reuse audio from the previous voice weights/tokens.
         identity = hashlib.sha256()
         for path in (settings.model_path, settings.tokens_path):
@@ -96,7 +147,7 @@ class PiperSynthesizer:
         self._clause_pause_ms = settings.clause_pause_ms
 
     def generate(self, text: str, speed: float) -> tuple[bytes, bool]:
-        normalized_text = normalize_narration(text)
+        normalized_text = normalize_narration(text, self._language)
         # Prosody changes must not reuse the old, fast/compressed-pause WAV cache.
         prosody = f"{PROSODY_VERSION}:{self._speed_factor.hex()}:{self._silence_scale.hex()}:{self._paragraph_pause_ms}:{self._sentence_pause_ms}:{self._clause_pause_ms}"
         cache_key = hashlib.sha256(
