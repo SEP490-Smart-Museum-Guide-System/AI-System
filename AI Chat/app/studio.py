@@ -238,15 +238,15 @@ def generate_draft(engine, request):
                 'academic': 'trang trọng, trình bày mạch lạc theo từng nhóm thông tin, không văn hoa'}[request.tone]
         if request.mode == 'narration':
             length = '120-180 từ' if len(source.split()) >= 25 else '80-120 từ'
-            task = f'''Write a museum audio guide in Vietnamese, about {length}, in three connected paragraphs.
-Audience: {audience}. Style: {tone}.
-Begin with a direct invitation to look at the object. Guide attention between the supplied details,
-connect its appearance, material, purpose and technique where provided, and end with a brief invitation to look again.
-Reorganize and rewrite the notes into spoken prose; do not copy the notes sentence by sentence.
-You may add transitions and invitations to observe. Every factual claim must come from SOURCE.
-Do NOT add dates, makers, origins, past customs, material properties, causal explanations or historical importance.
-Keep uncertainty explicit: 'có lẽ', 'có thể', 'tạm gọi' must not become confident claims.
-Return ONLY the Vietnamese spoken paragraphs. No heading, JSON, notes, field labels, software or test disclaimers.'''
+            task = f'''Biên tập SOURCE thành lời thuyết minh tiếng Việt tự nhiên, trôi chảy, khoảng {length}, chia thành ba đoạn có liên kết.
+Đối tượng: {audience}. Phong cách: {tone}.
+Viết như một biên tập viên tiếng Việt giỏi đang chuẩn bị lời đọc cho hướng dẫn viên: câu đúng ngữ pháp, từ ngữ tự nhiên khi đọc thành tiếng, nhịp câu linh hoạt, ý trước dẫn sang ý sau mạch lạc.
+Giữ nguyên ý và toàn bộ dữ kiện có giá trị trong SOURCE; có thể sắp xếp lại để câu chuyện dễ theo dõi hơn. Dùng chi tiết cụ thể trong nguồn làm điểm nhấn, không thay bằng lời chung chung.
+Không diễn đạt lại từng câu theo đúng thứ tự nguồn. Tránh câu mở đầu sáo rỗng, lặp lời mời, lặp ý, câu nối gượng ép, và cụm như 'theo tư liệu'. Chỉ mời khách quan sát khi lời mời phù hợp tự nhiên với đoạn văn.
+Có thể làm lời văn phong phú bằng cách chọn từ, liên kết ý và nhấn vào chi tiết đã nêu; không thêm bất kỳ sự kiện, niên đại, tác giả, xuất xứ, tập quán, đặc tính chất liệu, nguyên nhân hay ý nghĩa lịch sử nào không có trong SOURCE.
+Giữ nguyên mức độ chắc chắn: 'có lẽ', 'có thể', 'tạm gọi' không được đổi thành khẳng định.
+Ưu tiên văn phong tự nhiên hơn việc cố đủ số từ; tuyệt đối không kéo dài bằng nội dung đệm hoặc thông tin lặp.
+Chỉ trả lời bằng các đoạn thuyết minh tiếng Việt, không tiêu đề, JSON, ghi chú hay nội dung kiểm thử.'''
         else:
             task = f'''Tạo MỘT câu hỏi trắc nghiệm tiếng Việt mức {request.difficulty} dựa trên SOURCE.
 Câu hỏi phải trả lời được từ SOURCE, không lặp câu trong EXCLUDED.
@@ -264,17 +264,13 @@ Không tự đặt niên đại hay dữ kiện cho hiện vật. Không markdow
         if request.mode == 'narration':
             # Restate the writing task after the data so a small decoder does not
             # treat the last source sentence as a text-completion instruction.
-            payload += (f'\n\nHãy viết lại thành lời thuyết minh tiếng Việt {length}, ba đoạn, dành cho {audience}. '
-                        'Mở đầu mời quan sát, nối các đặc điểm với nhau và kết thúc bằng lời mời nhìn lại. '
-                        'Phần dài hơn CHỈ thêm lời dẫn, câu chuyển ý và chỉ dẫn quan sát. '
-                        'Không thêm chi tiết, kích thước, tính chất vật liệu, cách chế tác, lợi ích thiết kế hay bối cảnh không ghi trong SOURCE, '
-                        'kể cả kiến thức phổ thông hoặc suy đoán có vẻ hợp lý. Không tự giải thích nguyên nhân. '
-                        'Nguồn khẳng định thì giữ khẳng định; nguồn có lẽ/có thể thì giữ đúng mức chưa chắc chắn. '
-                        'Không lặp lại cùng một thông tin để kéo dài. Chỉ trả các đoạn lời đọc, không tiêu đề hay JSON.')
-        # A short opening prefill sets the spoken voice without supplying a stock
-        # paragraph for the model to copy or inventing any artifact fact.
-        prefix = ({'children': 'Mời các em', 'general': 'Mời quý khách', 'scholar': 'Mời quý vị'}[request.audience]
-                  if request.mode == 'narration' else '{"question":')
+            payload += (f'\n\nHãy viết lại SOURCE thành lời thuyết minh tiếng Việt {length}, ba đoạn mạch lạc. '
+                        'Ưu tiên câu văn thuần Việt, trôi chảy khi đọc thành tiếng; nối các ý tự nhiên và làm nổi bật đúng những chi tiết cụ thể đã có. '
+                        'Không cần mở đầu bằng một câu mời khách cố định; không thêm câu sáo rỗng hoặc lặp ý chỉ để làm dài. '
+                        'Được phép diễn đạt lại và đổi thứ tự thông tin để bài viết hay, dễ nghe hơn, nhưng không được thêm dữ kiện ngoài SOURCE. '
+                        'Không thêm niên đại, kích thước, tác giả, xuất xứ, tính chất chất liệu, cách chế tác, nguyên nhân, công dụng hay bối cảnh không ghi trong SOURCE. '
+                        'Giữ nguyên mức độ chắc chắn của nguồn. Chỉ trả lời bằng lời thuyết minh, không tiêu đề hay JSON.')
+        prefix = '' if request.mode == 'narration' else '{"question":'
         example = ''
         if request.mode != 'narration':
             example_input = json.dumps({'artifactName': 'Bình gốm', 'SOURCE': 'Bình gốm được dùng để đựng nước.', 'EXCLUDED': []}, ensure_ascii=False)
