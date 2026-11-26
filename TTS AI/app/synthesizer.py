@@ -19,6 +19,32 @@ LOGGER = logging.getLogger(__name__)
 PROSODY_VERSION = "museum-v4"
 
 
+def _roman_value(value: str) -> int | None:
+    numeral = value.upper()
+    if not re.fullmatch(r"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})", numeral):
+        return None
+    values = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+    total = 0
+    for index, char in enumerate(numeral):
+        current = values[char]
+        total += -current if index + 1 < len(numeral) and current < values[numeral[index + 1]] else current
+    return total
+
+
+def _vietnamese_integer(value: int) -> str:
+    digits = ("không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín")
+    if value < 10:
+        return digits[value]
+    if value < 20:
+        remainder = value - 10
+        return "mười" if remainder == 0 else "mười " + ("lăm" if remainder == 5 else digits[remainder])
+    tens, remainder = divmod(value, 10)
+    result = digits[tens] + " mươi"
+    if remainder:
+        result += " " + ({1: "mốt", 4: "tư", 5: "lăm"}.get(remainder, digits[remainder]))
+    return result
+
+
 def normalize_narration(text: str, language: str = "vi") -> str:
     """Normalize layout and expand common measurement units for the selected voice."""
     text = unicodedata.normalize("NFC", text).replace("\r\n", "\n").replace("\r", "\n")
@@ -72,6 +98,24 @@ def normalize_narration(text: str, language: str = "vi") -> str:
     )
     separator = "nhân" if is_vietnamese else "by"
     text = re.sub(r"(?<=\d)\s*[x×]\s*(?=\d)", f" {separator} ", text, flags=re.IGNORECASE)
+
+    if is_vietnamese:
+        def expand_century(match: re.Match[str]) -> str:
+            first = _roman_value(match.group("first"))
+            second = _roman_value(match.group("second")) if match.group("second") else None
+            if first is None or first > 99 or (match.group("second") and (second is None or second > 99)):
+                return match.group(0)
+            phrase = f"{match.group('prefix')} {_vietnamese_integer(first)}"
+            if second is not None:
+                phrase += f" đến {_vietnamese_integer(second)}"
+            return phrase
+
+        text = re.sub(
+            r"(?P<prefix>thế\s*kỷ|thế\s*kỉ)\s+(?:thứ\s+)?(?P<first>[IVXLCDM]+)(?:\s*[-–—]\s*(?P<second>[IVXLCDM]+))?\b",
+            expand_century,
+            text,
+            flags=re.IGNORECASE,
+        )
 
     return text
 
