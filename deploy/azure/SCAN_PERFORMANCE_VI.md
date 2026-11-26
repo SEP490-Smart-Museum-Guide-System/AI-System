@@ -1,7 +1,10 @@
-# Tối ưu Scan CPU — chuẩn bị cục bộ ngày 22/11/2026
+# Tối ưu Scan CPU — cập nhật Azure ngày 26/11/2026
 
-Trạng thái: chưa triển khai, chưa benchmark trên Azure. VM đang được người dùng
-tắt; không tự bật VM, không chạy lại job đang có và không đổi cấu hình job cũ.
+Trạng thái: đã triển khai lên Azure ngày 26/11/2026. Trước khi recreate,
+DB không có job Scan và không còn tiến trình COLMAP/OpenMVS. Chỉ hai container
+`scan` và `scan-status` được build/recreate; dữ liệu volume, env và các dịch vụ
+khác được giữ nguyên. `/ready` và `/health` công khai đều trả 200 với
+`database_ready=true`. Chưa benchmark thời gian/chất lượng bằng bộ 180 ảnh.
 
 ## Thay đổi
 
