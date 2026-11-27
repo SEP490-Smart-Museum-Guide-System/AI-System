@@ -14,7 +14,7 @@ def evidence_passages(source):
     return passages
 
 
-def validate_indexed_question(text, source, passages, target_index, excluded):
+def validate_indexed_question(text, source, passages, target_index, excluded, name=''):
     try:
         item = json.loads(text)
         if not isinstance(item, dict) or set(item) != {'question', 'options', 'correctIndex'}:
@@ -30,7 +30,7 @@ def validate_indexed_question(text, source, passages, target_index, excluded):
             quote, 'quiz', excluded)
         if len(result['options']) != 4 or norm(result['options'][result['correctIndex']]) not in norm(quote):
             raise ValueError()
-        guidance=question_guidance('',quote)
+        guidance=question_guidance(name,quote)
         correct=result['correctIndex']
         if guidance['answer'] and norm(result['options'][correct])!=norm(guidance['answer']):
             raise CandidateFailure('answer_span','Đáp án đúng phải chép nguyên văn ANSWER_HINT.')
@@ -74,7 +74,7 @@ Do not invent historical facts, dates or quantities. Correct the reason in CORRE
     if constrained:
         # Options are source-constrained data, never a replacement for an AI question.
         payload=json.dumps({'artifactName':name,'TARGET_EVIDENCE':{'id':target_index,'text':passages[target_index]},
-            'EXPECTED_ANSWER':guidance['answer'],'QUESTION_HINT':guidance['question'],'EXCLUDED':excluded,
+            'EXPECTED_ANSWER':guidance['answer'],'QUESTION_HINT':guidance['question'],'EXCLUDED':excluded,'DIFFICULTY':difficulty,
             'QUESTION_ONLY':True,'ATTEMPT':attempt,'CORRECTION':feedback},ensure_ascii=False).replace('<|','＜|')
     prefix = '{"question":'
     example = json.dumps({'artifactName':'Tượng','TARGET_EVIDENCE':{'id':0,'text':'Tượng được làm bằng đá vôi.'},'EXCLUDED':[]},ensure_ascii=False)
@@ -101,7 +101,7 @@ Do not invent historical facts, dates or quantities. Correct the reason in CORRE
                         'correctIndex':options.index(answer_display)},ensure_ascii=False)
                 except (ValueError,TypeError,KeyError) as error:
                     raise CandidateFailure('question_schema','Chỉ trả JSON một trường question bằng tiếng Việt, không thêm options hoặc đáp án.') from error
-            return validate_indexed_question(text,source,passages,target_index,excluded)
+            return validate_indexed_question(text,source,passages,target_index,excluded,name)
         return engine.generate_json(prompt, validate,
             max_new_tokens=120 if constrained else 300, prefix=prefix, deadline_seconds=80,
             temperature=0.35 if attempt > 1 else 0.0,

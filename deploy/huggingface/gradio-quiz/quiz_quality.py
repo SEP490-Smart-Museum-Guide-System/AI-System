@@ -63,7 +63,56 @@ def questions_equivalent(left, right, name):
     return norm(left) == norm(right) or similar(signature(left, name), signature(right, name))
 
 
+# Keep the whole historical sentence as evidence. Splitting a sentence at a
+# comma can detach the subject from its period, trading route or findspot.
+CAPITALIZED_WORD = r'[A-ZÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬĐÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴ][^\W\d_]*'
+HISTORICAL_FACTS = (
+    ('findspot', r'(?:tìm thấy|phát hiện)\s+(?:được\s+)?(?:trong|tại|ở)\s+'
+     rf'((?:tàu cổ|tàu đắm|di chỉ|di tích|hang động)\s+(?-i:{CAPITALIZED_WORD}(?:[ -]{CAPITALIZED_WORD})*))',
+     'Những hiện vật được nhắc đến trong tư liệu đã được tìm thấy ở đâu?',
+     ('Thành nhà Hồ', 'Di chỉ Đồng Đậu', 'Hang Con Moong', 'Di tích Óc Eo')),
+    ('trade_route', r'(?:thông qua|theo|qua)\s+(?:những |các )?'
+     r'((?:tuyến (?:thương mại |giao thương )?)?(?:hàng hải|đường biển)(?: quốc tế)?)\b',
+     'Sản phẩm trong tư liệu được trao đổi qua tuyến giao thương nào?',
+     ('Tuyến đường bộ qua núi', 'Tuyến đường sông nội địa', 'Tuyến đường sắt', 'Tuyến hàng không')),
+    ('motif', r'\b(?:ấm|bình|tượng|đèn|lọ|bát)\s+(?:có )?(?:hình|dáng)\s+'
+     r'(chim phượng|phượng hoàng|chim uyên ương|uyên ương|sư tử|cá chép|rồng|voi|rùa|hổ)\b',
+     'Con vật nào được dùng làm hình mẫu cho vật dụng trong tư liệu?',
+     ('Cá chép', 'Hươu', 'Rùa', 'Voi', 'Hổ', 'Ngựa')),
+    ('audience', r'\b(?:đến|tới|cho)\s+((?:công chúng|khách tham quan|du khách)\s+'
+     r'(?:trong nước và quốc tế|quốc tế và trong nước|địa phương|quốc tế|trong nước))\b',
+     'Tư liệu nhắc đến những ai là đối tượng được giới thiệu di sản?',
+     ('Riêng hội đồng thẩm định', 'Chỉ các thợ phục chế', 'Riêng đoàn khảo cổ', 'Chỉ các nhà sưu tập')),
+    ('ceramic_type', r'\b(?:dòng|loại)\s+(gốm (?:hoa lam|men ngọc|hoa nâu|men trắng|men nâu|men rạn))\b',
+     'Dòng gốm nào được nhấn mạnh trong tư liệu?',
+     ('Gốm men ngọc', 'Gốm hoa nâu', 'Gốm men rạn', 'Gốm men trắng', 'Gốm men đen')),
+)
+
+
+def historical_guidance(quote):
+    for topic, pattern, question, alternatives in HISTORICAL_FACTS:
+        match = re.search(pattern, quote, re.I)
+        if match:
+            answer = match.group(1)
+            pool = [value for value in alternatives if norm(value) not in norm(quote)]
+            if len(pool) >= 3:
+                return {'topic': topic, 'question': question, 'answer': answer, 'distractors': pool}
+    return None
+
+
+HISTORICAL_QUESTIONS = (
+    ('findspot', r'ở đâu|tại đâu|địa điểm nào|nơi nào|tàu (?:cổ|đắm) nào'),
+    ('trade_route', r'(?:tuyến|con đường|đường|hình thức vận chuyển)[^?]{0,35} nào'),
+    ('motif', r'(?:con vật|loài|linh vật|động vật|hình tượng) nào|hình (?:con |loài )?gì'),
+    ('audience', r'công chúng nào|những ai|đối tượng nào|đến ai|tới ai|cho ai'),
+    ('ceramic_type', r'(?:dòng|loại) gốm (?:nào|gì)'),
+)
+
+
 def question_guidance(name, quote):
+    historical = historical_guidance(quote)
+    if historical:
+        return historical
     topic = facet(quote, name)
     stems = {
         'purpose':f'Theo tư liệu, {name} được dùng để làm gì?',
@@ -94,7 +143,7 @@ def question_guidance(name, quote):
     }
     pool=[value for value in pools.get(topic,[]) if norm(value) not in norm(quote)
         and (not answer or norm(value)!=norm(answer))]
-    return {'question':stems.get(topic),'answer':answer,'distractors':pool if len(pool)>=3 else []}
+    return {'topic':topic,'question':stems.get(topic),'answer':answer,'distractors':pool if len(pool)>=3 else []}
 
 
 def validate_language(candidate, source, name):
@@ -116,7 +165,7 @@ def split_passages(source):
         if not sentence or META.search(sentence):
             continue
         clauses = re.split(r'(?<!\d),(?!\d)\s*|\s+và\s+', sentence)
-        pieces = clauses if sum(facet(part) is not None for part in clauses) >= 2 else [sentence]
+        pieces = clauses if not historical_guidance(sentence) and sum(facet(part) is not None for part in clauses) >= 2 else [sentence]
         for piece in pieces:
             piece = piece.strip()
             while len(piece) > 1000:
@@ -131,16 +180,17 @@ def split_passages(source):
 
 
 def evidence_order(passages, name, excluded):
+    guidance = [question_guidance(name, quote) for quote in passages]
     unique = []
     for index, quote in enumerate(passages):
-        topic, tokens = facet(quote, name), signature(quote, name)
-        if any(topic == facet(passages[other], name) and similar(tokens, signature(passages[other], name)) for other in unique):
+        topic, tokens = guidance[index]['topic'], signature(quote, name)
+        if any(topic == guidance[other]['topic'] and similar(tokens, signature(passages[other], name)) for other in unique):
             continue
         unique.append(index)
     # Prefer different topics first, while retaining the remaining usable facts.
     primary, remaining, topics = [], [], set()
-    for index in unique:
-        topic = facet(passages[index], name)
+    for index in sorted(unique, key=lambda i: not (guidance[i]['answer'] and guidance[i]['distractors'])):
+        topic = guidance[index]['topic']
         if topic is None or topic not in topics:
             primary.append(index)
             if topic: topics.add(topic)
@@ -162,7 +212,14 @@ class DiversityGuard:
         quote = candidate['evidenceQuote']
         answer = candidate['options'][candidate['correctIndex']]
         validate_language(candidate,quote,self.name)
-        source_topic, question_topic = facet(quote, self.name), facet(question, self.name)
+        source_topic = question_guidance(self.name, quote)['topic']
+        question_text = without_name(question, self.name)
+        question_topic = facet(question, self.name)
+        if source_topic in {topic for topic, _ in HISTORICAL_QUESTIONS}:
+            question_topic = next((topic for topic, pattern in HISTORICAL_QUESTIONS
+                                   if re.search(pattern, question_text)), question_topic)
+            if norm(answer) in norm(question):
+                raise CandidateFailure('answer_in_question', 'Câu hỏi đã tiết lộ đáp án. Hãy hỏi về dữ kiện mà không nhắc tên đáp án.')
         if re.search(r'không (?:được|phải|dùng|có|là|đúng)|ngoại trừ|khẳng định sai', without_name(question, self.name)):
             raise CandidateFailure('negative_question', 'Hãy hỏi khẳng định, tránh câu phủ định hoặc ngoại trừ.')
         if re.search(r'(?:không|chưa)\s*[?？]?\s*$',norm(question)) or re.search(r'phải chăng|có đúng là|có phải là',norm(question)):

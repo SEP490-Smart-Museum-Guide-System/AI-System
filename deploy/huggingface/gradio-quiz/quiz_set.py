@@ -4,7 +4,7 @@ import logging
 from app.engine import ChatFailure
 from app.studio import english_question
 from grounded_quiz import evidence_passages, generate_grounded_question
-from quiz_quality import DiversityGuard, evidence_order, facet, question_guidance
+from quiz_quality import DiversityGuard, evidence_order, question_guidance
 
 
 ENGLISH_STEMS = {
@@ -58,7 +58,8 @@ def generate_quiz_set(engine, name, source, difficulty, excluded, count=5, *, la
                         raise ChatFailure('Model đang bận. Vui lòng thử lại.', 503)
                     try:
                         quote = question['evidenceQuote']
-                        topic = facet(quote, name) if question_guidance(name, quote)['answer'] else None
+                        guidance = question_guidance(name, quote)
+                        topic = guidance['topic'] if guidance['answer'] else None
                         stem = ENGLISH_STEMS.get(topic)
                         if topic == 'shape' and quote.lower().startswith('miệng'):
                             stem = 'How is the mouth of the object shaped?'

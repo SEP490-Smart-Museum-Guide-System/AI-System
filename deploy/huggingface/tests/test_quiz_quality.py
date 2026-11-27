@@ -155,6 +155,25 @@ class QualityTests(unittest.TestCase):
             self.assertEqual(len(set(item['options'])),4)
             self.assertIn(item['options'][item['correctIndex']].casefold(),item['evidenceQuote'].casefold())
 
+    def test_historical_prose_supplies_five_different_grounded_targets(self):
+        source = """Trong thế kỷ XV–XVI, nghề sản xuất gốm tại Đại Việt phát triển mạnh mẽ, đặc biệt là dòng gốm hoa lam. Các sản phẩm gốm không chỉ phục vụ nhu cầu sinh hoạt trong nước mà còn trở thành mặt hàng xuất khẩu thông qua những tuyến thương mại hàng hải quốc tế.
+
+Bên cạnh các loại bát, đĩa và bình truyền thống, những người thợ gốm còn sáng tạo các vật dụng mang hình dáng động vật và linh vật, trong đó có ấm hình chim phượng.
+
+Những hiện vật cùng loại được tìm thấy trong tàu cổ Cù Lao Chàm là minh chứng cho sự phát triển của nghề gốm và vai trò của Đại Việt trong hoạt động giao thương quốc tế vào cuối thế kỷ XV.
+
+Ngày nay, những chiếc ấm gốm hình chim phượng mang giá trị lịch sử, văn hóa và nghệ thuật, góp phần giới thiệu di sản gốm truyền thống Việt Nam đến công chúng trong nước và quốc tế."""
+        class HintEngine(ScriptedEngine):
+            def generate_json(self, prompt, validator, **kwargs):
+                payload = json.loads(prompt.rsplit('<|im_start|>user\n',1)[1].split('<|im_end|>')[0])
+                return validator(json.dumps({'question': payload['QUESTION_HINT']}))
+        result = generate_quiz_set(HintEngine(), 'Ấm gốm hoa lam hình chim phượng', source, 'medium', [], 5)
+        self.assertTrue(result['complete'])
+        self.assertEqual(result['distinctEvidenceCount'], 5)
+        answers = {q['options'][q['correctIndex']].casefold() for q in result['questions']}
+        self.assertEqual(answers, {'gốm hoa lam', 'tuyến thương mại hàng hải quốc tế', 'chim phượng',
+                                   'tàu cổ cù lao chàm', 'công chúng trong nước và quốc tế'})
+
     def test_no_server_question_is_filled_when_model_returns_empty_json(self):
         class EmptyModel(ScriptedEngine):
             def generate_json(self,prompt,validator,**kwargs):
