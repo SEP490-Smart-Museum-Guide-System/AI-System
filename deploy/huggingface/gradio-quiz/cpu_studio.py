@@ -1,6 +1,7 @@
 """Bounded ONNX CPU inference on the existing Space when ZeroGPU quota is gone."""
 import logging
 import threading
+import time
 
 from huggingface_hub import snapshot_download
 
@@ -58,7 +59,11 @@ class CpuStudio:
 
     def generate(self, body, count=None):
         if not self._slot.acquire(blocking=False):
-            raise ChatFailure('Model CPU đang bận. Vui lòng chờ lượt đang chạy hoàn tất.', 503)
+            error = ChatFailure('Model CPU đang bận. Vui lòng chờ lượt đang chạy hoàn tất.', 429)
+            error.code = 'CPU_STUDIO_BUSY'
+            raise error
+        started = time.monotonic()
+        LOGGER.warning('CPU draft started mode=%s sourceChars=%d', body.mode, len(body.sourceText))
         try:
             attribute = '_narration_engine' if body.mode == 'narration' else '_engine'
             engine = getattr(self, attribute)
@@ -79,5 +84,9 @@ class CpuStudio:
             if result.get('generatedCount') != 1 or not result.get('complete'):
                 raise ChatFailure('Model chưa tạo được một câu hỏi hợp lệ.', 502)
             return result['questions'][0]
+        except ChatFailure as error:
+            LOGGER.warning('CPU draft failed status=%d code=%s', error.status, getattr(error, 'code', 'CPU_STUDIO_FAILED'))
+            raise
         finally:
+            LOGGER.warning('CPU draft finished mode=%s seconds=%.1f', body.mode, time.monotonic() - started)
             self._slot.release()

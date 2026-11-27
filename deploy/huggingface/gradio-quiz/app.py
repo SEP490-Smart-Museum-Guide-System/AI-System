@@ -126,6 +126,7 @@ class QuizPayload(BaseModel):
     audience: Literal['children', 'general', 'scholar'] = 'general'
     tone: Literal['vivid', 'inspiring', 'academic'] = 'vivid'
     excludeQuestions: list[str] = Field(default_factory=list, max_length=5)
+    count: Literal[1] = 1  # BE includes count on single quiz and narration requests.
 
 
 class QuizSetPayload(QuizPayload):
