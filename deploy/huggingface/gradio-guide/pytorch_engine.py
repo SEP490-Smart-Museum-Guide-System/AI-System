@@ -38,6 +38,7 @@ class TorchGuideEngine:
         ).to(self.device).eval()
         self.lock = threading.Lock()
         self.deadline_seconds = 45
+        self.max_input_tokens = 4096
 
     def answer(self, context, question, history):
         if not self.lock.acquire(timeout=0.5):
@@ -45,8 +46,8 @@ class TorchGuideEngine:
         try:
             inputs = self.tokenizer(make_prompt(context, question, history), return_tensors='pt', add_special_tokens=False)
             length = inputs['input_ids'].shape[1]
-            if length > 2048:
-                raise ChatFailure('Nội dung hoặc hội thoại quá dài. Hãy chọn tư liệu ngắn hơn.', 422)
+            if length > self.max_input_tokens:
+                raise ChatFailure('Tư liệu và lịch sử hội thoại vượt giới hạn 4.096 token. Hãy rút gọn tư liệu hoặc bắt đầu cuộc trò chuyện mới.', 422)
             inputs = {key: value.to(self.device) for key, value in inputs.items()}
             with torch.inference_mode():
                 output = self.model.generate(

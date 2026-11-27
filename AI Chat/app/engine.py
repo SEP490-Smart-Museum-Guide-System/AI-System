@@ -77,7 +77,7 @@ def ground_answer(result, context):
 
 
 class OnnxChat:
-    def __init__(self, model_dir, *, threads=4, max_input_tokens=2048, max_new_tokens=384, deadline_seconds=45):
+    def __init__(self, model_dir, *, threads=4, max_input_tokens=4096, max_new_tokens=384, deadline_seconds=45):
         import numpy as np
         import onnxruntime as ort
         from tokenizers import Tokenizer

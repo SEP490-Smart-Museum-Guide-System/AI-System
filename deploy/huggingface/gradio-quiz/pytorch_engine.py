@@ -41,7 +41,10 @@ class TorchQuizEngine:
             temperature=0.0, seed=None, min_new_tokens=0, repetition_penalty=1):
         inputs = self.tokenizer(prompt, return_tensors='pt', add_special_tokens=False)
         length = inputs['input_ids'].shape[1]
-        if length > 2048: raise ChatFailure('Tư liệu quá dài. Hãy chọn một đoạn ngắn hơn.', 422)
+        # The model supports a much larger context than the old 2k hard cap.
+        # Keep a conservative 4k budget so ordinary approved artifact records fit
+        # without turning long, multi-question prompts into slow GPU/CPU requests.
+        if length > 4096: raise ChatFailure('Tư liệu và chỉ dẫn vượt giới hạn 4.096 token. Hãy rút gọn tư liệu hoặc câu hỏi đã có.', 422)
         inputs = {name: value.to(self.device) for name, value in inputs.items()}
         sampling = temperature > 0
         devices = [torch.cuda.current_device()] if self.device == 'cuda' else []

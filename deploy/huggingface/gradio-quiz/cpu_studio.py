@@ -36,7 +36,7 @@ class CpuStudio:
         path = snapshot_download(model_id, revision=revision, token=False,
             allow_patterns=['onnx/model_q4.onnx*', 'config.json', 'generation_config.json',
                             'tokenizer.json', 'tokenizer_config.json'])
-        engine = OnnxChat(path, threads=2, max_input_tokens=2048, max_new_tokens=768, deadline_seconds=170)
+        engine = OnnxChat(path, threads=2, max_input_tokens=4096, max_new_tokens=768, deadline_seconds=170)
 
         class Adapter:
             lock = engine.lock

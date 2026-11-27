@@ -25,6 +25,8 @@ The public UI defaults to a set of **five Vietnamese questions** (1/3/5 selectab
 each with four options, a correct index, explanation and source quote. One GPU
 allocation composes the set sequentially under an 85-second budget. Every question
 passes the existing SMGS source validator and excludes already generated questions.
+Each model prompt is capped at 4,096 input tokens (raised from the previous 2,048-token
+limit); inputs beyond that still need to be shortened before inference.
 
 ## Source-constrained generation
 
