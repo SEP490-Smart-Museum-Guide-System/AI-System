@@ -51,7 +51,7 @@ def generate_quiz_set(engine, name, source, difficulty, excluded, count=5, *, la
             calls += 1
             try:
                 question, evidence_index = generate_grounded_question(bounded, name, source, difficulty,
-                    previous, used_evidence, target_index, attempt, feedback)
+                    previous, passages, target_index, attempt, feedback)
                 localized = question
                 if language == 'en':
                     if not bounded.lock.acquire(timeout=10):
